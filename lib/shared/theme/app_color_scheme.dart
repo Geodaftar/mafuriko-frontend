@@ -10,7 +10,7 @@ class AppColorScheme {
   static const gray = Color(0xFFEFEFEF);
   static const black = Color(0xFF000000);
 
-  static final ColorScheme appolorSchemeLight = SeedColorScheme.fromSeeds(
+  static final ColorScheme appColorSchemeLight = SeedColorScheme.fromSeeds(
     brightness: Brightness.light,
     primaryKey: primary,
     secondaryKey: secondary,
