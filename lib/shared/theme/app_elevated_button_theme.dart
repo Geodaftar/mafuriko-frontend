@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mafuriko/shared/theme/app_color_scheme.dart';
+import 'package:mafuriko/shared/theme/app_text_theme.dart';
 
 final appElevatedButtonThemeLight = ElevatedButtonThemeData(
   style: ElevatedButton.styleFrom(
