@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 
-final appTextThemeLight = ThemeData(brightness: Brightness.light).textTheme;
+const String fontFamily = 'Montserrat';
 
-final appTextThemeDark = ThemeData(brightness: Brightness.dark).textTheme;
+final appTextThemeLight =
+    ThemeData(brightness: Brightness.light, fontFamily: fontFamily).textTheme;
+
+final appTextThemeDark =
+    ThemeData(brightness: Brightness.dark, fontFamily: fontFamily).textTheme;
