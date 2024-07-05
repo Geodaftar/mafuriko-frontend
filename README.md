@@ -1,3 +1,3 @@
 # mafuriko
 
-A new Flutter project.
+Mafuriko : Mapping Flooding Areas in Abidjan (MAFIA).
