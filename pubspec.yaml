@@ -1,10 +1,10 @@
 name: mafuriko
-description: "A new Flutter project."
-publish_to: 'none'
+description: "Mafuriko : Mapping Flooding Areas in Abidjan (MAFIA)."
+publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: '>=3.4.3 <4.0.0'
+  sdk: ">=3.4.3 <4.0.0"
 
 dependencies:
   app_settings: ^5.1.1
@@ -36,3 +36,38 @@ dev_dependencies:
 
 flutter:
   uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/images/
+    - assets/icons/
+
+  fonts:
+    - family: Monstserrat
+      fonts:
+        - asset: assets/fonts/montserrat/Montserrat-Black.ttf
+          weight: 900
+
+        - asset: assets/fonts/montserrat/Montserrat-BlackItalic.ttf
+          style: italic
+          weight: 900
+
+        - asset: assets/fonts/montserrat/Montserrat-Bold.ttf
+          weight: 700
+
+        - asset: assets/fonts/montserrat/Montserrat-BoldItalic.ttf
+          style: italic
+          weight: 700
+
+        - asset: assets/fonts/montserrat/Montserrat-SemiBold.ttf
+          weight: 700
+
+        - asset: assets/fonts/montserrat/Montserrat-SemiBoldItalic.ttf
+          style: italic
+          weight: 700
+
+        - asset: assets/fonts/montserrat/Montserrat-Regular.ttf
+          weight: 400
+
+        - asset: assets/fonts/montserrat/Montserrat-Medium.ttf
+          weight: 500
