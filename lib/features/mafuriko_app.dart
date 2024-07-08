@@ -9,7 +9,7 @@ class MafurikoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScreenUtilInit(
-      designSize: Size(390.w, 844.h),
+      designSize: const Size(390, 844),
       builder: (context, child) => MaterialApp.router(
         theme: AppTheme.theme,
         debugShowCheckedModeBanner: false,
