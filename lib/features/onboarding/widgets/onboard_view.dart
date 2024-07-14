@@ -13,10 +13,10 @@ class OnboardView extends StatelessWidget {
     return Column(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
-        SizedBox(height: .06.sh),
+        SizedBox(height: .05.sh),
         Container(
           margin: EdgeInsets.only(
-            bottom: .06.sh,
+            bottom: .05.sh,
           ),
           child: Image.asset(
             fit: BoxFit.cover,

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mafuriko/features/onboarding/cubit/count_cubit.dart';
 import 'package:mafuriko/features/onboarding/widgets/onboard_view.dart';
 import 'package:mafuriko/gen/assets.gen.dart';
 import 'package:mafuriko/gen/fonts.gen.dart';
@@ -16,14 +18,12 @@ class OnboardingView extends StatefulWidget {
 class _OnboardingViewState extends State<OnboardingView> {
   final PageController _controller = PageController();
 
-  int _page = 0;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         actions: [
-          _page == 2.0
+          context.watch<CountCubit>().state.pagePos == 2.0
               ? Container()
               : Padding(
                   padding: EdgeInsets.only(right: 18.w),
@@ -57,9 +57,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                 child: PageView(
                   controller: _controller,
                   onPageChanged: (value) {
-                    setState(() {
-                      _page = value;
-                    });
+                    context.read<CountCubit>().positionChanged(value);
                   },
                   children: [
                     OnboardView(
@@ -87,6 +85,19 @@ class _OnboardingViewState extends State<OnboardingView> {
                         SmoothPageIndicator(
                           controller: _controller,
                           count: 3,
+                          onDotClicked: (index) {
+                            double offset = index.toDouble() *
+                                _controller.position.viewportDimension;
+                            Duration duration =
+                                const Duration(milliseconds: 300);
+                            Curve curve = Curves.easeInOut;
+
+                            _controller.animateTo(
+                              offset,
+                              duration: duration,
+                              curve: curve,
+                            );
+                          },
                           effect: WormEffect(
                             activeDotColor: AppColorScheme.primary,
                             dotHeight: 10.h,
