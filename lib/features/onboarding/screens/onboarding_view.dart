@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
+import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/onboarding/cubit/count_cubit.dart';
 import 'package:mafuriko/features/onboarding/widgets/onboard_view.dart';
-import 'package:mafuriko/gen/assets.gen.dart';
-import 'package:mafuriko/gen/fonts.gen.dart';
+import 'package:mafuriko/gen/gen.dart';
 import 'package:mafuriko/shared/theme/app_color_scheme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 
@@ -112,7 +113,9 @@ class _OnboardingViewState extends State<OnboardingView> {
                           children: [
                             Expanded(
                               child: ElevatedButton(
-                                onPressed: () {},
+                                onPressed: () {
+                                  context.pushNamed(Paths.signIn);
+                                },
                                 child: Text(
                                   'Commencer',
                                   textAlign: TextAlign.center,
