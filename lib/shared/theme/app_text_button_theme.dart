@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mafuriko/shared/theme/app_color_scheme.dart';
-
 
 final appTextButtonThemeLight = TextButtonThemeData(
   style: TextButton.styleFrom(
     shape: RoundedRectangleBorder(
-      borderRadius: BorderRadius.circular(8.0),
+      borderRadius: BorderRadius.circular(8.r),
     ),
     minimumSize: const Size(100, 48),
     foregroundColor: AppColorScheme.appColorSchemeLight.primary,

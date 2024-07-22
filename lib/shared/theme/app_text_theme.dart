@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const String fontFamily = 'Montserrat';
+const String fontFamily = 'Nunito';
 
 final appTextThemeLight =
     ThemeData(brightness: Brightness.light, fontFamily: fontFamily).textTheme;

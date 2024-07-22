@@ -4,71 +4,202 @@ publish_to: "none"
 version: 0.1.0
 
 environment:
-  sdk: ">=3.4.3 <4.0.0"
+ sdk: ">=3.4.3 <4.0.0"
 
 dependencies:
-  app_settings: ^5.1.1
-  bloc: ^8.1.4
-  dartz: ^0.10.1
-  dio: ^5.5.0+1
-  equatable: ^2.0.5
-  firebase_core: ^3.1.1
-  firebase_messaging: ^15.0.2
-  flex_seed_scheme: ^3.0.0
-  flutter:
-    sdk: flutter
-  flutter_bloc: ^8.1.6
-  flutter_local_notifications: ^17.2.1
-  flutter_multi_formatter: ^2.12.8
-  flutter_screenutil: ^5.9.3
-  geolocator: ^12.0.0
-  get_it: ^7.7.0
-  google_maps_flutter: ^2.7.0
-  hive: ^2.2.3
-  hive_flutter: ^1.1.0
-  json_annotation: ^4.9.0
-  pin_code_fields: ^8.0.1
-  skeletonizer: ^1.3.0
+ app_settings: ^5.1.1
+ bloc: ^8.1.4
+ dartz: ^0.10.1
+ dio: ^5.5.0+1
+ equatable: ^2.0.5
+ firebase_core: ^3.1.1
+ firebase_messaging: ^15.0.2
+ flex_seed_scheme: ^3.0.0
+ flutter:
+  sdk: flutter
+ flutter_bloc: ^8.1.6
+ flutter_local_notifications: ^17.2.1
+ flutter_multi_formatter: ^2.12.8
+ flutter_screenutil: ^5.9.3
+ geolocator: ^12.0.0
+ get_it: ^7.7.0
+ google_maps_flutter: ^2.7.0
+ hive: ^2.2.3
+ hive_flutter: ^1.1.0
+ json_annotation: ^4.9.0
+ pin_code_fields: ^8.0.1
+ skeletonizer: ^1.3.0
+ smooth_page_indicator: ^1.1.0
+ go_router: ^14.2.0
+ flutter_svg: ^2.0.10+1
+ nb_utils: ^7.0.3
+ internet_connection_checker_plus: ^2.5.0
 
 dev_dependencies:
-  flutter_lints: ^3.0.0
-  flutter_test:
-    sdk: flutter
+ flutter_lints: ^3.0.0
+ flutter_test:
+  sdk: flutter
+
+ build_runner: ^2.4.11
+ flutter_gen_runner: ^5.6.0
 
 flutter:
-  uses-material-design: true
+ uses-material-design: true
 
-  assets:
-    - assets/
-    - assets/images/
-    - assets/icons/
+ assets:
+  - assets/
+  - assets/images/onboarding/
+  - assets/icons/
 
-  fonts:
-    - family: Monstserrat
-      fonts:
-        - asset: assets/fonts/montserrat/Montserrat-Black.ttf
-          weight: 900
+ fonts:
+  - family: Montserrat
+    fonts:
+     - asset: assets/fonts/montserrat/Montserrat-Black.ttf
+       weight: 900
 
-        - asset: assets/fonts/montserrat/Montserrat-BlackItalic.ttf
-          style: italic
-          weight: 900
+     - asset: assets/fonts/montserrat/Montserrat-BlackItalic.ttf
+       style: italic
+       weight: 900
 
-        - asset: assets/fonts/montserrat/Montserrat-Bold.ttf
-          weight: 700
+     - asset: assets/fonts/montserrat/Montserrat-Bold.ttf
+       weight: 700
 
-        - asset: assets/fonts/montserrat/Montserrat-BoldItalic.ttf
-          style: italic
-          weight: 700
+     - asset: assets/fonts/montserrat/Montserrat-BoldItalic.ttf
+       style: italic
+       weight: 700
 
-        - asset: assets/fonts/montserrat/Montserrat-SemiBold.ttf
-          weight: 700
+     - asset: assets/fonts/montserrat/Montserrat-SemiBold.ttf
+       weight: 700
 
-        - asset: assets/fonts/montserrat/Montserrat-SemiBoldItalic.ttf
-          style: italic
-          weight: 700
+     - asset: assets/fonts/montserrat/Montserrat-SemiBoldItalic.ttf
+       style: italic
+       weight: 700
 
-        - asset: assets/fonts/montserrat/Montserrat-Regular.ttf
-          weight: 400
+     - asset: assets/fonts/montserrat/Montserrat-Regular.ttf
+       weight: 400
 
-        - asset: assets/fonts/montserrat/Montserrat-Medium.ttf
-          weight: 500
+     - asset: assets/fonts/montserrat/Montserrat-Medium.ttf
+       weight: 500
+
+  - family: Nunito
+    fonts:
+     - asset: assets/fonts/nunito/Nunito-Black.ttf
+       weight: 900
+
+     - asset: assets/fonts/nunito/Nunito-BlackItalic.ttf
+       style: italic
+       weight: 900
+
+     - asset: assets/fonts/nunito/Nunito-Bold.ttf
+       weight: 700
+
+     - asset: assets/fonts/nunito/Nunito-BoldItalic.ttf
+       style: italic
+       weight: 700
+
+     - asset: assets/fonts/nunito/Nunito-SemiBold.ttf
+       weight: 700
+
+     - asset: assets/fonts/nunito/Nunito-SemiBoldItalic.ttf
+       style: italic
+       weight: 700
+
+     - asset: assets/fonts/nunito/Nunito-Regular.ttf
+       weight: 400
+
+     - asset: assets/fonts/nunito/Nunito-Light.ttf
+       weight: 500
+
+  - family: Inter
+    fonts:
+     - asset: assets/fonts/inter/Inter-Black.otf
+       weight: 900
+
+     - asset: assets/fonts/inter/Inter-BlackItalic.otf
+       style: italic
+       weight: 900
+
+     - asset: assets/fonts/inter/Inter-Bold.otf
+       weight: 700
+
+     - asset: assets/fonts/inter/Inter-BoldItalic.otf
+       style: italic
+       weight: 700
+
+     - asset: assets/fonts/inter/Inter-SemiBold.otf
+       weight: 700
+
+     - asset: assets/fonts/inter/Inter-SemiBoldItalic.otf
+       style: italic
+       weight: 700
+
+     - asset: assets/fonts/inter/Inter-Regular.otf
+       weight: 400
+
+     - asset: assets/fonts/inter/Inter-Medium.otf
+       weight: 500
+
+  - family: Lato
+    fonts:
+     - asset: assets/fonts/lato/Lato-Black.ttf
+       weight: 900
+
+     - asset: assets/fonts/lato/Lato-BlackItalic.ttf
+       style: italic
+       weight: 900
+
+     - asset: assets/fonts/lato/Lato-Bold.ttf
+       weight: 700
+
+     - asset: assets/fonts/lato/Lato-BoldItalic.ttf
+       style: italic
+       weight: 700
+
+     - asset: assets/fonts/lato/Lato-Hairline.ttf
+       weight: 700
+
+     - asset: assets/fonts/lato/Lato-HairlineItalic.ttf
+       style: italic
+       weight: 700
+
+     - asset: assets/fonts/lato/Lato-Regular.ttf
+       weight: 400
+
+     - asset: assets/fonts/lato/Lato-Light.ttf
+       weight: 500
+
+  - family: Urbanist
+    fonts:
+     - asset: assets/fonts/urbanist/Urbanist-VariableFont_wght.ttf
+     - asset: assets/fonts/urbanist/Urbanist-Italic-VariableFont_wght.ttf
+
+flutter_gen:
+ output: lib/gen/ # Optional (default: lib/gen/)
+ line_length: 80 # Optional (default: 80)
+
+ integrations:
+  flutter_svg: true
+  flare_flutter: true
+  rive: true
+  lottie: true
+
+ assets:
+  enabled: true
+
+  outputs:
+   class_name: AppImages
+   package_parameter_enabled: false
+
+   style: dot-delimiter
+
+ fonts:
+  enabled: true
+  outputs:
+   class_name: AppFonts
+
+ colors:
+  enabled: true
+  outputs:
+   class_name: AppColor
+  inputs:
+   - assets/color/colors.xml
