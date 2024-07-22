@@ -16,6 +16,7 @@ class AppFormField extends StatelessWidget {
     this.isEmailField = true,
     this.isNameField = false,
     this.isObscure = false,
+    this.onObscured,
     this.type = TextInputType.text,
   })  : _focus = focus,
         _controller = controller;
@@ -31,21 +32,22 @@ class AppFormField extends StatelessWidget {
   final String hint;
 
   final bool isObscure;
+  final VoidCallback? onObscured;
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () => _focus.requestFocus(),
-      child: Container(
-        margin: EdgeInsets.only(bottom: 22.h),
-        padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 10.h),
-        decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.r),
-            border: Border.all(
-              color: AppColor.secondaryGray,
-              strokeAlign: BorderSide.strokeAlignOutside,
-              width: .5.w,
-            )),
+    return Container(
+      margin: EdgeInsets.only(bottom: 22.h),
+      padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 10.h),
+      decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(5.r),
+          border: Border.all(
+            color: AppColor.secondaryGray,
+            strokeAlign: BorderSide.strokeAlignOutside,
+            width: .5.w,
+          )),
+      child: GestureDetector(
+        onTap: () => _focus.requestFocus(),
         child: Row(
           children: [
             Expanded(
@@ -100,22 +102,21 @@ class AppFormField extends StatelessWidget {
                 ],
               ),
             ),
-            isNameField || isEmailField
-                ? Container()
-                : InkWell(
-                    radius: 30.dm,
-                    borderRadius: BorderRadius.circular(25.r),
-                    onTap: () {},
-                    child: SizedBox(
-                      height: 22.h,
-                      width: 22.w,
-                      child: SvgPicture.asset(
-                        isObscure
-                            ? AppImages.icons.eyeSlash.path
-                            : AppImages.icons.eye.path,
-                      ),
-                    ),
+            if (!isNameField && !isEmailField)
+              InkWell(
+                radius: 30.dm,
+                borderRadius: BorderRadius.circular(25.r),
+                onTap: onObscured,
+                child: SizedBox(
+                  height: 22.h,
+                  width: 22.w,
+                  child: SvgPicture.asset(
+                    isObscure
+                        ? AppImages.icons.eyeSlash.path
+                        : AppImages.icons.eye.path,
                   ),
+                ),
+              ),
           ],
         ),
       ),
