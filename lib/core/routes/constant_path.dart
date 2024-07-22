@@ -1,4 +1,6 @@
 class Paths {
   static String initialPath = "/";
-  static String signIn = "signIn";
+  static String signUp = "signUp";
+  static String login = "login";
+  static String home = "home";
 }
