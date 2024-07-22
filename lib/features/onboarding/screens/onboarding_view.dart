@@ -114,7 +114,7 @@ class _OnboardingViewState extends State<OnboardingView> {
                             Expanded(
                               child: ElevatedButton(
                                 onPressed: () {
-                                  context.pushNamed(Paths.signIn);
+                                  context.pushNamed(Paths.signUp);
                                 },
                                 child: Text(
                                   'Commencer',
@@ -132,7 +132,9 @@ class _OnboardingViewState extends State<OnboardingView> {
                         ),
                         TextButton(
                           style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                          onPressed: () {},
+                          onPressed: () {
+                            context.pushNamed(Paths.login);
+                          },
                           child: Text(
                             'Vous avez deja un compte?',
                             style: TextStyle(
