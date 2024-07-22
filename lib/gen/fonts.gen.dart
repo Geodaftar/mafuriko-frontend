@@ -21,4 +21,7 @@ class AppFonts {
 
   /// Font family: Nunito
   static const String nunito = 'Nunito';
+
+  /// Font family: Urbanist
+  static const String urbanist = 'Urbanist';
 }

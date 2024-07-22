@@ -28,6 +28,9 @@ class AppColor {
   /// Color: #434343
   static const Color primaryGray = Color(0xFF434343);
 
+  /// Color: #F42727
+  static const Color red = Color(0xFFF42727);
+
   /// Color: #11477A
   static const Color secondary = Color(0xFF11477A);
 

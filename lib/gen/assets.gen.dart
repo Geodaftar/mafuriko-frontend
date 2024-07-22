@@ -21,14 +21,44 @@ class $AssetsIconsGen {
   /// File path: assets/icons/arrow_back.svg
   SvgGenImage get arrowBack => const SvgGenImage('assets/icons/arrow_back.svg');
 
+  /// File path: assets/icons/avatar-3.png
+  AssetGenImage get avatar3 => const AssetGenImage('assets/icons/avatar-3.png');
+
+  /// File path: assets/icons/bell-notification.svg
+  SvgGenImage get bellNotification =>
+      const SvgGenImage('assets/icons/bell-notification.svg');
+
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
 
   /// File path: assets/icons/eye_slash.svg
   SvgGenImage get eyeSlash => const SvgGenImage('assets/icons/eye_slash.svg');
 
+  /// File path: assets/icons/home_icon.svg
+  SvgGenImage get homeIcon => const SvgGenImage('assets/icons/home_icon.svg');
+
+  /// File path: assets/icons/map_icon.svg
+  SvgGenImage get mapIcon => const SvgGenImage('assets/icons/map_icon.svg');
+
+  /// File path: assets/icons/sodexam.png
+  AssetGenImage get sodexam => const AssetGenImage('assets/icons/sodexam.png');
+
+  /// File path: assets/icons/verify.svg
+  SvgGenImage get verify => const SvgGenImage('assets/icons/verify.svg');
+
   /// List of all assets
-  List<dynamic> get values => [aKeep, arrowBack, eye, eyeSlash];
+  List<dynamic> get values => [
+        aKeep,
+        arrowBack,
+        avatar3,
+        bellNotification,
+        eye,
+        eyeSlash,
+        homeIcon,
+        mapIcon,
+        sodexam,
+        verify
+      ];
 }
 
 class $AssetsImagesGen {
@@ -54,9 +84,13 @@ class $AssetsImagesOnboardingGen {
   AssetGenImage get illustrationTwo =>
       const AssetGenImage('assets/images/onboarding/Illustration_two.png');
 
+  /// File path: assets/images/onboarding/thumb.png
+  AssetGenImage get thumb =>
+      const AssetGenImage('assets/images/onboarding/thumb.png');
+
   /// List of all assets
   List<AssetGenImage> get values =>
-      [illustrationOne, illustrationThree, illustrationTwo];
+      [illustrationOne, illustrationThree, illustrationTwo, thumb];
 }
 
 class AppImages {
