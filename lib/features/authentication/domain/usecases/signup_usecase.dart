@@ -5,13 +5,13 @@ import 'package:mafuriko/features/authentication/domain/repositories/auth_reposi
 import 'package:mafuriko/shared/base/usecase.dart';
 import 'package:mafuriko/shared/errors/failures.dart';
 
-class SignUpUseCase extends UseCase<UserEntity, SignInParams> {
+class SignUpUseCase extends UseCase<UserEntity, SignUpParams> {
   final AuthRepository repository;
 
   SignUpUseCase(this.repository);
 
   @override
-  Future<Either<Failure, UserEntity>> call(SignInParams params) async {
+  Future<Either<Failure, UserEntity>> call(SignUpParams params) async {
     return await repository.signUp(
       userEmail: params.email,
       userName: params.fullName,
@@ -22,14 +22,14 @@ class SignUpUseCase extends UseCase<UserEntity, SignInParams> {
   }
 }
 
-class SignInParams {
+class SignUpParams {
   final String email;
   final String fullName;
   final String phoneNumber;
   final String password;
   final String confirmPassword;
 
-  SignInParams({
+  SignUpParams({
     required this.email,
     required this.fullName,
     required this.phoneNumber,
