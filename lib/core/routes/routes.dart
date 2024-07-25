@@ -3,7 +3,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
+import 'package:mafuriko/features/authentication/presentation/screens/forgot_password.dart';
+import 'package:mafuriko/features/authentication/presentation/screens/verify_number.dart';
 import 'package:mafuriko/features/authentication/presentation/screens/login_screen.dart';
+import 'package:mafuriko/features/authentication/presentation/screens/otp_screen.dart';
 import 'package:mafuriko/features/authentication/presentation/screens/sign_up_screen.dart';
 import 'package:mafuriko/features/home/presentation/screens/home_screen.dart';
 import 'package:mafuriko/features/onboarding/screens/onboarding_view.dart';
@@ -46,6 +49,27 @@ final GoRouter router = GoRouter(
       name: Paths.home,
       builder: (context, state) {
         return const HomeScreen();
+      },
+    ),
+    GoRoute(
+      path: '/${Paths.verifyNumber}',
+      name: Paths.verifyNumber,
+      builder: (context, state) {
+        return const VerifyNumberScreen();
+      },
+    ),
+    GoRoute(
+      path: '/${Paths.forgotPassword}',
+      name: Paths.forgotPassword,
+      builder: (context, state) {
+        return const ForgotPasswordScreen();
+      },
+    ),
+    GoRoute(
+      path: '/${Paths.otpScreen}',
+      name: Paths.otpScreen,
+      builder: (context, state) {
+        return const OTPScreen();
       },
     ),
   ],
