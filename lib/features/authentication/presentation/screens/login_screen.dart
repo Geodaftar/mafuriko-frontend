@@ -100,7 +100,9 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: TextButton(
                             style:
                                 TextButton.styleFrom(padding: EdgeInsets.zero),
-                            onPressed: () {},
+                            onPressed: () {
+                              context.pushNamed(Paths.verifyNumber);
+                            },
                             child: Text(
                               'Mot de passe oublié?',
                               style: TextStyle(
