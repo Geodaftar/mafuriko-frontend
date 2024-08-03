@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "1094940577879",
+    "project_id": "mafuriko-de982",
+    "storage_bucket": "mafuriko-de982.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1094940577879:android:15995fb02ca3cf09819312",
+        "android_client_info": {
+          "package_name": "com.geodaftar.mafuriko"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoNjWVOCMfEePnwlBqDj5ofkNm3MjRArY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
