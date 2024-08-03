@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mafuriko/core/routes/constant_path.dart';
-import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
+// import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
 import 'package:mafuriko/features/authentication/presentation/screens/forgot_password.dart';
 import 'package:mafuriko/features/authentication/presentation/screens/verify_number.dart';
 import 'package:mafuriko/features/authentication/presentation/screens/login_screen.dart';
@@ -18,17 +18,21 @@ final GoRouter router = GoRouter(
       builder: (BuildContext context, GoRouterState state) {
         return const OnboardingView();
       },
-      redirect: (context, state) {
-        final authBloc = context.read<AuthBloc>();
-        final bool isAuthenticated = authBloc.state is AuthSuccess;
+      // redirect: (context, state) {
+      //   final authBloc = context.read<AuthBloc>();
+      //   final bool isAuthenticated = authBloc.state is AuthSuccess;
 
-        if (!isAuthenticated && state.path != Paths.initialPath) {
-          return state.namedLocation(Paths.initialPath);
-        } else if (isAuthenticated && state.path == Paths.initialPath) {
-          return state.namedLocation(Paths.home);
-        }
-        return null;
-      },
+      //   debugPrint('Current path: ${state.path}');
+      //   debugPrint('Is authenticated: $isAuthenticated');
+      //   debugPrint('AuthBloc state: ${authBloc.state.runtimeType}');
+
+      //   if (!isAuthenticated && state.path != Paths.initialPath) {
+      //     return Paths.initialPath;
+      //   } else if (isAuthenticated && state.path == Paths.initialPath) {
+      //     return '/${Paths.home}';
+      //   }
+      //   return null;
+      // },
     ),
     GoRoute(
       path: '/${Paths.signUp}',
@@ -69,7 +73,11 @@ final GoRouter router = GoRouter(
       path: '/${Paths.otpScreen}',
       name: Paths.otpScreen,
       builder: (context, state) {
-        return const OTPScreen();
+        final List data = state.extra as List;
+        return OTPScreen(
+          vId: data[1],
+          phoneNumber: data[0],
+        );
       },
     ),
   ],
