@@ -4,8 +4,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
+import 'package:mafuriko/features/authentication/presentation/widgets/auth_option.dart';
 import 'package:mafuriko/features/authentication/presentation/widgets/return_app_bar.dart';
 import 'package:mafuriko/gen/gen.dart';
+import 'package:mafuriko/shared/helpers/validators.dart';
 import 'package:mafuriko/shared/widgets/app_form_field.dart';
 import 'package:mafuriko/shared/widgets/buttons.dart';
 
@@ -17,6 +19,8 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
 
@@ -42,6 +46,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Padding(
         padding: EdgeInsets.fromLTRB(18.w, 0, 18.w, 20.h),
         child: Form(
+          key: _formKey,
           child: Stack(
             children: [
               Positioned(
@@ -50,7 +55,7 @@ class _LoginScreenState extends State<LoginScreen> {
                   children: [
                     SizedBox(height: 10.h),
                     Text(
-                      'Créez votre compte',
+                      'Connexion',
                       style: TextStyle(
                         color: AppColor.primaryGray,
                         fontSize: 18.sp,
@@ -60,7 +65,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 10.h),
                     Text(
-                      'Remplissez le formulaire ci-dessous pour créer un compte',
+                      'Remplissez le formulaire ci-dessous pour vous connecter',
                       style: TextStyle(
                         color: AppColor.secondaryGray,
                         fontSize: 16.sp,
@@ -76,6 +81,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       label: 'Email',
                       hint: 'Saisissez l’adresse email',
                       type: TextInputType.emailAddress,
+                      onValidate: (value) {
+                        final isValid = Email.dirty(value!).validator(value);
+                        return isValid?.name;
+                      },
                     ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -92,6 +101,11 @@ class _LoginScreenState extends State<LoginScreen> {
                               },
                               label: 'Mot de passe',
                               hint: 'Saisissez mot de passe',
+                              onValidate: (value) {
+                                final isValid = PasswordValidator.dirty(value!)
+                                    .validator(value);
+                                return isValid?.name;
+                              },
                             );
                           },
                         ),
@@ -103,11 +117,20 @@ class _LoginScreenState extends State<LoginScreen> {
                             onPressed: () {
                               context.pushNamed(Paths.verifyNumber);
                             },
-                            child: Text(
-                              'Mot de passe oublié?',
-                              style: TextStyle(
-                                fontSize: 14.sp,
-                                fontFamily: AppFonts.lato,
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                border: Border(
+                                  bottom: BorderSide(
+                                    color: AppColor.primary,
+                                  ),
+                                ),
+                              ),
+                              child: Text(
+                                'Mot de passe oublié?',
+                                style: TextStyle(
+                                  fontSize: 14.sp,
+                                  fontFamily: AppFonts.lato,
+                                ),
                               ),
                             ),
                           ),
@@ -148,47 +171,25 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           );
                         }
-
                         return PrimaryExpandedButton(
                           title: 'Se connecter',
                           onTap: () {
-                            context.read<AuthBloc>().add(LoginRequested(
-                                  userEmail: _emailController.text,
-                                  userPassword: _passwordController.text,
-                                ));
+                            if (_formKey.currentState?.validate() ?? false) {
+                              context.read<AuthBloc>().add(
+                                    LoginRequested(
+                                      userEmail: _emailController.text,
+                                      userPassword: _passwordController.text,
+                                    ),
+                                  );
+                            }
                           },
                         );
                       },
                     ),
-                    Wrap(
-                      alignment: WrapAlignment.center,
-                      crossAxisAlignment: WrapCrossAlignment.center,
-                      children: [
-                        Text(
-                          "Je n'ai pas de compte, ",
-                          style: TextStyle(
-                            color: const Color(0xFF6F6F6F),
-                            fontSize: 14.sp,
-                            fontFamily: AppFonts.lato,
-                            fontWeight: FontWeight.w400,
-                          ),
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                          onPressed: () {
-                            context.pushNamed(Paths.signUp);
-                          },
-                          child: Text(
-                            'inscrivez-vous',
-                            style: TextStyle(
-                              color: const Color(0xFF6F6F6F),
-                              fontSize: 14.sp,
-                              fontFamily: AppFonts.lato,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                        ),
-                      ],
+                    OptionAuth(
+                      message: "Je n'ai pas de compte,",
+                      option: "inscrivez-vous",
+                      path: Paths.signUp,
                     ),
                   ],
                 ),

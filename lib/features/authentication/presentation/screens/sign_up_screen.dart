@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
+import 'package:mafuriko/features/authentication/presentation/widgets/auth_option.dart';
 import 'package:mafuriko/features/authentication/presentation/widgets/return_app_bar.dart';
 import 'package:mafuriko/gen/gen.dart';
 import 'package:mafuriko/shared/widgets/app_form_field.dart';
@@ -175,34 +176,35 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       );
                     },
                   ),
-                  TextButton(
-                    style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                    onPressed: () {
-                      context.pushNamed(Paths.login);
-                    },
-                    child: Text(
-                      'Vous avez deja un compte?',
-                      style: TextStyle(
-                        color: const Color(0xFF6F6F6F),
-                        fontSize: 14.sp,
-                        fontFamily: AppFonts.lato,
-                        fontWeight: FontWeight.w400,
-                      ),
-                    ),
+                  OptionAuth(
+                    message: "Vous avez déjà un compte?",
+                    option: "Connectez-vous",
+                    path: Paths.login,
                   ),
                   SizedBox(
-                    height: 20.h,
+                    height: 22.h,
                     child: TextButton(
                       style: TextButton.styleFrom(padding: EdgeInsets.zero),
                       onPressed: () {},
-                      child: Text(' Ajouter un profil visiteur.',
+                      child: Container(
+                        decoration: const BoxDecoration(
+                          border: Border(
+                            bottom: BorderSide(
+                              color: Color(0xFF6F6F6F),
+                            ),
+                          ),
+                        ),
+                        child: Text(
+                          'Ajouter un profil visiteur',
                           style: TextStyle(
+                            color: const Color(0xFF6F6F6F),
                             fontSize: 14.sp,
                             fontFamily: AppFonts.lato,
-                          )),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
-                  SizedBox(height: 25.h),
                 ],
               )),
         ),

@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:mafuriko/gen/assets.gen.dart';
@@ -17,6 +16,7 @@ class AppFormField extends StatelessWidget {
     this.isNameField = false,
     this.isObscure = false,
     this.onObscured,
+    this.onValidate,
     this.type = TextInputType.text,
   })  : _focus = focus,
         _controller = controller;
@@ -33,34 +33,30 @@ class AppFormField extends StatelessWidget {
 
   final bool isObscure;
   final VoidCallback? onObscured;
+  final String? Function(String? val)? onValidate;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       margin: EdgeInsets.only(bottom: 22.h),
-      padding: EdgeInsets.fromLTRB(12.w, 8.h, 12.w, 10.h),
-      decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(5.r),
-          border: Border.all(
-            color: AppColor.secondaryGray,
-            strokeAlign: BorderSide.strokeAlignOutside,
-            width: .5.w,
-          )),
       child: GestureDetector(
         onTap: () => _focus.requestFocus(),
         child: Row(
           children: [
             Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Stack(
                 children: [
-                  Text(
-                    label,
-                    style: TextStyle(
-                      color: AppColor.primaryGray,
-                      fontSize: 14.sp,
-                      fontFamily: AppFonts.nunito,
-                      fontWeight: FontWeight.w400,
+                  Positioned(
+                    top: 11.h,
+                    left: 12.w,
+                    child: Text(
+                      label,
+                      style: TextStyle(
+                        color: AppColor.primaryGray,
+                        fontSize: 14.sp,
+                        fontFamily: AppFonts.nunito,
+                        fontWeight: FontWeight.w400,
+                      ),
                     ),
                   ),
                   TextFormField(
@@ -73,6 +69,7 @@ class AppFormField extends StatelessWidget {
                             : TextCapitalization.sentences,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     cursorHeight: 20.h,
+                    textAlignVertical: TextAlignVertical.bottom,
                     textInputAction: TextInputAction.done,
                     obscuringCharacter: '❋',
                     cursorColor: AppColor.tertiaryGray,
@@ -84,10 +81,10 @@ class AppFormField extends StatelessWidget {
                       fontWeight: FontWeight.w600,
                     ),
                     keyboardType: type,
+                    validator: onValidate,
                     decoration: InputDecoration(
-                      contentPadding: EdgeInsets.only(bottom: 15.h),
-                      constraints: BoxConstraints(maxHeight: 26.h),
-                      alignLabelWithHint: false,
+                      contentPadding: EdgeInsets.only(
+                          left: 12.w, top: 35.h, right: 12.w, bottom: 5.h),
                       hintText: hint,
                       hintStyle: TextStyle(
                         color: AppColor.tertiaryGray,
@@ -96,27 +93,62 @@ class AppFormField extends StatelessWidget {
                         fontWeight: FontWeight.w400,
                         height: .21.h,
                       ),
-                      border: InputBorder.none,
+                      errorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.r),
+                        borderSide: BorderSide(
+                          color: AppColor.red,
+                          strokeAlign: BorderSide.strokeAlignOutside,
+                          width: .5.w,
+                        ),
+                      ),
+                      focusedErrorBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.r),
+                        borderSide: BorderSide(
+                          color: AppColor.secondaryGray,
+                          strokeAlign: BorderSide.strokeAlignOutside,
+                          width: .5.w,
+                        ),
+                      ),
+                      focusedBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.r),
+                        borderSide: BorderSide(
+                          color: AppColor.secondaryGray,
+                          strokeAlign: BorderSide.strokeAlignOutside,
+                          width: .5.w,
+                        ),
+                      ),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.r),
+                        borderSide: BorderSide(
+                          color: AppColor.secondaryGray,
+                          strokeAlign: BorderSide.strokeAlignOutside,
+                          width: .5.w,
+                        ),
+                      ),
                     ),
                   ),
+                  if (!isNameField && !isEmailField)
+                    Positioned(
+                      top: 25.h,
+                      right: 12.w,
+                      child: InkWell(
+                        radius: 30.dm,
+                        borderRadius: BorderRadius.circular(25.r),
+                        onTap: onObscured,
+                        child: SizedBox(
+                          height: 22.h,
+                          width: 22.w,
+                          child: SvgPicture.asset(
+                            isObscure
+                                ? AppImages.icons.eyeSlash.path
+                                : AppImages.icons.eye.path,
+                          ),
+                        ),
+                      ),
+                    ),
                 ],
               ),
             ),
-            if (!isNameField && !isEmailField)
-              InkWell(
-                radius: 30.dm,
-                borderRadius: BorderRadius.circular(25.r),
-                onTap: onObscured,
-                child: SizedBox(
-                  height: 22.h,
-                  width: 22.w,
-                  child: SvgPicture.asset(
-                    isObscure
-                        ? AppImages.icons.eyeSlash.path
-                        : AppImages.icons.eye.path,
-                  ),
-                ),
-              ),
           ],
         ),
       ),
