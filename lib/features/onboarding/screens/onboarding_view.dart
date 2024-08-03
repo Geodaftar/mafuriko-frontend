@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:mafuriko/core/routes/constant_path.dart';
+import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
 import 'package:mafuriko/features/onboarding/cubit/count_cubit.dart';
 import 'package:mafuriko/features/onboarding/widgets/onboard_view.dart';
 import 'package:mafuriko/gen/gen.dart';
@@ -21,149 +22,128 @@ class _OnboardingViewState extends State<OnboardingView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        actions: [
-          context.watch<CountCubit>().state.pagePos == 2.0
-              ? Container()
-              : Padding(
-                  padding: EdgeInsets.only(right: 18.w),
-                  child: InkWell(
-                    onTap: () {
-                      _controller.jumpToPage(2);
-                    },
-                    child: Text(
-                      'Sauter',
-                      style: TextStyle(
-                        color: AppColorScheme.primary,
-                        fontSize: 16.sp,
-                        fontFamily: AppFonts.nunito,
-                        fontWeight: FontWeight.w500,
+    return BlocListener<AuthBloc, AuthState>(
+      listener: (context, state) {
+        if (state.runtimeType == AuthSuccess) {
+          context.goNamed(Paths.home);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          actions: [
+            context.watch<CountCubit>().state.pagePos == 2.0
+                ? Container()
+                : Padding(
+                    padding: EdgeInsets.only(right: 18.w),
+                    child: InkWell(
+                      onTap: () {
+                        context.pushNamed(Paths.signUp);
+                      },
+                      child: Text(
+                        'Sauter',
+                        style: TextStyle(
+                          color: AppColorScheme.primary,
+                          fontSize: 16.sp,
+                          fontFamily: AppFonts.nunito,
+                          fontWeight: FontWeight.w500,
+                        ),
                       ),
                     ),
                   ),
-                ),
-        ],
+          ],
+          backgroundColor: AppColorScheme.white,
+        ),
         backgroundColor: AppColorScheme.white,
-      ),
-      backgroundColor: AppColorScheme.white,
-      body: SafeArea(
-        child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 18.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              Expanded(
-                flex: 6,
-                child: PageView(
-                  controller: _controller,
-                  onPageChanged: (value) {
-                    context.read<CountCubit>().positionChanged(value);
-                  },
-                  children: [
-                    OnboardView(
-                      img: AppImages.images.onboarding.illustrationOne.path,
-                      desc: 'Suivez toute l’actualité\nsur les inondations',
-                    ),
-                    OnboardView(
-                      img: AppImages.images.onboarding.illustrationTwo.path,
-                      desc: 'Aidez nous a prévoir les futures inondations',
-                    ),
-                    OnboardView(
-                      img: AppImages.images.onboarding.illustrationThree.path,
-                      desc: 'Aidez nous a prévoir les futures inondations',
-                    ),
-                  ],
+        body: SafeArea(
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 18.w),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              children: [
+                Expanded(
+                  flex: 6,
+                  child: PageView(
+                    controller: _controller,
+                    onPageChanged: (value) {
+                      context.read<CountCubit>().positionChanged(value);
+                    },
+                    children: [
+                      OnboardView(
+                        img: AppImages.images.onboarding.illustrationOne.path,
+                        desc: 'Suivez toute l’actualité\nsur les inondations',
+                      ),
+                      OnboardView(
+                        img: AppImages.images.onboarding.illustrationTwo.path,
+                        desc: 'Aidez nous a prévoir les futures inondations',
+                      ),
+                      OnboardView(
+                        img: AppImages.images.onboarding.illustrationThree.path,
+                        desc: 'Aidez nous a prévoir les futures inondations',
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-              Expanded(
-                flex: 3,
-                child: Column(
-                  children: [
-                    SizedBox(height: 40.h),
-                    Column(
-                      children: [
-                        SmoothPageIndicator(
-                          controller: _controller,
-                          count: 3,
-                          onDotClicked: (index) {
-                            double offset = index.toDouble() *
-                                _controller.position.viewportDimension;
-                            Duration duration =
-                                const Duration(milliseconds: 300);
-                            Curve curve = Curves.easeInOut;
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    children: [
+                      SizedBox(height: 40.h),
+                      Column(
+                        children: [
+                          SmoothPageIndicator(
+                            controller: _controller,
+                            count: 3,
+                            onDotClicked: (index) {
+                              double offset = index.toDouble() *
+                                  _controller.position.viewportDimension;
+                              Duration duration =
+                                  const Duration(milliseconds: 300);
+                              Curve curve = Curves.easeInOut;
 
-                            _controller.animateTo(
-                              offset,
-                              duration: duration,
-                              curve: curve,
-                            );
-                          },
-                          effect: WormEffect(
-                            activeDotColor: AppColorScheme.primary,
-                            dotHeight: 10.h,
-                            dotColor: AppColorScheme.gray,
-                            spacing: 5.w,
-                            dotWidth: 10.w,
-                            type: WormType.underground,
+                              _controller.animateTo(
+                                offset,
+                                duration: duration,
+                                curve: curve,
+                              );
+                            },
+                            effect: WormEffect(
+                              activeDotColor: AppColorScheme.primary,
+                              dotHeight: 10.h,
+                              dotColor: AppColorScheme.gray,
+                              spacing: 5.w,
+                              dotWidth: 10.w,
+                              type: WormType.underground,
+                            ),
                           ),
-                        ),
-                        SizedBox(height: 40.h),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ElevatedButton(
-                                onPressed: () {
-                                  context.pushNamed(Paths.signUp);
-                                },
-                                child: Text(
-                                  'Commencer',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 18.sp,
-                                    fontFamily: AppFonts.inter,
-                                    fontWeight: FontWeight.w500,
+                          SizedBox(height: 40.h),
+                          Row(
+                            children: [
+                              Expanded(
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    context.pushNamed(Paths.signUp);
+                                  },
+                                  child: Text(
+                                    'Commencer',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18.sp,
+                                      fontFamily: AppFonts.inter,
+                                      fontWeight: FontWeight.w500,
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                          ],
-                        ),
-                        TextButton(
-                          style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                          onPressed: () {
-                            context.pushNamed(Paths.login);
-                          },
-                          child: Text(
-                            'Vous avez deja un compte?',
-                            style: TextStyle(
-                              color: const Color(0xFF6F6F6F),
-                              fontSize: 14.sp,
-                              fontFamily: AppFonts.lato,
-                              fontWeight: FontWeight.w400,
-                            ),
+                            ],
                           ),
-                        ),
-                        SizedBox(
-                          height: 20.h,
-                          child: TextButton(
-                            style:
-                                TextButton.styleFrom(padding: EdgeInsets.zero),
-                            onPressed: () {},
-                            child: Text(' Ajouter un profil visiteur.',
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontFamily: AppFonts.lato,
-                                )),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
+                        ],
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
