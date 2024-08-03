@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -17,6 +18,7 @@ class VerifyNumberScreen extends StatefulWidget {
 }
 
 class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
+  final FirebaseAuth _auth = FirebaseAuth.instance;
   final TextEditingController _phoneController = TextEditingController();
 
   final FocusNode _phoneFocus = FocusNode();
@@ -95,9 +97,9 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                             SnackBar(content: Text(state.message)),
                           );
                         } else if (state is AuthSuccess) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Connexion réussie')),
-                          );
+                          // ScaffoldMessenger.of(context).showSnackBar(
+                          //   const SnackBar(content: Text('Connexion réussie')),
+                          // );
                           context.pushNamed(Paths.home);
                         }
                       },
@@ -115,11 +117,52 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                         return PrimaryExpandedButton(
                           title: 'Procéder',
                           onTap: () {
-                            // context.read<AuthBloc>().add(LoginRequested(
-                            //       userEmail: _emailController.text,
-                            //       userPassword: _passwordController.text,
-                            //     ));
-                            context.pushNamed(Paths.otpScreen);
+                            context.read<AuthBloc>().add(CheckPhoneNumberEvent(
+                                  userNumber: _phoneController.text,
+                                  completedVerification:
+                                      (PhoneAuthCredential credential) async {
+                                    try {
+                                      await _auth
+                                          .signInWithCredential(credential);
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content:
+                                                Text('Vérification réussie')),
+                                      );
+                                    } catch (e) {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        SnackBar(
+                                            content: Text(
+                                                'Échec de la vérification : $e')),
+                                      );
+                                    }
+                                  },
+                                  failedVerification:
+                                      (FirebaseAuthException e) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              'Échec de l\'envoi du code : ${e.message}')),
+                                    );
+                                  },
+                                  onCodeSend: (String verificationId,
+                                      int? resendToken) {
+                                    context.pushNamed(Paths.otpScreen, extra: [
+                                      _phoneController.text.trim(),
+                                      verificationId,
+                                    ]);
+                                  },
+                                  codeAutoRetrievalTimeout:
+                                      (String verificationId) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                          content: Text(
+                                              'Délai de récupération du code dépassé : $verificationId')),
+                                    );
+                                  },
+                                ));
                           },
                         );
                       },

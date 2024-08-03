@@ -51,4 +51,42 @@ class SignUpRequested extends AuthEvent {
 
 class CheckAuthEvent extends AuthEvent {}
 
+class CheckPhoneNumberEvent extends AuthEvent {
+  final String userNumber;
+  final Function(PhoneAuthCredential credential) completedVerification;
+  final Function(FirebaseAuthException e) failedVerification;
+  final Function(String verificationId, int? resendToken) onCodeSend;
+  final Function(String verificationId) codeAutoRetrievalTimeout;
+
+  const CheckPhoneNumberEvent({
+    required this.userNumber,
+    required this.completedVerification,
+    required this.failedVerification,
+    required this.onCodeSend,
+    required this.codeAutoRetrievalTimeout,
+  });
+}
+
+class VerifyOTPEvent extends AuthEvent {
+  final String vId;
+  final String otpCode;
+  final String phoneNumber;
+
+  const VerifyOTPEvent({
+    required this.vId,
+    required this.otpCode,
+    required this.phoneNumber,
+  });
+}
+
+class UpdateForgotPasswordEvent extends AuthEvent {
+  final String newPass;
+  final String newPassConfirm;
+
+  const UpdateForgotPasswordEvent({
+    required this.newPass,
+    required this.newPassConfirm,
+  });
+}
+
 class LogOutEvent extends AuthEvent {}

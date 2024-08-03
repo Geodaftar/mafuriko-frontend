@@ -29,4 +29,23 @@ class AuthFailure extends AuthState {
   List<Object> get props => [message];
 }
 
+class AuthCheckNumSuccess extends AuthState {
+  final bool val;
+
+  const AuthCheckNumSuccess({required this.val});
+
+  @override
+  List<Object> get props => [val];
+}
+
+class SuccessOTP extends AuthState {
+  final bool val;
+  final String userNumber;
+
+  const SuccessOTP({required this.val, required this.userNumber});
+
+  @override
+  List<Object> get props => [val, userNumber];
+}
+
 class AuthUnauthenticated extends AuthState {}

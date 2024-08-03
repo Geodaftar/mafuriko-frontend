@@ -48,14 +48,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     SizedBox(height: 10.h),
-                    Text(
-                      'Mot de passe oublié',
-                      style: TextStyle(
-                        color: AppColor.primaryGray,
-                        fontSize: 18.sp,
-                        fontFamily: AppFonts.inter,
-                        fontWeight: FontWeight.w500,
-                      ),
+                    BlocBuilder<AuthBloc, AuthState>(
+                      builder: (context, state) {
+                        return Text(
+                          'Mot de passe oublié',
+                          style: TextStyle(
+                            color: AppColor.primaryGray,
+                            fontSize: 18.sp,
+                            fontFamily: AppFonts.inter,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        );
+                      },
                     ),
                     SizedBox(height: 10.h),
                     Text(
@@ -104,7 +108,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 ),
               ),
               Positioned(
-                bottom: 50.h, // Adjust the bottom padding to 15.h
+                bottom: 0.h, // Adjust the bottom padding to 15.h
                 left: 0,
                 right: 0,
                 child: Column(
@@ -117,9 +121,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             SnackBar(content: Text(state.message)),
                           );
                         } else if (state is AuthSuccess) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Connexion réussie')),
-                          );
                           context.pushNamed(Paths.home);
                         }
                       },
@@ -137,45 +138,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         return PrimaryExpandedButton(
                           title: 'Procéder',
                           onTap: () {
-                            // context.read<AuthBloc>().add(LoginRequested(
-                            //       userEmail: _emailController.text,
-                            //       userPassword: _passwordController.text,
-                            //     ));
-                            context.pushNamed(Paths.otpScreen);
+                            context
+                                .read<AuthBloc>()
+                                .add(UpdateForgotPasswordEvent(
+                                  newPass: _passwordController.text.trim(),
+                                  newPassConfirm:
+                                      _confirmPassController.text.trim(),
+                                ));
                           },
                         );
                       },
                     ),
-                    // Wrap(
-                    //   alignment: WrapAlignment.center,
-                    //   crossAxisAlignment: WrapCrossAlignment.center,
-                    //   children: [
-                    //     Text(
-                    //       "Je n'ai pas de compte, ",
-                    //       style: TextStyle(
-                    //         color: const Color(0xFF6F6F6F),
-                    //         fontSize: 14.sp,
-                    //         fontFamily: AppFonts.lato,
-                    //         fontWeight: FontWeight.w400,
-                    //       ),
-                    //     ),
-                    //     TextButton(
-                    //       style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                    //       onPressed: () {
-                    //         context.pushNamed(Paths.signUp);
-                    //       },
-                    //       child: Text(
-                    //         'Procéder',
-                    //         style: TextStyle(
-                    //           color: const Color(0xFF6F6F6F),
-                    //           fontSize: 14.sp,
-                    //           fontFamily: AppFonts.lato,
-                    //           fontWeight: FontWeight.w700,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
                   ],
                 ),
               ),

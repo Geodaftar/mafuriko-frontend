@@ -10,22 +10,25 @@ import 'package:mafuriko/shared/widgets/buttons.dart';
 import 'package:pin_code_fields/pin_code_fields.dart';
 
 class OTPScreen extends StatefulWidget {
-  const OTPScreen({super.key});
+  const OTPScreen({super.key, required this.vId, required this.phoneNumber});
+
+  final String vId;
+  final String phoneNumber;
 
   @override
   State<OTPScreen> createState() => _OTPScreenState();
 }
 
 class _OTPScreenState extends State<OTPScreen> {
-  final TextEditingController _phoneController = TextEditingController();
+  final TextEditingController _otpController = TextEditingController();
 
-  final FocusNode _phoneFocus = FocusNode();
+  final FocusNode _otpFocus = FocusNode();
 
   @override
   void dispose() {
     super.dispose();
-    _phoneController.dispose();
-    _phoneFocus.dispose();
+    _otpController.dispose();
+    _otpFocus.dispose();
   }
 
   @override
@@ -70,20 +73,22 @@ class _OTPScreenState extends State<OTPScreen> {
                     ),
                     SizedBox(height: 60.h),
                     Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
                       children: [
                         BlocBuilder<ToggleCubit, bool>(
                           builder: (context, state) {
                             return Container(
-                              margin: EdgeInsets.symmetric(horizontal: 40.w),
+                              margin: EdgeInsets.symmetric(horizontal: 10.w),
                               child: PinCodeTextField(
                                 textStyle: TextStyle(
                                   color: AppColor.primaryGray,
-                                  fontSize: 32.sp,
-                                  fontFamily: AppFonts.lato,
+                                  fontSize: 25.sp,
+                                  fontFamily: AppFonts.nunito,
                                   fontWeight: FontWeight.w600,
                                 ),
                                 appContext: context,
-                                length: 4,
+                                length: 6,
+                                controller: _otpController,
                                 cursorColor: AppColor.primaryGray,
                                 cursorHeight: 28.h,
                                 pinTheme: PinTheme(
@@ -162,11 +167,8 @@ class _OTPScreenState extends State<OTPScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(state.message)),
                           );
-                        } else if (state is AuthSuccess) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(content: Text('Connexion réussie')),
-                          );
-                          context.pushNamed(Paths.home);
+                        } else if (state is SuccessOTP) {
+                          context.pushNamed(Paths.forgotPassword);
                         }
                       },
                       builder: (context, state) {
@@ -183,45 +185,15 @@ class _OTPScreenState extends State<OTPScreen> {
                         return PrimaryExpandedButton(
                           title: 'Confirmer OTP',
                           onTap: () {
-                            // context.read<AuthBloc>().add(LoginRequested(
-                            //       userEmail: _emailController.text,
-                            //       userPassword: _passwordController.text,
-                            //     ));
-                            context.pushNamed(Paths.forgotPassword);
+                            context.read<AuthBloc>().add(VerifyOTPEvent(
+                                  otpCode: _otpController.text,
+                                  vId: widget.vId,
+                                  phoneNumber: widget.phoneNumber,
+                                ));
                           },
                         );
                       },
                     ),
-                    // Wrap(
-                    //   alignment: WrapAlignment.center,
-                    //   crossAxisAlignment: WrapCrossAlignment.center,
-                    //   children: [
-                    //     Text(
-                    //       "Je n'ai pas de compte, ",
-                    // style: TextStyle(
-                    //   color: const Color(0xFF6F6F6F),
-                    //   fontSize: 14.sp,
-                    //   fontFamily: AppFonts.lato,
-                    //   fontWeight: FontWeight.w400,
-                    // ),
-                    //     ),
-                    //     TextButton(
-                    //       style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                    //       onPressed: () {
-                    //         context.pushNamed(Paths.signUp);
-                    //       },
-                    //       child: Text(
-                    //         'Procéder',
-                    //         style: TextStyle(
-                    //           color: const Color(0xFF6F6F6F),
-                    //           fontSize: 14.sp,
-                    //           fontFamily: AppFonts.lato,
-                    //           fontWeight: FontWeight.w700,
-                    //         ),
-                    //       ),
-                    //     ),
-                    //   ],
-                    // ),
                   ],
                 ),
               ),
