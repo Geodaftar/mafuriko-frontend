@@ -6,4 +6,6 @@ class Paths {
   static String forgotPassword = "forgot-password";
   static String verifyNumber = "verify-number";
   static String otpScreen = "otp";
+  static String alertsScreen = "alerts";
+  static String alertDetailScreen = "alert-detail";
 }
