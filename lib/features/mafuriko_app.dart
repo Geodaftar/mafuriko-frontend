@@ -30,7 +30,9 @@ class MafurikoApp extends StatelessWidget {
           theme: AppTheme.theme,
           debugShowCheckedModeBanner: false,
           title: "Mafuriko",
-          routerConfig: router,
+          routerDelegate: router.routerDelegate,
+          routeInformationParser: router.routeInformationParser,
+          routeInformationProvider: router.routeInformationProvider,
         ),
       ),
     );
