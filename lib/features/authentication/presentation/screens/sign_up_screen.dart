@@ -7,6 +7,7 @@ import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bl
 import 'package:mafuriko/features/authentication/presentation/widgets/auth_option.dart';
 import 'package:mafuriko/features/authentication/presentation/widgets/return_app_bar.dart';
 import 'package:mafuriko/gen/gen.dart';
+import 'package:mafuriko/shared/helpers/validators.dart';
 import 'package:mafuriko/shared/widgets/app_form_field.dart';
 import 'package:mafuriko/shared/widgets/buttons.dart';
 
@@ -91,6 +92,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     label: 'Nom et prénom',
                     hint: 'Saisissez votre nom complet',
                     type: TextInputType.name,
+                    onValidate: (value) {
+                      final isValid = Name.dirty(value!).validator(value);
+                      return isValid?.name;
+                    },
                   ),
                   AppFormField(
                     focus: _emailFocus,
@@ -98,6 +103,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     label: 'Email',
                     hint: 'Saisissez l’adresse email',
                     type: TextInputType.emailAddress,
+                    onValidate: (value) {
+                      final isValid = Email.dirty(value!).validator(value);
+                      return isValid?.name;
+                    },
                   ),
                   AppFormField(
                     focus: _phoneFocus,
@@ -105,6 +114,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                     label: 'Téléphone',
                     hint: 'Saisissez le numéro de téléphone',
                     type: TextInputType.phone,
+                    // onValidate: (value) {
+                    //   final isValid =
+                    //       PhoneNumber.dirty(value!).validator(value);
+                    //   return isValid?.name;
+                    // },
                   ),
                   BlocBuilder<ToggleCubit, bool>(
                     builder: (context, state) {
@@ -118,6 +132,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         label: 'Mot de passe',
                         hint: 'Saisissez mot de passe',
+                        onValidate: (value) {
+                          final isValid =
+                              PasswordValidator.dirty(value!).validator(value);
+                          return isValid?.name;
+                        },
                       );
                     },
                   ),
@@ -133,6 +152,17 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         },
                         label: 'Confirmer le mot de passe',
                         hint: 'Saisissez à nouveau le mot de passe',
+                        onValidate: (value) {
+                          final isValid =
+                              PasswordValidator.dirty(value!).validator(value);
+
+                          if (isValid?.name == null &&
+                              _passwordController.text !=
+                                  _confirmPassController.text) {
+                            return ' *les deux mot de passe doivent être identique!';
+                          }
+                          return isValid?.name;
+                        },
                       );
                     },
                   ),
@@ -165,13 +195,15 @@ class _SignUpScreenState extends State<SignUpScreen> {
                       return PrimaryExpandedButton(
                         title: 'Continuer',
                         onTap: () {
-                          context.read<AuthBloc>().add(SignUpRequested(
-                                userEmail: _emailController.text,
-                                userName: _nameController.text,
-                                userNumber: _phoneController.text,
-                                userPassword: _passwordController.text,
-                                confirmPassword: _confirmPassController.text,
-                              ));
+                          if (_formKey.currentState?.validate() ?? false) {
+                            context.read<AuthBloc>().add(SignUpRequested(
+                                  userEmail: _emailController.text,
+                                  userName: _nameController.text,
+                                  userNumber: _phoneController.text,
+                                  userPassword: _passwordController.text,
+                                  confirmPassword: _confirmPassController.text,
+                                ));
+                          }
                         },
                       );
                     },

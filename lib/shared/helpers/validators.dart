@@ -44,7 +44,7 @@ class PhoneNumber extends FormzInput<String, PhoneNumberError> {
   const PhoneNumber.dirty([super.value = '']) : super.dirty();
 
   static final RegExp _phoneNumberRegExp = RegExp(
-    r'^(?:\+225)?(07|05|01|77|74|66)[0-9]{8}$',
+    r'^(?:(\+225(07|05|01)[0-9]{8})|((07|05|01)[0-9]{7})|(\+[1-9][0-9]{0,2}[0-9]{4,}))$',
     // r'^(07|05|01)[0-9]{10}|\(77|74|66)[0-9]{7}$'
   );
 
@@ -75,7 +75,7 @@ class PasswordValidator extends FormzInput<String, PasswordError> {
   const PasswordValidator.dirty([super.value = '']) : super.dirty();
 
   static final RegExp _passwordRegExp = RegExp(
-    r'^\d{6,}$',
+    r'^.{6,}$',
   );
 
   @override
