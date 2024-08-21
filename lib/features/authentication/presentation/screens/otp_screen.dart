@@ -26,9 +26,9 @@ class _OTPScreenState extends State<OTPScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _otpController.dispose();
     _otpFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -90,6 +90,7 @@ class _OTPScreenState extends State<OTPScreen> {
                                 length: 6,
                                 controller: _otpController,
                                 cursorColor: AppColor.primaryGray,
+                                keyboardType: TextInputType.number,
                                 cursorHeight: 28.h,
                                 pinTheme: PinTheme(
                                   borderWidth: 1.w,

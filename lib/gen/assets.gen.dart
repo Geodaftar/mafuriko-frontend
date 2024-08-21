@@ -28,6 +28,10 @@ class $AssetsIconsGen {
   SvgGenImage get bellNotification =>
       const SvgGenImage('assets/icons/bell-notification.svg');
 
+  /// File path: assets/icons/check-icon.png
+  AssetGenImage get checkIcon =>
+      const AssetGenImage('assets/icons/check-icon.png');
+
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
 
@@ -52,6 +56,7 @@ class $AssetsIconsGen {
         arrowBack,
         avatar3,
         bellNotification,
+        checkIcon,
         eye,
         eyeSlash,
         homeIcon,

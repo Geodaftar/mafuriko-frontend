@@ -25,9 +25,9 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _phoneController.dispose();
     _phoneFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -96,11 +96,6 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(state.message)),
                           );
-                        } else if (state is AuthSuccess) {
-                          // ScaffoldMessenger.of(context).showSnackBar(
-                          //   const SnackBar(content: Text('Connexion réussie')),
-                          // );
-                          context.pushNamed(Paths.home);
                         }
                       },
                       builder: (context, state) {
@@ -156,11 +151,18 @@ class _VerifyNumberScreenState extends State<VerifyNumberScreen> {
                                   },
                                   codeAutoRetrievalTimeout:
                                       (String verificationId) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                          content: Text(
-                                              'Délai de récupération du code dépassé : $verificationId')),
-                                    );
+                                    final currentPath = GoRouter.of(context)
+                                        .routerDelegate
+                                        .currentConfiguration
+                                        .fullPath;
+                                    if (currentPath == '/otpScreen') {
+                                      ScaffoldMessenger.of(context)
+                                          .showSnackBar(
+                                        const SnackBar(
+                                            content: Text(
+                                                'Délai de récupération du code dépassé')),
+                                      );
+                                    }
                                   },
                                 ));
                           },

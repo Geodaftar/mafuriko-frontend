@@ -24,8 +24,11 @@ class _OnboardingViewState extends State<OnboardingView> {
   Widget build(BuildContext context) {
     return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
-        if (state.runtimeType == AuthSuccess) {
+        if (state is AuthSuccess && state.request == Request.checkUser) {
           context.goNamed(Paths.home);
+        }
+        if (state.runtimeType == AuthUnauthenticated) {
+          context.go(Paths.initialPath);
         }
       },
       child: Scaffold(
@@ -74,11 +77,11 @@ class _OnboardingViewState extends State<OnboardingView> {
                       ),
                       OnboardView(
                         img: AppImages.images.onboarding.illustrationTwo.path,
-                        desc: 'Aidez nous a prévoir les futures inondations',
+                        desc: 'Aidez nous à collecter \nles données',
                       ),
                       OnboardView(
                         img: AppImages.images.onboarding.illustrationThree.path,
-                        desc: 'Aidez nous a prévoir les futures inondations',
+                        desc: 'Soyez informés des \nfutures inondations',
                       ),
                     ],
                   ),

@@ -25,40 +25,51 @@ class HomeAppBar extends StatelessWidget {
         ),
       ),
       flexibleSpace: FlexibleSpaceBar(
-        titlePadding: EdgeInsets.only(left: 60.w),
-        title: BlocBuilder<AuthBloc, AuthState>(
-          builder: (context, state) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Hello 👋',
-                  style: TextStyle(
-                    fontSize: 12.sp,
-                    fontFamily: AppFonts.urbanist,
-                    fontWeight: FontWeight.w500,
-                    letterSpacing: 0.12.sp,
-                  ),
-                ),
-                Text(
-                  '${(state as AuthSuccess).user.userName}',
+        titlePadding: EdgeInsets.only(left: 70.w),
+        title: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Hello 👋',
+              style: TextStyle(
+                fontSize: 12.sp,
+                fontFamily: AppFonts.urbanist,
+                fontWeight: FontWeight.w500,
+                letterSpacing: 0.12.sp,
+              ),
+            ),
+            BlocBuilder<AuthBloc, AuthState>(
+              builder: (context, state) {
+                if (state is AuthSuccess) {
+                  return Text(
+                    '${state.user.userName}',
+                    style: TextStyle(
+                      fontSize: 14.sp,
+                      fontFamily: AppFonts.nunito,
+                      fontWeight: FontWeight.w600,
+                      letterSpacing: 0.15.sp,
+                    ),
+                  );
+                }
+                return Text(
+                  'userName',
                   style: TextStyle(
                     fontSize: 14.sp,
                     fontFamily: AppFonts.nunito,
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.15.sp,
                   ),
-                ),
-              ],
-            );
-          },
+                );
+              },
+            ),
+          ],
         ),
       ),
       actions: [
         InkWell(
           onTap: () {
-            context.push('/${Paths.initialPath}');
+            context.push(Paths.initialPath);
             context.read<AuthBloc>().add(LogOutEvent());
           },
           child: Container(

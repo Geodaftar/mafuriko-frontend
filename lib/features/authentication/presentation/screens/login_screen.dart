@@ -29,11 +29,11 @@ class _LoginScreenState extends State<LoginScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _emailController.dispose();
     _passwordController.dispose();
     _emailFocus.dispose();
     _passwordFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -154,11 +154,14 @@ class _LoginScreenState extends State<LoginScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(state.message)),
                           );
-                        } else if (state is AuthSuccess) {
+                        } else if (state is AuthSuccess &&
+                            state.request == Request.login) {
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text('Connexion réussie')),
                           );
-                          context.pushNamed(Paths.home);
+                          Future.delayed(const Duration(milliseconds: 300), () {
+                            context.pushNamed(Paths.home);
+                          });
                         }
                       },
                       builder: (context, state) {

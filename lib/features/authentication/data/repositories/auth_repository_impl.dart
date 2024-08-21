@@ -1,8 +1,7 @@
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
-import 'package:firebase_auth_platform_interface/src/firebase_auth_exception.dart';
-import 'package:firebase_auth_platform_interface/src/providers/phone_auth.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:mafuriko/shared/helpers/network_info.dart';
 import 'package:mafuriko/features/authentication/data/datasources/local/auth_local_data_source.dart';
@@ -83,8 +82,8 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
-  Future<void> logout() async {
-    await localDataSource.clearCachedUser();
+  Future<bool> logout() async {
+    return await localDataSource.clearCachedUser();
   }
 
   @override
@@ -107,6 +106,9 @@ class AuthRepositoryImpl implements AuthRepository {
     required String password,
     required String confirmPassword,
   }) async {
+    log('AuthRepoImpl:::: throwing error issue phoneNumber value :::: %%%$phoneNumber');
+    log('AuthRepoImpl:::: throwing error issue password value :::: %%%$password');
+    log('AuthRepoImpl:::: throwing error issue confirmPassword value :::: %%%$confirmPassword');
     try {
       final response = await dataSource.modifyPassword(
         phoneNumber: phoneNumber,
@@ -114,10 +116,14 @@ class AuthRepositoryImpl implements AuthRepository {
         confirmPassword: confirmPassword,
       );
 
+      log('from auth repo impl :: update pass request ::: data **** ${response.toJson()}');
+
+      localDataSource.cacheUser(response);
+
       return Right(response);
     } on ServerException catch (e) {
       log("modifyPassWord exception error statusCode:::::: ${e.statusCode}");
-      log("modifyPassWord exception error message:::::: ${e.message}");
+      log("modifyPassWord exception error Code:::::: ${e.code}");
       return Left(ServerFailure(message: e.message));
     }
   }
@@ -150,10 +156,12 @@ class AuthRepositoryImpl implements AuthRepository {
       final response = await dataSource.verifyOtpCode(verificationId, smsCode);
 
       return Right(response);
-    } on ServerException catch (e) {
-      log("verify otp code exception error statusCode:::::: ${e.statusCode}");
-      log("verify otp code exception error message:::::: ${e.message}");
-      return Left(ServerFailure(message: e.message));
+    } on Exception catch (e) {
+      log("verify otp code exception error statusCode:::::: $e");
+      log("verify otp code exception error message:::::: $e");
+      return const Left(
+        ServerFailure(message: 'Le code de verification sms est invalide'),
+      );
     }
   }
 }

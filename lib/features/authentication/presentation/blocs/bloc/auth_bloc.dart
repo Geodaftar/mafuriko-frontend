@@ -10,6 +10,7 @@ import 'package:mafuriko/features/authentication/domain/entities/user_entity.dar
 import 'package:mafuriko/features/authentication/domain/usecases/check_number_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/get_cache.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/login_usecase.dart';
+import 'package:mafuriko/features/authentication/domain/usecases/logout_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/modify_pass_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/send_opt_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/signup_usecase.dart';
@@ -25,18 +26,20 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final LoginUseCase loginUseCase;
   final GetCachedUser getCachedUser;
   final CheckNumberUseCase checkNumberUseCase;
-  final SendOtpCodeUseCase sendOtpCodeuseCase;
+  final SendOtpCodeUseCase sendOtpCodeUseCase;
   final VerifyOtpCode verifyOtpCode;
   final ModifyPassUseCase modifyPassUseCase;
+  final LogoutUseCase logoutUseCase;
 
   AuthBloc({
     required this.signUpUseCase,
     required this.loginUseCase,
     required this.getCachedUser,
     required this.checkNumberUseCase,
-    required this.sendOtpCodeuseCase,
+    required this.sendOtpCodeUseCase,
     required this.verifyOtpCode,
     required this.modifyPassUseCase,
+    required this.logoutUseCase,
   }) : super(AuthInitial()) {
     on<SignUpRequested>(_onSignUpRequested);
     on<LoginRequested>(_onLoginRequested);
@@ -61,8 +64,8 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
 
     result.fold(
-      (failure) => emit(AuthFailure(message: _mapFailureToMessage(failure))),
-      (user) => emit(AuthSuccess(user: user)),
+      (failure) => emit(AuthFailure(message: failure.message)),
+      (user) => emit(AuthSuccess(user: user, request: Request.signup)),
     );
   }
 
@@ -78,7 +81,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     result.fold(
       (failure) => emit(AuthFailure(message: _mapFailureToMessage(failure))),
-      (user) => emit(AuthSuccess(user: user)),
+      (user) => emit(AuthSuccess(user: user, request: Request.login)),
     );
   }
 
@@ -90,14 +93,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     failureOrUser.fold(
       (failure) => emit(AuthUnauthenticated()),
-      (user) => emit(AuthSuccess(user: user)),
+      (user) => emit(AuthSuccess(user: user, request: Request.checkUser)),
     );
   }
 
   Future<void> _onLogOutEvent(
       LogOutEvent event, Emitter<AuthState> emit) async {
-    await getCachedUser.repository.logout();
-    emit(AuthUnauthenticated());
+    final isLoggedOut = await logoutUseCase.call();
+
+    print(
+        'loggedOut event state before emitting : $state  \n bool*****::::$isLoggedOut');
+    if (isLoggedOut) {
+      emit(AuthUnauthenticated());
+
+      // mafu01@infos.com
+    }
   }
 
   String _mapFailureToMessage(Failure failure) {
@@ -123,7 +133,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         emit(AuthCheckNumSuccess(val: val));
 
         if (val) {
-          await sendOtpCodeuseCase.execute(
+          await sendOtpCodeUseCase.execute(
             event.userNumber,
             completedVerification: event.completedVerification,
             failedVerification: event.failedVerification,
@@ -152,6 +162,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       UpdateForgotPasswordEvent event, Emitter<AuthState> emit) async {
     final phoneNumber = (state as SuccessOTP).userNumber;
     emit(AuthLoading());
+
     final Either<Failure, UserEntity> response =
         await modifyPassUseCase.call(ModifyPassParams(
       phoneNumber: phoneNumber,
@@ -162,7 +173,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     response.fold(
       (err) => emit(AuthFailure(message: err.message)),
       (user) {
-        emit(AuthSuccess(user: user));
+        emit(AuthSuccess(user: user, request: Request.updatePassword));
       },
     );
   }

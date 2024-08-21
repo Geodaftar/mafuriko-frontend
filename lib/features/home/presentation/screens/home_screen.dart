@@ -23,17 +23,17 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      bottomNavigationBar: const BottomNavBar(),
       body: SafeArea(
         child: CustomScrollView(
           controller: _scrollController,
+          // physics: FixedExtentScrollPhysics(),
           slivers: [
             const HomeAppBar(),
             SliverToBoxAdapter(
               child: Column(
                 children: [
                   const ReportCount(),
-                  const ServiceSection(),
+                  const MapSection(),
                   const AlertsSection(),
                   const ActuSection(),
                   SizedBox(height: 32.h),

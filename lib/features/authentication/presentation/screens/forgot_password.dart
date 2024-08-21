@@ -2,12 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+// import 'package:go_router/go_router.dart';
 import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
 import 'package:mafuriko/features/authentication/presentation/widgets/return_app_bar.dart';
 import 'package:mafuriko/gen/gen.dart';
 import 'package:mafuriko/shared/widgets/app_form_field.dart';
 import 'package:mafuriko/shared/widgets/buttons.dart';
+import 'package:mafuriko/shared/widgets/pop_up.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -24,11 +26,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _passwordController.dispose();
     _confirmPassController.dispose();
     _passwordFocus.dispose();
     _confirmPassFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -120,8 +122,17 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text(state.message)),
                           );
-                        } else if (state is AuthSuccess) {
-                          context.pushNamed(Paths.home);
+                        } else if (state is AuthSuccess &&
+                            state.request == Request.updatePassword) {
+                          PopUp.success(
+                            context,
+                            title: 'Réussie',
+                            description:
+                                'vous pouvez maintenant vous connecter à votre compte',
+                            action: () {
+                              context.pushNamed(Paths.home);
+                            },
+                          );
                         }
                       },
                       builder: (context, state) {

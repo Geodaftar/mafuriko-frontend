@@ -87,11 +87,11 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         debugPrint(">>>>>>>>>>>>>>>>>>>>${response.statusMessage}");
         debugPrint(">>>>>>>>>>>>>>>>>>>>${response.statusCode}");
 
-        throw Exception('Failed to sign up');
+        throw const ServerException(message: 'User Already Exists');
       }
-    } on Exception catch (e) {
+    } on DioException catch (e) {
       debugPrint('Exception: $e');
-      throw const ServerException(message: 'An error occurred during sign up');
+      throw const ServerException(message: 'Cet utilisateur existe déjà!');
     }
   }
 
@@ -130,15 +130,15 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<bool> checkNumber({required String userNumber}) async {
     try {
-      Map<String, dynamic> body = {
+      final body = json.encode({
         "userNumber": userNumber,
-      };
+      });
 
       final headers = {'Content-Type': 'application/json'};
 
       final response = await client.post(
         '${Endpoints.apiBaseUrl}/users/verify/number',
-        data: jsonEncode(body),
+        data: body,
         options: Options(method: 'POST', headers: headers),
       );
 
@@ -154,41 +154,6 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         message:
             "Échec de la vérification du numéro d'utilisateur, car il n'existe pas dans notre base de données",
       );
-    }
-  }
-
-  @override
-  Future<UserModel> modifyPassword({
-    required String phoneNumber,
-    required String password,
-    required String confirmPassword,
-  }) async {
-    var dio = Dio();
-    try {
-      final headers = {'Content-Type': 'application/json'};
-
-      Map<String, dynamic> body = {
-        "userNumber": phoneNumber,
-        "userNewPassword": password,
-        "userNewPasswordC": confirmPassword,
-      };
-
-      final response = await dio.request(
-        '${Endpoints.apiBaseUrl}/users/forgot-password',
-        data: jsonEncode(body),
-        options: Options(method: 'PUT', headers: headers),
-      );
-
-      if (response.statusCode == 200) {
-        debugPrint(json.encode(response.data));
-        final data = response.data['data'];
-        return UserModel.fromJson(data);
-      } else {
-        debugPrint(response.statusMessage);
-        throw Exception('Failed to modify user password');
-      }
-    } on ServerException catch (e) {
-      throw ServerException(message: e.message);
     }
   }
 
@@ -223,6 +188,53 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
     } on ServerException catch (e) {
       debugPrint(e.message);
       throw ServerFailure(message: e.message);
+    }
+  }
+
+  @override
+  Future<UserModel> modifyPassword({
+    required String phoneNumber,
+    required String password,
+    required String confirmPassword,
+  }) async {
+    try {
+      var headers = {'Content-Type': 'application/json'};
+      var data = json.encode({
+        "userNumber": phoneNumber,
+        "userNewPassword": password,
+        "userNewPasswordC": confirmPassword
+      });
+      var dio = Dio();
+      var response = await dio.request(
+        'https://mafu-back.vercel.app/users/forgot-password',
+        options: Options(
+          method: 'PUT',
+          headers: headers,
+        ),
+        data: data,
+      );
+
+      if (response.statusCode == 200) {
+        debugPrint("::::::::::::::::::::${json.encode(response.data['data'])}");
+        final data = response.data['data'];
+        return UserModel.fromJson(data);
+      } else {
+        debugPrint("Failed to modify user password: ${response.statusMessage}");
+        throw ServerException(
+          message:
+              'Failed to modify user password. Status: ${response.statusCode} - ${response.statusMessage}',
+        );
+      }
+    } on DioException catch (e) {
+      debugPrint("DioException occurred: ${e.message}");
+      debugPrint('DioException occurred: ${e.response?.data}');
+      debugPrint('Status code: ${e.response?.statusCode}');
+      debugPrint('Headers: ${e.response?.headers}');
+      debugPrint('Request data: ${e.requestOptions.data}');
+      throw ServerException(message: e.toString());
+    } catch (e) {
+      debugPrint("An error occurred: $e");
+      throw ServerException(message: e.toString());
     }
   }
 }

@@ -34,7 +34,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
 
   @override
   void dispose() {
-    super.dispose();
     _nameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
@@ -45,6 +44,7 @@ class _SignUpScreenState extends State<SignUpScreen> {
     _phoneFocus.dispose();
     _passwordFocus.dispose();
     _confirmPassFocus.dispose();
+    super.dispose();
   }
 
   @override
@@ -173,7 +173,8 @@ class _SignUpScreenState extends State<SignUpScreen> {
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text(state.message)),
                         );
-                      } else if (state is AuthSuccess) {
+                      } else if (state is AuthSuccess &&
+                          state.request == Request.signup) {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(content: Text('Inscription réussie')),
                         );

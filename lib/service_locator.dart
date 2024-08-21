@@ -4,6 +4,7 @@ import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
 import 'package:mafuriko/core/clients/http_client.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/check_number_usecase.dart';
+import 'package:mafuriko/features/authentication/domain/usecases/logout_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/modify_pass_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/send_opt_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/verify_otp_usecase.dart';
@@ -63,6 +64,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => CheckNumberUseCase(sl()));
   sl.registerLazySingleton(() => VerifyOtpCode(sl()));
   sl.registerLazySingleton(() => ModifyPassUseCase(sl()));
+  sl.registerLazySingleton(() => LogoutUseCase(sl()));
 
   // BloC
   sl.registerLazySingleton(
@@ -71,9 +73,10 @@ Future<void> init() async {
       loginUseCase: sl(),
       getCachedUser: sl(),
       checkNumberUseCase: sl(),
-      sendOtpCodeuseCase: sl(),
+      sendOtpCodeUseCase: sl(),
       verifyOtpCode: sl(),
       modifyPassUseCase: sl(),
+      logoutUseCase: sl(),
     ),
   );
 }

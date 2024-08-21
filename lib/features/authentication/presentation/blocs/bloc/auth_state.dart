@@ -1,5 +1,14 @@
 part of 'auth_bloc.dart';
 
+enum Request {
+  unknown,
+  login,
+  signup,
+  updatePassword,
+  verifyOtpCode,
+  checkUser,
+}
+
 sealed class AuthState extends Equatable {
   const AuthState();
 
@@ -13,11 +22,12 @@ class AuthLoading extends AuthState {}
 
 class AuthSuccess extends AuthState {
   final UserEntity user;
+  final Request request;
 
-  const AuthSuccess({required this.user});
+  const AuthSuccess({required this.user, this.request = Request.unknown});
 
   @override
-  List<Object> get props => [user];
+  List<Object> get props => [user, request];
 }
 
 class AuthFailure extends AuthState {
