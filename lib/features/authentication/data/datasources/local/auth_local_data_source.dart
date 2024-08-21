@@ -6,7 +6,7 @@ import 'package:nb_utils/nb_utils.dart';
 abstract interface class AuthLocalDataSource {
   Future<void> cacheUser(UserModel? user);
   Future<UserModel?> getCachedUser();
-  Future<void> clearCachedUser();
+  Future<bool> clearCachedUser();
 }
 
 const cachedUser = 'CACHED_USER';
@@ -34,7 +34,7 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
   }
 
   @override
-  Future<void> clearCachedUser() {
-    return sharedPreferences.remove(cachedUser);
+  Future<bool> clearCachedUser() async {
+    return await sharedPreferences.remove(cachedUser);
   }
 }
