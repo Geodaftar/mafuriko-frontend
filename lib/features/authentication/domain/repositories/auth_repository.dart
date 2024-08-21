@@ -20,7 +20,7 @@ abstract interface class AuthRepository {
 
   Future<Either<Failure, UserEntity>> isLoggedIn();
 
-  Future<void> logout();
+  Future<bool> logout();
 
   Future<Either<Failure, bool>> checkNumber({required String userNumber});
 
