@@ -8,6 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:latlong2/latlong.dart';
+import 'package:mafuriko/core/constant_secret.dart';
 import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/maps/presentation/bloc/map_bloc.dart';
 import 'package:mafuriko/gen/gen.dart';
@@ -80,13 +81,12 @@ class _MapScreenState extends State<MapScreen> {
               ),
               children: [
                 TileLayer(
-                  additionalOptions: const {
-                    'accessToken':
-                        'pk.eyJ1Ijoib3Rha3Vjb2RlciIsImEiOiJjbTA1anQ4N3QwaTI5MmpzYmtidW1uenltIn0.WaAxTR2nKzCXJyP1rsaf4g',
+                  additionalOptions: {
+                    'accessToken': Secrets.accessToken,
                     'id': 'mapbox.mapbox-streets-v7',
                   },
                   urlTemplate:
-                      'https://api.mapbox.com/styles/v1/otakucoder/cm05lj5p100gr01qwgd109hbb/tiles/256/{z}/{x}/{y}@2x?access_token=pk.eyJ1Ijoib3Rha3Vjb2RlciIsImEiOiJjbTA1anQ4N3QwaTI5MmpzYmtidW1uenltIn0.WaAxTR2nKzCXJyP1rsaf4g',
+                      'https://api.mapbox.com/styles/v1/${Secrets.userId}/${Secrets.styleId}/tiles/256/{z}/{x}/{y}@2x?access_token=${Secrets.accessToken}',
                   maxZoom: 19,
                   userAgentPackageName: 'com.geodaftar.mafuriko',
                 ),
