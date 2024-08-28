@@ -12,6 +12,7 @@ import 'package:mafuriko/features/authentication/presentation/screens/sign_up_sc
 import 'package:mafuriko/features/home/presentation/screens/alert_detail_screen.dart';
 import 'package:mafuriko/features/home/presentation/screens/alerts_list_screen.dart';
 import 'package:mafuriko/features/home/presentation/screens/home_screen.dart';
+import 'package:mafuriko/features/maps/presentation/screens/map_screen.dart';
 import 'package:mafuriko/features/onboarding/screens/onboarding_view.dart';
 
 final GoRouter router = GoRouter(
@@ -101,6 +102,13 @@ final GoRouter router = GoRouter(
                       ],
                     ),
                   ]),
+              GoRoute(
+                path: Paths.mapScreen,
+                name: Paths.mapScreen,
+                builder: (context, state) {
+                  return const MapScreen();
+                },
+              ),
             ]),
         GoRoute(
           path: Paths.verifyNumber,

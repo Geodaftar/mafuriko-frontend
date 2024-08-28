@@ -8,4 +8,5 @@ class Paths {
   static String otpScreen = "otp";
   static String alertsScreen = "alerts";
   static String alertDetailScreen = "alert-detail";
+  static String mapScreen = "map";
 }
