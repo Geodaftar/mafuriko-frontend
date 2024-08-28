@@ -6,15 +6,18 @@ import 'package:mafuriko/gen/gen.dart';
 class BottomNavBar extends StatefulWidget {
   const BottomNavBar({
     super.key,
+    this.index = 0,
+    required this.onTap,
   });
+
+  final int index;
+  final Function(int)? onTap;
 
   @override
   State<BottomNavBar> createState() => _BottomNavBarState();
 }
 
 class _BottomNavBarState extends State<BottomNavBar> {
-  int index = 0;
-
   @override
   Widget build(BuildContext context) {
     return BottomNavigationBar(
@@ -22,12 +25,9 @@ class _BottomNavBarState extends State<BottomNavBar> {
       backgroundColor: AppColor.white,
       selectedItemColor: AppColor.primary,
       unselectedItemColor: const Color(0xFFA3A3A3),
-      currentIndex: index,
+      currentIndex: widget.index,
       useLegacyColorScheme: false,
-      onTap: (value) {
-        index = value;
-        setState(() {});
-      },
+      onTap: widget.onTap,
       selectedLabelStyle: TextStyle(
         fontSize: 12.sp,
         fontFamily: AppFonts.nunito,
@@ -46,7 +46,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             AppImages.icons.homeIcon.path,
             height: 25.h,
             colorFilter: ColorFilter.mode(
-              index == 0 ? AppColor.primary : const Color(0xFFA3A3A3),
+              widget.index == 0 ? AppColor.primary : const Color(0xFFA3A3A3),
               BlendMode.srcIn,
             ),
           ),
@@ -57,7 +57,7 @@ class _BottomNavBarState extends State<BottomNavBar> {
             AppImages.icons.mapIcon.path,
             height: 25.h,
             colorFilter: ColorFilter.mode(
-              index == 1 ? AppColor.primary : const Color(0xFFA3A3A3),
+              widget.index == 1 ? AppColor.primary : const Color(0xFFA3A3A3),
               BlendMode.srcIn,
             ),
           ),
