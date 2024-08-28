@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mafuriko/core/routes/routes.dart';
+import 'package:mafuriko/features/maps/presentation/bloc/map_bloc.dart';
 import 'package:mafuriko/features/onboarding/cubit/count_cubit.dart';
 import 'package:mafuriko/shared/theme/ziva_theme.dart';
 import '../service_locator.dart';
@@ -24,6 +25,12 @@ class MafurikoApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => ToggleCubit(),
+          ),
+          BlocProvider(
+            create: (context) => ToggleCubit(),
+          ),
+          BlocProvider(
+            create: (context) => sl<MapBloc>(),
           ),
         ],
         child: MaterialApp.router(
