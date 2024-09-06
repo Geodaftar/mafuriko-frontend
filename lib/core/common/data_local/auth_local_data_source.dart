@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mafuriko/features/authentication/data/models/user_model.dart';
+import 'package:mafuriko/core/common/models/user_model.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 abstract interface class AuthLocalDataSource {

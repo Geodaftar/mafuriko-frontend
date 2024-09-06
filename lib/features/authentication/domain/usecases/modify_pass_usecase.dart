@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:mafuriko/features/authentication/domain/entities/user_entity.dart';
+import 'package:mafuriko/core/common/entities/user_entity.dart';
 import 'package:mafuriko/features/authentication/domain/repositories/auth_repository.dart';
 import 'package:mafuriko/shared/base/usecase.dart';
 import 'package:mafuriko/shared/errors/failures.dart';

@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:mafuriko/features/authentication/domain/entities/user_entity.dart';
+import 'package:mafuriko/core/common/entities/user_entity.dart';
 
 class UserModel extends UserEntity {
   UserModel({

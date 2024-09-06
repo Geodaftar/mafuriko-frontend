@@ -1,6 +1,6 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:mafuriko/features/authentication/domain/entities/user_entity.dart';
+import 'package:mafuriko/core/common/entities/user_entity.dart';
 
 import 'package:mafuriko/shared/errors/failures.dart';
 

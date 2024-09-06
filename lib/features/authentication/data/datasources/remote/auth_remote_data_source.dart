@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/foundation.dart';
 
 import 'package:mafuriko/core/clients/http_client.dart';
-import 'package:mafuriko/features/authentication/data/models/user_model.dart';
+import 'package:mafuriko/core/common/models/user_model.dart';
 import 'package:mafuriko/shared/errors/exceptions.dart';
 import 'package:mafuriko/shared/errors/failures.dart';
 import 'package:mafuriko/shared/helpers/endpoints.dart';

@@ -6,7 +6,7 @@ import 'package:dartz/dartz.dart';
 import 'package:equatable/equatable.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
-import 'package:mafuriko/features/authentication/domain/entities/user_entity.dart';
+import 'package:mafuriko/core/common/entities/user_entity.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/check_number_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/get_cache.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/login_usecase.dart';
