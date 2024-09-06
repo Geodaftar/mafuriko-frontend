@@ -28,9 +28,17 @@ class $AssetsIconsGen {
   SvgGenImage get bellNotification =>
       const SvgGenImage('assets/icons/bell-notification.svg');
 
+  /// File path: assets/icons/chat-quote-line.svg
+  SvgGenImage get chatQuoteLine =>
+      const SvgGenImage('assets/icons/chat-quote-line.svg');
+
   /// File path: assets/icons/check-icon.png
   AssetGenImage get checkIcon =>
       const AssetGenImage('assets/icons/check-icon.png');
+
+  /// File path: assets/icons/contacts-line.svg
+  SvgGenImage get contactsLine =>
+      const SvgGenImage('assets/icons/contacts-line.svg');
 
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
@@ -41,8 +49,23 @@ class $AssetsIconsGen {
   /// File path: assets/icons/home_icon.svg
   SvgGenImage get homeIcon => const SvgGenImage('assets/icons/home_icon.svg');
 
+  /// File path: assets/icons/lock-2-line.svg
+  SvgGenImage get lock2Line =>
+      const SvgGenImage('assets/icons/lock-2-line.svg');
+
   /// File path: assets/icons/map_icon.svg
   SvgGenImage get mapIcon => const SvgGenImage('assets/icons/map_icon.svg');
+
+  /// File path: assets/icons/notifications.svg
+  SvgGenImage get notifications =>
+      const SvgGenImage('assets/icons/notifications.svg');
+
+  /// File path: assets/icons/pass.svg
+  SvgGenImage get pass => const SvgGenImage('assets/icons/pass.svg');
+
+  /// File path: assets/icons/profile-line.svg
+  SvgGenImage get profileLine =>
+      const SvgGenImage('assets/icons/profile-line.svg');
 
   /// File path: assets/icons/sodexam.png
   AssetGenImage get sodexam => const AssetGenImage('assets/icons/sodexam.png');
@@ -56,11 +79,17 @@ class $AssetsIconsGen {
         arrowBack,
         avatar3,
         bellNotification,
+        chatQuoteLine,
         checkIcon,
+        contactsLine,
         eye,
         eyeSlash,
         homeIcon,
+        lock2Line,
         mapIcon,
+        notifications,
+        pass,
+        profileLine,
         sodexam,
         verify
       ];
