@@ -6,6 +6,7 @@ import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
 import 'package:mafuriko/features/onboarding/cubit/count_cubit.dart';
 import 'package:mafuriko/features/onboarding/widgets/onboard_view.dart';
+import 'package:mafuriko/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:mafuriko/gen/gen.dart';
 import 'package:mafuriko/shared/theme/app_color_scheme.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
@@ -26,6 +27,7 @@ class _OnboardingViewState extends State<OnboardingView> {
       listener: (context, state) {
         if (state is AuthSuccess && state.request == Request.checkUser) {
           context.goNamed(Paths.home);
+          context.read<ProfileBloc>().add(LoadUserProfile(state.user));
         }
         if (state.runtimeType == AuthUnauthenticated) {
           context.go(Paths.initialPath);

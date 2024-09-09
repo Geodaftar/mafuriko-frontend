@@ -12,8 +12,13 @@ import 'package:mafuriko/features/authentication/domain/usecases/verify_otp_usec
 import 'package:mafuriko/features/maps/data/repositories/location_repository_impl.dart';
 import 'package:mafuriko/features/maps/data/services/geolocator_service.dart';
 import 'package:mafuriko/features/maps/domain/usecases/get_user_location_usecase.dart';
+import 'package:mafuriko/features/profile/data/datasources/remote/profile_remote_data_source.dart';
+import 'package:mafuriko/features/profile/data/repositories/profile_repository_impl.dart';
+import 'package:mafuriko/features/profile/domain/repositories/profile_repository.dart';
+import 'package:mafuriko/features/profile/domain/usecases/update_user_usecase.dart';
+import 'package:mafuriko/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:mafuriko/shared/helpers/network_info.dart';
-import 'package:mafuriko/features/authentication/data/datasources/local/auth_local_data_source.dart';
+import 'package:mafuriko/core/common/data_local/auth_local_data_source.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/get_cache.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/login_usecase.dart';
 import 'package:nb_utils/nb_utils.dart';
@@ -51,6 +56,9 @@ Future<void> init() async {
   sl.registerLazySingleton<GeolocatorService>(
     () => GeolocatorService(),
   );
+  sl.registerLazySingleton<ProfileRemoteDataSource>(
+    () => const ProfileRemoteDataSourceImpl(),
+  );
 
   // Core Network
   sl.registerLazySingleton<NetworkInfo>(
@@ -63,6 +71,12 @@ Future<void> init() async {
       dataSource: sl(),
       localDataSource: sl(),
       networkInfo: sl(),
+    ),
+  );
+  sl.registerFactory<ProfileRepository>(
+    () => ProfileRepositoryImpl(
+      remoteDataSource: sl(),
+      localDataSource: sl(),
     ),
   );
 
@@ -82,6 +96,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => ModifyPassUseCase(sl()));
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => GetUserLocationUseCase(sl()));
+  sl.registerLazySingleton(() => UpdateUserUseCase(sl()));
 
   // BloC
   sl.registerLazySingleton(
@@ -99,5 +114,8 @@ Future<void> init() async {
 
   sl.registerLazySingleton(
     () => MapBloc(sl()),
+  );
+  sl.registerLazySingleton(
+    () => ProfileBloc(sl(), sl()),
   );
 }
