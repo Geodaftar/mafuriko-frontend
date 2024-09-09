@@ -12,4 +12,6 @@ class Paths {
   static String profileScreen = "profile";
   static String persoInfos = "infos";
   static String notificationSettings = "notification-settings";
+  static String send = "send-alert";
+  static String prediction = "prediction";
 }

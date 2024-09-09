@@ -17,6 +17,7 @@ import 'package:mafuriko/features/onboarding/screens/onboarding_view.dart';
 import 'package:mafuriko/features/profile/presentation/screens/notification_settings_screen.dart';
 import 'package:mafuriko/features/profile/presentation/screens/personal_info_screen.dart';
 import 'package:mafuriko/features/profile/presentation/screens/profile_screen.dart';
+import 'package:mafuriko/features/send/presentation/screens/send_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -41,78 +42,86 @@ final GoRouter router = GoRouter(
           },
         ),
         ShellRoute(
-            builder: (context, state, child) {
-              return ScaffoldApp(child: child);
-            },
-            routes: [
-              GoRoute(
-                  path: Paths.home,
-                  name: Paths.home,
-                  builder: (context, state) {
-                    return const HomeScreen();
-                  },
-                  routes: [
-                    GoRoute(
-                      path: Paths.alertsScreen,
-                      name: Paths.alertsScreen,
-                      pageBuilder: (context, state) {
-                        return CustomTransitionPage(
-                          key: state.pageKey,
-                          child: const AlertsListScreen(),
-                          transitionsBuilder:
-                              (context, animation, secondaryAnimation, child) {
-                            const begin = Offset(1.0, 0.0);
-                            const end = Offset.zero;
-                            const curve = Curves.easeInOut;
-
-                            var tween = Tween(begin: begin, end: end)
-                                .chain(CurveTween(curve: curve));
-                            var offsetAnimation = animation.drive(tween);
-
-                            return SlideTransition(
-                              position: offsetAnimation,
-                              child: child,
-                            );
-                          },
-                        );
-                      },
-                      routes: [
-                        GoRoute(
-                          path: Paths.alertDetailScreen,
-                          name: Paths.alertDetailScreen,
-                          pageBuilder: (context, state) {
-                            return CustomTransitionPage(
-                              key: state.pageKey,
-                              child: const AlertDetailScreen(),
-                              transitionsBuilder: (context, animation,
-                                  secondaryAnimation, child) {
-                                const begin = Offset(-1.0, 0.0);
-                                const end = Offset.zero;
-                                const curve = Curves.easeInOut;
-
-                                var tween = Tween(begin: begin, end: end)
-                                    .chain(CurveTween(curve: curve));
-                                var offsetAnimation = animation.drive(tween);
-
-                                return SlideTransition(
-                                  position: offsetAnimation,
-                                  child: child,
-                                );
-                              },
-                            );
-                          },
-                        ),
-                      ],
-                    ),
-                  ]),
-              GoRoute(
-                path: Paths.mapScreen,
-                name: Paths.mapScreen,
+          builder: (context, state, child) {
+            return ScaffoldApp(child: child);
+          },
+          routes: [
+            GoRoute(
+                path: Paths.home,
+                name: Paths.home,
                 builder: (context, state) {
-                  return const MapScreen();
+                  return const HomeScreen();
                 },
-              ),
-            ]),
+                routes: [
+                  GoRoute(
+                    path: Paths.alertsScreen,
+                    name: Paths.alertsScreen,
+                    pageBuilder: (context, state) {
+                      return CustomTransitionPage(
+                        key: state.pageKey,
+                        child: const AlertsListScreen(),
+                        transitionsBuilder:
+                            (context, animation, secondaryAnimation, child) {
+                          const begin = Offset(1.0, 0.0);
+                          const end = Offset.zero;
+                          const curve = Curves.easeInOut;
+
+                          var tween = Tween(begin: begin, end: end)
+                              .chain(CurveTween(curve: curve));
+                          var offsetAnimation = animation.drive(tween);
+
+                          return SlideTransition(
+                            position: offsetAnimation,
+                            child: child,
+                          );
+                        },
+                      );
+                    },
+                    routes: [
+                      GoRoute(
+                        path: Paths.alertDetailScreen,
+                        name: Paths.alertDetailScreen,
+                        pageBuilder: (context, state) {
+                          return CustomTransitionPage(
+                            key: state.pageKey,
+                            child: const AlertDetailScreen(),
+                            transitionsBuilder: (context, animation,
+                                secondaryAnimation, child) {
+                              const begin = Offset(-1.0, 0.0);
+                              const end = Offset.zero;
+                              const curve = Curves.easeInOut;
+
+                              var tween = Tween(begin: begin, end: end)
+                                  .chain(CurveTween(curve: curve));
+                              var offsetAnimation = animation.drive(tween);
+
+                              return SlideTransition(
+                                position: offsetAnimation,
+                                child: child,
+                              );
+                            },
+                          );
+                        },
+                      ),
+                    ],
+                  ),
+                ]),
+            GoRoute(
+              path: Paths.mapScreen,
+              name: Paths.mapScreen,
+              builder: (context, state) {
+                return const MapScreen();
+              },
+            ),
+            GoRoute(
+              path: Paths.send,
+              name: Paths.send,
+              builder: (context, state) {
+                return const SendScreen();
+              },
+            ),
+          ],
+        ),
         GoRoute(
           path: Paths.verifyNumber,
           name: Paths.verifyNumber,
