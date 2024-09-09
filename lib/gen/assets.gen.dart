@@ -40,6 +40,9 @@ class $AssetsIconsGen {
   SvgGenImage get contactsLine =>
       const SvgGenImage('assets/icons/contacts-line.svg');
 
+  /// File path: assets/icons/empty-h.png
+  AssetGenImage get emptyH => const AssetGenImage('assets/icons/empty-h.png');
+
   /// File path: assets/icons/eye.svg
   SvgGenImage get eye => const SvgGenImage('assets/icons/eye.svg');
 
@@ -82,6 +85,7 @@ class $AssetsIconsGen {
         chatQuoteLine,
         checkIcon,
         contactsLine,
+        emptyH,
         eye,
         eyeSlash,
         homeIcon,
