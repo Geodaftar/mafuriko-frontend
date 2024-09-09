@@ -14,6 +14,9 @@ import 'package:mafuriko/features/home/presentation/screens/alerts_list_screen.d
 import 'package:mafuriko/features/home/presentation/screens/home_screen.dart';
 import 'package:mafuriko/features/maps/presentation/screens/map_screen.dart';
 import 'package:mafuriko/features/onboarding/screens/onboarding_view.dart';
+import 'package:mafuriko/features/profile/presentation/screens/notification_settings_screen.dart';
+import 'package:mafuriko/features/profile/presentation/screens/personal_info_screen.dart';
+import 'package:mafuriko/features/profile/presentation/screens/profile_screen.dart';
 
 final GoRouter router = GoRouter(
   routes: <RouteBase>[
@@ -134,6 +137,31 @@ final GoRouter router = GoRouter(
               phoneNumber: data[0],
             );
           },
+        ),
+        GoRoute(
+          path: Paths.profileScreen,
+          name: Paths.profileScreen,
+          builder: (context, state) {
+            return const ProfileScreen();
+          },
+          routes: [
+            GoRoute(
+              path: Paths.persoInfos,
+              name: Paths.persoInfos,
+              builder: (context, state) {
+                debugPrint('actual route path: ${state.uri}');
+                return const PersonalInfoScreen();
+              },
+            ),
+            GoRoute(
+              path: Paths.notificationSettings,
+              name: Paths.notificationSettings,
+              builder: (context, state) {
+                debugPrint('actual route path: ${state.uri}');
+                return const NotificationSettingsScreen();
+              },
+            ),
+          ],
         ),
       ],
     ),
