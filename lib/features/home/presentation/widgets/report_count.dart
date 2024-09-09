@@ -10,7 +10,7 @@ class ReportCount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+      margin: EdgeInsets.fromLTRB(0, 16.h, 18.w, 16.h),
       padding: EdgeInsets.all(10.dm),
       decoration: ShapeDecoration(
         color: AppColor.primary,

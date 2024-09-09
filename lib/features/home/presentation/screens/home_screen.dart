@@ -19,11 +19,6 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    // WidgetsBinding.instance.addPostFrameCallback(
-    //   (_) {
-    //     context.read<MapBloc>().add(LoadUserLocationEvent());
-    //   },
-    // );
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final mapBloc = context.read<MapBloc>();
@@ -49,15 +44,18 @@ class _HomeScreenState extends State<HomeScreen> {
           // physics: FixedExtentScrollPhysics(),
           slivers: [
             const HomeAppBar(),
-            SliverToBoxAdapter(
-              child: Column(
-                children: [
-                  const ReportCount(),
-                  const MapSection(),
-                  const AlertsSection(),
-                  const ActuSection(),
-                  SizedBox(height: 32.h),
-                ],
+            SliverPadding(
+              padding: EdgeInsets.only(left: 18.w),
+              sliver: SliverToBoxAdapter(
+                child: Column(
+                  children: [
+                    const ReportCount(),
+                    const MapSection(),
+                    const AlertsSection(),
+                    const ActuSection(),
+                    SizedBox(height: 32.h),
+                  ],
+                ),
               ),
             ),
           ],

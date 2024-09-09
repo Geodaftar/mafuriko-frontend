@@ -17,7 +17,7 @@ class MapSection extends StatelessWidget {
     return BlocProvider(
       create: (context) => sl<MapBloc>()..add(LoadUserLocationEvent()),
       child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 16.w),
+        padding: EdgeInsets.only(right: 5.w),
         child: Column(
           children: [
             const Section(
@@ -25,13 +25,16 @@ class MapSection extends StatelessWidget {
               routeTitle: 'Voir la carte',
               // route: Paths.mapScreen,
             ),
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10.r),
-              child: SizedBox(
-                width: 335.w,
-                height: 112.h,
-                child: const MapScreen(
-                  enabledLocation: false,
+            Padding(
+              padding: EdgeInsets.only(right: 13.w),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10.r),
+                child: SizedBox(
+                  // width: 335.w,
+                  height: 112.h,
+                  child: const MapScreen(
+                    enabledLocation: false,
+                  ),
                 ),
               ),
             ),
