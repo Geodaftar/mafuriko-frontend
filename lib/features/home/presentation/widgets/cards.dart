@@ -14,7 +14,7 @@ class Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(vertical: 16.h, horizontal: 16.w),
+      margin: EdgeInsets.fromLTRB(0, 16.h, 16.w, 16.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -50,13 +50,16 @@ class Section extends StatelessWidget {
 class AlertCard extends StatelessWidget {
   const AlertCard({
     super.key,
+    this.margin,
   });
+
+  final EdgeInsetsGeometry? margin;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 271.w,
-      margin: EdgeInsets.only(left: 16.w),
+      margin: margin,
       decoration: ShapeDecoration(
         color: const Color(0xFFFCF6F2),
         shape: RoundedRectangleBorder(
@@ -395,13 +398,15 @@ class AlertWithMoreDetailCard extends StatelessWidget {
 class PartnerCard extends StatelessWidget {
   const PartnerCard({
     super.key,
+    this.margin,
   });
+  final EdgeInsetsGeometry? margin;
 
   @override
   Widget build(BuildContext context) {
     return Container(
       width: 261.w,
-      margin: EdgeInsets.only(left: 16.w),
+      margin: margin,
       padding: EdgeInsets.symmetric(
         horizontal: 15.w,
         vertical: 12.h,
@@ -521,6 +526,246 @@ class ServiceCard extends StatelessWidget {
           )
         ],
       ),
+    );
+  }
+}
+
+class TechnicalInfosComponentCard extends StatelessWidget {
+  const TechnicalInfosComponentCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      // width: 330.w,
+      // height: 234.h,
+      margin: EdgeInsets.only(top: 25.h),
+      padding: EdgeInsets.all(15.dm),
+      decoration: ShapeDecoration(
+        shape: RoundedRectangleBorder(
+          side: BorderSide(width: 1.50.w, color: const Color(0xFFDEE5E5)),
+          borderRadius: BorderRadius.circular(15),
+        ),
+      ),
+      child: Column(
+        children: [
+          Container(
+            width: 300.w,
+            height: 33.h,
+            padding: EdgeInsets.only(left: 15.w),
+            alignment: Alignment.centerLeft,
+            decoration: ShapeDecoration(
+              color: const Color(0xFFFCF7F2),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(7)),
+            ),
+            child: Text(
+              'Informations techniques',
+              style: TextStyle(
+                color: AppColor.primary,
+                fontSize: 14.sp,
+                fontFamily: AppFonts.nunito,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 65.h,
+            child: ListTile(
+              shape: const Border(
+                bottom: BorderSide(
+                  color: Color(0xFFD9D9D9),
+                ),
+              ),
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                '12.4 °C',
+                style: TextStyle(
+                  color: AppColor.primaryGray,
+                  fontSize: 14.sp,
+                  fontFamily: 'Nunito',
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              subtitle: Text(
+                'Pluviométrie',
+                style: TextStyle(
+                  color: const Color(0xFF626666),
+                  fontSize: 12.sp,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 65.h,
+            child: ListTile(
+              shape: const Border(
+                bottom: BorderSide(
+                  color: Color(0xFFD9D9D9),
+                ),
+              ),
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                'Ensoleillé',
+                style: TextStyle(
+                  color: AppColor.primaryGray,
+                  fontSize: 14.sp,
+                  fontFamily: 'Nunito',
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              subtitle: Text(
+                'Météo',
+                style: TextStyle(
+                  color: const Color(0xFF626666),
+                  fontSize: 12.sp,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 65.h,
+            child: ListTile(
+              shape: const Border(
+                bottom: BorderSide(
+                  color: Color(0xFFD9D9D9),
+                ),
+              ),
+              contentPadding: EdgeInsets.zero,
+              title: Text(
+                '12.523 , -5.980',
+                style: TextStyle(
+                  color: AppColor.primaryGray,
+                  fontSize: 14.sp,
+                  fontFamily: 'Nunito',
+                  fontWeight: FontWeight.w700,
+                ),
+              ),
+              subtitle: Text(
+                'Coordonnées géographiques',
+                style: TextStyle(
+                  color: const Color(0xFF626666),
+                  fontSize: 12.sp,
+                  fontFamily: 'Montserrat',
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class FLoodInformationCard extends StatelessWidget {
+  const FLoodInformationCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(
+              children: [
+                Container(
+                  padding: EdgeInsets.symmetric(
+                    horizontal: 10.w,
+                    vertical: 3.h,
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: AppColor.red,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(6.r),
+                    ),
+                  ),
+                  child: Text(
+                    'Inondation',
+                    style: TextStyle(
+                      color: AppColor.white,
+                      fontSize: 13.sp,
+                      fontFamily: AppFonts.nunito,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+                SizedBox(width: 9.w),
+                AppImages.icons.verify.svg()
+              ],
+            ),
+            Text(
+              '11h28  || 25/04/2024',
+              style: TextStyle(
+                color: AppColor.primaryGray,
+                fontSize: 10.sp,
+                fontFamily: AppFonts.nunito,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+        SizedBox(height: 7.h),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'Marché cocovico',
+              style: TextStyle(
+                color: AppColor.primaryGray,
+                fontSize: 18.sp,
+                fontFamily: AppFonts.nunito,
+                fontWeight: FontWeight.w700,
+              ),
+            ),
+            Container(
+              margin: EdgeInsets.symmetric(vertical: 5.h),
+              child: Wrap(
+                children: [
+                  Text(
+                    'Cocody, Abidjan  || Uploaded by: ',
+                    style: TextStyle(
+                      color: AppColor.primaryGray,
+                      fontSize: 12.sp,
+                      fontFamily: AppFonts.nunito,
+                      fontWeight: FontWeight.w400,
+                    ),
+                  ),
+                  Text(
+                    'Tolu Oluyole',
+                    style: TextStyle(
+                      color: AppColor.primaryGray,
+                      fontSize: 12.sp,
+                      fontFamily: AppFonts.nunito,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Divider(height: 22.h),
+            Text(
+              'Soyez prêt. Montée des eaux attendue. Surveillez les actualités locales et préparez-vous à évacuer si nécessaire.',
+              style: TextStyle(
+                color: AppColor.primaryGray,
+                fontSize: 14.sp,
+                fontFamily: AppFonts.nunito,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }
