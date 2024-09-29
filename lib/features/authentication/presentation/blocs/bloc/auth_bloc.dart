@@ -117,7 +117,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       case CacheFailure _:
         return 'Cache Failure';
       default:
-        return 'Unexpected Error';
+        return failure.message;
     }
   }
 
