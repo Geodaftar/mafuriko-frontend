@@ -1,5 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
+import 'package:flutter/services.dart';
+import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:mafuriko/features/maps/domain/usecases/get_user_location_usecase.dart';
 
@@ -14,9 +16,12 @@ class MapBloc extends Bloc<MapEvent, MapState> {
       emit(MapLoading());
       try {
         final position = await getUserLocationUseCase.call();
-        emit(MapLoaded(position: position));
-      } catch (e) {
-        emit(MapError(message: e.toString()));
+
+        List<Placemark> placeMarks = await placemarkFromCoordinates(
+            position.latitude, position.longitude);
+        emit(MapLoaded(position: position, place: placeMarks));
+      } on PlatformException catch (e) {
+        emit(MapError(message: e.message.toString()));
       }
     });
   }
