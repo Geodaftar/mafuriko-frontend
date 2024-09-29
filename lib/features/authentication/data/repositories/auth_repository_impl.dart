@@ -57,6 +57,7 @@ class AuthRepositoryImpl implements AuthRepository {
       log('from auth repo impl :: login request ::: data **** ${data.toJson()}');
 
       localDataSource.cacheUser(data);
+      localDataSource.cacheToken(data.token);
 
       return Right(data);
     } on ServerException catch (e) {

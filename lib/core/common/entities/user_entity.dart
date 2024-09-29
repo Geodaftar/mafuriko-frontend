@@ -7,6 +7,7 @@ class UserEntity {
   final String? userPassword;
   final String? confirmPassword;
   final String? image;
+  final String? token;
 
   UserEntity({
     this.id,
@@ -16,5 +17,6 @@ class UserEntity {
     this.userPassword,
     this.confirmPassword,
     this.image,
+    this.token,
   });
 }

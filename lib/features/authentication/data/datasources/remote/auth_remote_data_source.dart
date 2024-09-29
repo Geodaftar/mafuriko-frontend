@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -113,7 +114,9 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
         debugPrint("::::::::::::::::::::${json.encode(response.data['data'])}");
-        final data = response.data['data'];
+        debugPrint("::::::::::::::::::::${json.encode(response.data)}");
+
+        final data = response.data;
         return UserModel.fromJson(data);
       } else {
         debugPrint(">>>>>>>>>>>>>>>>>>>>${response.statusMessage}");
@@ -121,9 +124,14 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
 
         throw Exception('Failed to sign up');
       }
-    } catch (e) {
+    } on DioException catch (e) {
       debugPrint('Exception::::::: $e');
-      throw const ServerException(message: 'An error occurred during sign in');
+      log('login message::::::::::::::::${e.response?.realUri}');
+      log('login message data ::::::::::::::::${e.response?.data}');
+      log('login message status ::::::::::::::::${e.message}');
+      throw ServerException(
+        message: e.response?.data['message'] ?? e.type.name,
+      );
     }
   }
 

@@ -1,11 +1,13 @@
 import 'package:dio/dio.dart';
+import 'package:mafuriko/core/common/data_local/auth_local_data_source.dart';
 import 'package:mafuriko/shared/errors/exceptions.dart';
 import 'package:mafuriko/shared/helpers/endpoints.dart';
 
 class HttpClient {
   final Dio _dio;
+  final AuthLocalDataSource _authLocalDataSource;
 
-  HttpClient(this._dio) {
+  HttpClient(this._dio, this._authLocalDataSource) {
     _dio
       ..options.baseUrl = Endpoints.baseUrl
       ..options.responseType = ResponseType.json
@@ -146,11 +148,11 @@ class HttpClient {
     RequestInterceptorHandler handler,
   ) async {
     /// TODO : Handle refresh token
-    final token = await Future.value();
+    final token = await _authLocalDataSource.getCachedToken();
 
-    if (options.headers.containsKey('auth')) {
+    if (token != null && token.isNotEmpty) {
       options.headers.addAll({
-        'Authorization': 'Bearer ${token?.accessToken}',
+        'Authorization': token,
       });
     }
 
