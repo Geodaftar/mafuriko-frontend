@@ -18,6 +18,17 @@ class $AssetsIconsGen {
   /// File path: assets/icons/.keep
   String get aKeep => 'assets/icons/.keep';
 
+  /// File path: assets/icons/Picture.png
+  AssetGenImage get picture => const AssetGenImage('assets/icons/Picture.png');
+
+  /// File path: assets/icons/alert_pin.png
+  AssetGenImage get alertPinPng =>
+      const AssetGenImage('assets/icons/alert_pin.png');
+
+  /// File path: assets/icons/alert_pin.svg
+  SvgGenImage get alertPinSvg =>
+      const SvgGenImage('assets/icons/alert_pin.svg');
+
   /// File path: assets/icons/arrow_back.svg
   SvgGenImage get arrowBack => const SvgGenImage('assets/icons/arrow_back.svg');
 
@@ -79,6 +90,9 @@ class $AssetsIconsGen {
   /// List of all assets
   List<dynamic> get values => [
         aKeep,
+        picture,
+        alertPinPng,
+        alertPinSvg,
         arrowBack,
         avatar3,
         bellNotification,
