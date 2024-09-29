@@ -6,12 +6,15 @@ class AppBackAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AppBackAppBar({
     super.key,
     required this.title,
+    this.bottom,
   });
 
   final String title;
+  final PreferredSizeWidget? bottom;
 
   @override
-  Size get preferredSize => Size.fromHeight(70.h);
+  Size get preferredSize =>
+      Size.fromHeight(bottom != null ? 95.h : kToolbarHeight.h);
 
   @override
   Widget build(BuildContext context) {
@@ -49,6 +52,7 @@ class AppBackAppBar extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
+      bottom: bottom,
     );
   }
 }

@@ -6,9 +6,9 @@ class PrimaryExpandedButton extends StatelessWidget {
   const PrimaryExpandedButton({
     super.key,
     required this.title,
-    required this.onTap,
+    this.onTap,
   });
-  final VoidCallback onTap;
+  final VoidCallback? onTap;
   final String title;
 
   @override

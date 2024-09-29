@@ -57,6 +57,119 @@ class PopUp {
       },
     );
   }
+
+  static Future<void> successAlertSend(BuildContext context,
+      {required String title,
+      required String description,
+      required VoidCallback action}) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          actionsPadding: EdgeInsets.fromLTRB(50.w, 33.h, 50.w, 43.h),
+          contentPadding: EdgeInsets.fromLTRB(50.w, 18.h, 50.w, 0),
+          alignment: Alignment.center,
+          title: Text(
+            title,
+            style: TextStyle(
+              color: AppColor.primaryGray,
+              fontSize: 20.sp,
+              fontFamily: AppFonts.inter,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          icon: Container(
+            width: 98.w,
+            height: 98.h,
+            decoration: ShapeDecoration(
+              shape: const CircleBorder(),
+              image: DecorationImage(
+                image: AssetImage(AppImages.icons.checkIcon.path),
+              ),
+            ),
+          ),
+          actions: [
+            PrimaryExpandedButton(
+              title: 'Aller à la page d\'accueil',
+              onTap: action,
+            ),
+          ],
+          content: SizedBox(
+            width: 195.w,
+            child: Text(
+              description,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColor.secondaryGray,
+                fontSize: 14.sp,
+                fontFamily: AppFonts.nunito,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  static Future<void> failureAlertSend(BuildContext context,
+      {required String title,
+      required String description,
+      required VoidCallback action}) async {
+    await showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          actionsPadding: EdgeInsets.fromLTRB(50.w, 33.h, 50.w, 43.h),
+          contentPadding: EdgeInsets.fromLTRB(50.w, 18.h, 50.w, 0),
+          alignment: Alignment.center,
+          title: Text(
+            title,
+            style: TextStyle(
+              color: AppColor.primaryGray,
+              fontSize: 20.sp,
+              fontFamily: AppFonts.inter,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          icon: Container(
+            width: 98.w,
+            height: 98.h,
+            padding: EdgeInsets.all(4.w),
+            decoration: ShapeDecoration(
+              shape: CircleBorder(
+                side: BorderSide(color: AppColor.red, width: 1.5.w),
+              ),
+            ),
+            child: const Icon(
+              Icons.close_rounded,
+              color: AppColor.red,
+              size: 35,
+            ),
+          ),
+          actions: [
+            PrimaryExpandedButton(
+              title: 'Revenir',
+              onTap: action,
+            ),
+          ],
+          content: SizedBox(
+            width: 195.w,
+            child: Text(
+              description,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                color: AppColor.secondaryGray,
+                fontSize: 14.sp,
+                fontFamily: AppFonts.nunito,
+                fontWeight: FontWeight.w400,
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 }
 
 // Container(
