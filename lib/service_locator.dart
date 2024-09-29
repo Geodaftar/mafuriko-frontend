@@ -3,8 +3,13 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:nb_utils/nb_utils.dart';
+
 import 'package:mafuriko/core/clients/http_client.dart';
+import 'package:mafuriko/core/common/data_local/auth_local_data_source.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/check_number_usecase.dart';
+import 'package:mafuriko/features/authentication/domain/usecases/get_cache.dart';
+import 'package:mafuriko/features/authentication/domain/usecases/login_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/logout_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/modify_pass_usecase.dart';
 import 'package:mafuriko/features/authentication/domain/usecases/send_opt_usecase.dart';
@@ -17,11 +22,13 @@ import 'package:mafuriko/features/profile/data/repositories/profile_repository_i
 import 'package:mafuriko/features/profile/domain/repositories/profile_repository.dart';
 import 'package:mafuriko/features/profile/domain/usecases/update_user_usecase.dart';
 import 'package:mafuriko/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:mafuriko/features/send/data/datasources/remote/alert_remote_data_source.dart';
+import 'package:mafuriko/features/send/data/repositories/alert_repository_impl.dart';
+import 'package:mafuriko/features/send/domain/repositories/alert_repository.dart';
+import 'package:mafuriko/features/send/domain/usecases/fetch_alert_usecase.dart';
+import 'package:mafuriko/features/send/domain/usecases/post_alert_usecase.dart';
+import 'package:mafuriko/features/send/presentation/bloc/alert_bloc.dart';
 import 'package:mafuriko/shared/helpers/network_info.dart';
-import 'package:mafuriko/core/common/data_local/auth_local_data_source.dart';
-import 'package:mafuriko/features/authentication/domain/usecases/get_cache.dart';
-import 'package:mafuriko/features/authentication/domain/usecases/login_usecase.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 import 'features/authentication/data/datasources/remote/auth_remote_data_source.dart';
 import 'features/authentication/data/repositories/auth_repository_impl.dart';
@@ -48,7 +55,7 @@ Future<void> init() async {
     () => AuthRemoteDataSourceImpl(client: sl(), auth: sl()),
   );
   sl.registerFactory<HttpClient>(
-    () => HttpClient(sl()),
+    () => HttpClient(sl(), sl()),
   );
   sl.registerLazySingleton<AuthLocalDataSource>(
     () => AuthLocalDataSourceImpl(sharedPreferences: sl()),
@@ -58,6 +65,9 @@ Future<void> init() async {
   );
   sl.registerLazySingleton<ProfileRemoteDataSource>(
     () => const ProfileRemoteDataSourceImpl(),
+  );
+  sl.registerLazySingleton<AlertRemoteDataSource>(
+    () => AlertRemoteDataSourceImpl(sl()),
   );
 
   // Core Network
@@ -85,6 +95,11 @@ Future<void> init() async {
       sl(),
     ),
   );
+  sl.registerFactory<AlertRepository>(
+    () => AlertRepositoryImpl(
+      remoteDataSource: sl(),
+    ),
+  );
 
   // Use cases
   sl.registerLazySingleton(() => SignUpUseCase(sl()));
@@ -97,6 +112,8 @@ Future<void> init() async {
   sl.registerLazySingleton(() => LogoutUseCase(sl()));
   sl.registerLazySingleton(() => GetUserLocationUseCase(sl()));
   sl.registerLazySingleton(() => UpdateUserUseCase(sl()));
+  sl.registerLazySingleton(() => FetchAlertUseCase(sl()));
+  sl.registerLazySingleton(() => PostAlertUseCase(sl()));
 
   // BloC
   sl.registerLazySingleton(
@@ -117,5 +134,8 @@ Future<void> init() async {
   );
   sl.registerLazySingleton(
     () => ProfileBloc(sl(), sl()),
+  );
+  sl.registerLazySingleton(
+    () => AlertBloc(sl(), sl()),
   );
 }

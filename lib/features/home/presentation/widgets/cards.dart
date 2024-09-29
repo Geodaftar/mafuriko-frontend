@@ -1,8 +1,12 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
+
+import 'package:mafuriko/features/home/presentation/widgets/skeleton.dart';
+import 'package:mafuriko/features/send/domain/entities/alert_entity.dart';
 import 'package:mafuriko/gen/gen.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 class Section extends StatelessWidget {
   const Section({super.key, required this.title, this.route, this.routeTitle});
@@ -50,8 +54,17 @@ class Section extends StatelessWidget {
 class AlertCard extends StatelessWidget {
   const AlertCard({
     super.key,
+    this.floodDescription,
+    this.floodScene,
+    this.image,
+    this.postAt,
     this.margin,
   });
+
+  final String? image;
+  final String? floodScene;
+  final String? floodDescription;
+  final DateTime? postAt;
 
   final EdgeInsetsGeometry? margin;
 
@@ -79,8 +92,8 @@ class AlertCard extends StatelessWidget {
                 ),
               ),
               image: DecorationImage(
-                image: AssetImage(
-                  AppImages.images.onboarding.thumb.path,
+                image: CachedNetworkImageProvider(
+                  image.toString(),
                 ),
                 fit: BoxFit.cover,
               ),
@@ -126,7 +139,7 @@ class AlertCard extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      '11h28  || 25/04/2024',
+                      '${DateFormat("HH'h'MM").format(postAt ?? DateTime.now())} || ${DateFormat('dd/MM/yyyy').format(postAt ?? DateTime.now())}',
                       style: TextStyle(
                         color: AppColor.primaryGray,
                         fontSize: 8.sp,
@@ -141,7 +154,9 @@ class AlertCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Marché cocovico',
+                      '$floodScene',
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 1,
                       style: TextStyle(
                         color: AppColor.primaryGray,
                         fontSize: 16.sp,
@@ -174,13 +189,16 @@ class AlertCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Text(
-                      'Soyez prêt. Montée des eaux attendue. Surveillez les actualités locales et préparez-vous à évacuer si nécessaire.',
-                      style: TextStyle(
-                        color: AppColor.primaryGray,
-                        fontSize: 12.sp,
-                        fontFamily: AppFonts.nunito,
-                        fontWeight: FontWeight.w400,
+                    SizedBox(
+                      height: 60.h,
+                      child: Text(
+                        floodDescription ?? 'N/A',
+                        style: TextStyle(
+                          color: AppColor.primaryGray,
+                          fontSize: 12.sp,
+                          fontFamily: AppFonts.nunito,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                   ],
@@ -197,7 +215,16 @@ class AlertCard extends StatelessWidget {
 class AlertWithMoreDetailCard extends StatelessWidget {
   const AlertWithMoreDetailCard({
     super.key,
+    this.floodDescription,
+    this.floodScene,
+    this.image,
+    this.postAt,
   });
+
+  final String? image;
+  final String? floodScene;
+  final String? floodDescription;
+  final DateTime? postAt;
 
   @override
   Widget build(BuildContext context) {
@@ -214,44 +241,34 @@ class AlertWithMoreDetailCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Container(
-            height: 127.h,
+            height: 135.h,
             decoration: ShapeDecoration(
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(10.r),
-                  topRight: Radius.circular(10.r),
-                ),
+                borderRadius: BorderRadius.circular(10.r),
               ),
               image: DecorationImage(
-                image: AssetImage(
-                  AppImages.images.onboarding.thumb.path,
+                image: CachedNetworkImageProvider(
+                  cacheManager: CachedNetworkImageProvider.defaultCacheManager,
+                  image.toString(),
                 ),
                 fit: BoxFit.cover,
               ),
             ),
+            // child: ClipRRect(
+            //   borderRadius: BorderRadius.circular(10.r),
+            //   child: CachedNetworkImage(
+            //     imageUrl: image.toString(),
+            //     fit: BoxFit.cover,
+            //     progressIndicatorBuilder: (context, url, p) => Center(
+            //       child: CircularProgressIndicator(
+            //         value: p.progress,
+            //       ),
+            //     ),
+            //     errorWidget: (context, url, error) => const Icon(Icons.error),
+            //   ),
+            // ),
           ),
-          Padding(
-            padding: EdgeInsets.symmetric(horizontal: 12.w),
-            child: HorizontalList(
-              itemCount: 3,
-              // crossAxisAlignment: CrossAxisAlignment.center,
-              wrapAlignment: WrapAlignment.spaceBetween,
-              itemBuilder: (context, index) => Container(
-                width: 92.w,
-                height: 62.h,
-                decoration: ShapeDecoration(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  image: DecorationImage(
-                    image: AssetImage(
-                      AppImages.images.onboarding.thumb.path,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
+          SizedBox(height: 12.h),
           Padding(
             padding: EdgeInsets.symmetric(
               horizontal: 15.w,
@@ -292,7 +309,7 @@ class AlertWithMoreDetailCard extends StatelessWidget {
                       ],
                     ),
                     Text(
-                      '11h28  || 25/04/2024',
+                      '${DateFormat("HH'h'MM").format(postAt ?? DateTime.now())} || ${DateFormat('dd/MM/yyyy').format(postAt ?? DateTime.now())}',
                       style: TextStyle(
                         color: AppColor.primaryGray,
                         fontSize: 8.sp,
@@ -307,7 +324,7 @@ class AlertWithMoreDetailCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'Marché cocovico',
+                      '$floodScene',
                       style: TextStyle(
                         color: AppColor.primaryGray,
                         fontSize: 16.sp,
@@ -340,13 +357,18 @@ class AlertWithMoreDetailCard extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Text(
-                      'Soyez prêt. Montée des eaux attendue. Surveillez les actualités locales et préparez-vous à évacuer si nécessaire.',
-                      style: TextStyle(
-                        color: AppColor.primaryGray,
-                        fontSize: 12.sp,
-                        fontFamily: AppFonts.nunito,
-                        fontWeight: FontWeight.w400,
+                    SizedBox(
+                      height: 40.h,
+                      child: Text(
+                        floodDescription ?? 'N/A',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
+                        style: TextStyle(
+                          color: AppColor.primaryGray,
+                          fontSize: 12.sp,
+                          fontFamily: AppFonts.nunito,
+                          fontWeight: FontWeight.w400,
+                        ),
                       ),
                     ),
                   ],
@@ -533,7 +555,14 @@ class ServiceCard extends StatelessWidget {
 class TechnicalInfosComponentCard extends StatelessWidget {
   const TechnicalInfosComponentCard({
     super.key,
+    this.lat = '0.0',
+    this.lng = '0.0',
   });
+
+  final String? lat;
+  final String? lng;
+
+  // final LatLng coordinate;
 
   @override
   Widget build(BuildContext context) {
@@ -638,7 +667,7 @@ class TechnicalInfosComponentCard extends StatelessWidget {
               ),
               contentPadding: EdgeInsets.zero,
               title: Text(
-                '12.523 , -5.980',
+                '$lat , $lng',
                 style: TextStyle(
                   color: AppColor.primaryGray,
                   fontSize: 14.sp,
@@ -664,9 +693,9 @@ class TechnicalInfosComponentCard extends StatelessWidget {
 }
 
 class FLoodInformationCard extends StatelessWidget {
-  const FLoodInformationCard({
-    super.key,
-  });
+  const FLoodInformationCard({super.key, required this.alert});
+
+  final AlertEntity? alert;
 
   @override
   Widget build(BuildContext context) {
@@ -720,7 +749,7 @@ class FLoodInformationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              'Marché cocovico',
+              '${alert?.floodScene}',
               style: TextStyle(
                 color: AppColor.primaryGray,
                 fontSize: 18.sp,
@@ -755,7 +784,7 @@ class FLoodInformationCard extends StatelessWidget {
             ),
             Divider(height: 22.h),
             Text(
-              'Soyez prêt. Montée des eaux attendue. Surveillez les actualités locales et préparez-vous à évacuer si nécessaire.',
+              alert?.floodDescription ?? 'N/A',
               style: TextStyle(
                 color: AppColor.primaryGray,
                 fontSize: 14.sp,
@@ -766,6 +795,70 @@ class FLoodInformationCard extends StatelessWidget {
           ],
         ),
       ],
+    );
+  }
+}
+
+class AlertSkeletonCard extends StatelessWidget {
+  const AlertSkeletonCard({
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10.r),
+        boxShadow: [
+          BoxShadow(
+            color: Color(0xff969292),
+            offset: Offset(5, 3),
+            blurRadius: 8,
+            spreadRadius: -6,
+          )
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Skeleton(
+            height: 127.h,
+            width: 250.w,
+          ),
+          SizedBox(height: 8.h),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 15.w,
+              vertical: 12.h,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Skeleton(
+                  height: 15.h,
+                  width: 100.w,
+                ),
+                SizedBox(height: 8.h),
+                Skeleton(
+                  height: 15.h,
+                  width: 140.w,
+                ),
+                SizedBox(height: 8.h),
+                Skeleton(
+                  height: 8.h,
+                  width: 140.w,
+                ),
+                SizedBox(height: 8.h),
+                Skeleton(
+                  height: 45.h,
+                  width: 200.w,
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }

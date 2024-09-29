@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+
 import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/home/presentation/widgets/botton_nav_bar.dart';
 
@@ -18,7 +19,12 @@ class ScaffoldApp extends StatefulWidget {
 class _ScaffoldAppState extends State<ScaffoldApp> {
   int _selectedIndex = 0;
 
-  final List<String> _routes = [Paths.home, Paths.mapScreen];
+  final List<String> _routes = [
+    Paths.home,
+    Paths.mapScreen,
+    Paths.send,
+    Paths.prediction
+  ];
 
   void _onItemTapped(int index) {
     setState(() {

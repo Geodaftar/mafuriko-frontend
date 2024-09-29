@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+
 import 'package:mafuriko/core/routes/routes.dart';
 import 'package:mafuriko/features/maps/presentation/bloc/map_bloc.dart';
 import 'package:mafuriko/features/onboarding/cubit/count_cubit.dart';
 import 'package:mafuriko/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:mafuriko/features/send/presentation/bloc/alert_bloc.dart';
 import 'package:mafuriko/shared/theme/ziva_theme.dart';
+
 import '../service_locator.dart';
 import 'authentication/presentation/blocs/bloc/auth_bloc.dart';
 
@@ -32,6 +35,9 @@ class MafurikoApp extends StatelessWidget {
           ),
           BlocProvider(
             create: (context) => sl<ProfileBloc>(),
+          ),
+          BlocProvider(
+            create: (context) => sl<AlertBloc>(),
           ),
         ],
         child: MaterialApp.router(

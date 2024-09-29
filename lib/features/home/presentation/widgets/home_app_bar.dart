@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
-import 'package:mafuriko/core/routes/constant_path.dart';
 
-import 'package:mafuriko/features/profile/presentation/bloc/profile_bloc.dart';
+import 'package:mafuriko/core/routes/constant_path.dart';
+import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
 import 'package:mafuriko/gen/gen.dart';
 
 class HomeAppBar extends StatelessWidget {
@@ -35,6 +35,7 @@ class HomeAppBar extends StatelessWidget {
       leadingWidth: 70.w,
       flexibleSpace: FlexibleSpaceBar(
         titlePadding: EdgeInsets.only(left: 68.w),
+        centerTitle: false,
         title: InkWell(
           onTap: () {
             context.pushNamed(Paths.profileScreen);
@@ -55,9 +56,9 @@ class HomeAppBar extends StatelessWidget {
                     letterSpacing: 0.12.sp,
                   ),
                 ),
-                BlocBuilder<ProfileBloc, ProfileState>(
+                BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {
-                    if (state is ProfileLoadSuccess) {
+                    if (state is AuthSuccess) {
                       return Text(
                         '${state.user.userName}',
                         style: TextStyle(

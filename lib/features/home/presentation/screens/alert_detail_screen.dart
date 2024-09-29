@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:nb_utils/nb_utils.dart';
 
 import 'package:mafuriko/features/home/presentation/widgets/home_widget.dart';
-import 'package:mafuriko/gen/gen.dart';
+import 'package:mafuriko/features/send/domain/entities/alert_entity.dart';
 import 'package:mafuriko/shared/widgets/custom_app_bar.dart';
 
 class AlertDetailScreen extends StatelessWidget {
-  const AlertDetailScreen({super.key});
+  const AlertDetailScreen({super.key, this.alert});
+
+  final AlertEntity? alert;
 
   @override
   Widget build(BuildContext context) {
@@ -20,46 +21,28 @@ class AlertDetailScreen extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               Container(
-                height: 127.h,
+                height: 135.h,
                 decoration: ShapeDecoration(
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.circular(10.r),
-                      topRight: Radius.circular(10.r),
-                    ),
+                    borderRadius: BorderRadius.circular(10.r),
                   ),
                   image: DecorationImage(
-                    image: AssetImage(
-                      AppImages.images.onboarding.thumb.path,
+                    image: NetworkImage(
+                      alert?.image ??
+                          'https://mafu.ams3.cdn.digitaloceanspaces.com/images_flood/palmeraie_programme5.jpg',
                     ),
                     fit: BoxFit.cover,
                   ),
                 ),
               ),
-              HorizontalList(
-                padding: EdgeInsets.symmetric(vertical: 12.h),
-                itemCount: 3,
-                // crossAxisAlignment: WrapCrossAlignment.end,
-                wrapAlignment: WrapAlignment.spaceBetween,
-                spacing: 12,
-                itemBuilder: (context, index) => Container(
-                  width: 102.w,
-                  height: 62.h,
-                  decoration: ShapeDecoration(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(4.r),
-                    ),
-                    image: DecorationImage(
-                      image: AssetImage(
-                        AppImages.images.onboarding.thumb.path,
-                      ),
-                      fit: BoxFit.cover,
-                    ),
-                  ),
-                ),
+              SizedBox(height: 12.h),
+              FLoodInformationCard(
+                alert: alert,
               ),
-              const FLoodInformationCard(),
-              const TechnicalInfosComponentCard(),
+              TechnicalInfosComponentCard(
+                lat: alert?.floodLocation?['latitude'],
+                lng: alert?.floodLocation?['longitude'],
+              ),
               SizedBox(height: 25.h),
             ],
           ),

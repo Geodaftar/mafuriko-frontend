@@ -17,6 +17,7 @@ import 'package:mafuriko/features/onboarding/screens/onboarding_view.dart';
 import 'package:mafuriko/features/profile/presentation/screens/notification_settings_screen.dart';
 import 'package:mafuriko/features/profile/presentation/screens/personal_info_screen.dart';
 import 'package:mafuriko/features/profile/presentation/screens/profile_screen.dart';
+import 'package:mafuriko/features/send/domain/entities/alert_entity.dart';
 import 'package:mafuriko/features/send/presentation/screens/send_screen.dart';
 
 final GoRouter router = GoRouter(
@@ -82,9 +83,13 @@ final GoRouter router = GoRouter(
                         path: Paths.alertDetailScreen,
                         name: Paths.alertDetailScreen,
                         pageBuilder: (context, state) {
+                          final AlertEntity alert = state.extra as AlertEntity;
+
                           return CustomTransitionPage(
                             key: state.pageKey,
-                            child: const AlertDetailScreen(),
+                            child: AlertDetailScreen(
+                              alert: alert,
+                            ),
                             transitionsBuilder: (context, animation,
                                 secondaryAnimation, child) {
                               const begin = Offset(-1.0, 0.0);
