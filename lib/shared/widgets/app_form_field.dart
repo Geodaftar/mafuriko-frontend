@@ -19,6 +19,7 @@ class AppFormField extends StatelessWidget {
     this.onObscured,
     this.onValidate,
     this.enabled = true,
+    this.displayObscure = true,
     this.type = TextInputType.text,
   })  : _focus = focus,
         _controller = controller;
@@ -30,6 +31,7 @@ class AppFormField extends StatelessWidget {
   final bool isEmailField;
   final bool isNameField;
   final bool enabled;
+  final bool displayObscure;
 
   final String label;
   final String hint;
@@ -83,10 +85,10 @@ class AppFormField extends StatelessWidget {
                       fontFamily: AppFonts.nunito,
                       fontWeight: FontWeight.w600,
                     ),
-                    enabled: enabled,
                     keyboardType: type,
                     validator: onValidate,
                     decoration: InputDecoration(
+                      enabled: enabled,
                       contentPadding: EdgeInsets.only(
                           left: 12.w, top: 30.h, right: 12.w, bottom: 8.h),
                       hintText: hint,
@@ -100,7 +102,7 @@ class AppFormField extends StatelessWidget {
                       errorBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.r),
                         borderSide: BorderSide(
-                          color: AppColor.red,
+                          // color: AppColor.red,
                           strokeAlign: BorderSide.strokeAlignOutside,
                           width: .5.w,
                         ),
@@ -118,10 +120,18 @@ class AppFormField extends StatelessWidget {
                         borderSide: BorderSide(
                           color: AppColor.secondaryGray,
                           strokeAlign: BorderSide.strokeAlignOutside,
+                          width: .8.w,
+                        ),
+                      ),
+                      enabledBorder: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(5.r),
+                        borderSide: BorderSide(
+                          color: AppColor.secondaryGray,
+                          strokeAlign: BorderSide.strokeAlignOutside,
                           width: .5.w,
                         ),
                       ),
-                      border: OutlineInputBorder(
+                      disabledBorder: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(5.r),
                         borderSide: BorderSide(
                           color: AppColor.secondaryGray,
@@ -131,7 +141,7 @@ class AppFormField extends StatelessWidget {
                       ),
                     ),
                   ),
-                  if (!isNameField && !isEmailField)
+                  if (!isNameField && !isEmailField && displayObscure)
                     Positioned(
                       top: 25.h,
                       right: 12.w,
