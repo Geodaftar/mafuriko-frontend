@@ -30,3 +30,18 @@ class UpdateProfileEvent extends ProfileEvent {
   @override
   List<Object> get props => [userName, userEmail, phoneNumber];
 }
+
+class ModifyPasswordEvent extends ProfileEvent {
+  final String currentPassword;
+  final String newPassword;
+  final String confirmPassword;
+
+  const ModifyPasswordEvent({
+    required this.currentPassword,
+    required this.newPassword,
+    required this.confirmPassword,
+  });
+
+  @override
+  List<Object> get props => [currentPassword, newPassword, confirmPassword];
+}

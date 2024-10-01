@@ -5,6 +5,7 @@ enum Request {
   login,
   signup,
   updatePassword,
+  updateUser,
   verifyOtpCode,
   checkUser,
 }

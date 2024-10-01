@@ -48,6 +48,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<VerifyOTPEvent>(_onVerifyOTPEvent);
     on<UpdateForgotPasswordEvent>(_onUpdateForgotPasswordEvent);
     on<LogOutEvent>(_onLogOutEvent);
+    on<AuthUserUpdated>(_onUpdateUser);
   }
 
   void _onSignUpRequested(
@@ -175,6 +176,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       (user) {
         emit(AuthSuccess(user: user, request: Request.updatePassword));
       },
+    );
+  }
+
+  FutureOr<void> _onUpdateUser(
+      AuthUserUpdated event, Emitter<AuthState> emit) async {
+    final failureOrUser = await getCachedUser(NoParams());
+
+    log('failureOrUser : $failureOrUser');
+
+    failureOrUser.fold(
+      (failure) => emit(AuthUnauthenticated()),
+      (user) => emit(AuthSuccess(user: user, request: Request.updateUser)),
     );
   }
 }

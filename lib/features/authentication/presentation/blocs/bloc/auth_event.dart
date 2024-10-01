@@ -89,4 +89,13 @@ class UpdateForgotPasswordEvent extends AuthEvent {
   });
 }
 
+class AuthUserUpdated extends AuthEvent {
+  final UserEntity updatedUser;
+
+  const AuthUserUpdated(this.updatedUser);
+
+  @override
+  List<Object> get props => [updatedUser];
+}
+
 class LogOutEvent extends AuthEvent {}

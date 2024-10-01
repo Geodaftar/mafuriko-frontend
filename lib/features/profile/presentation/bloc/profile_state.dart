@@ -46,3 +46,19 @@ class ProfileUpdateFailure extends ProfileState {
   @override
   List<Object> get props => [message];
 }
+
+class ProfileUpdatePassSuccess extends ProfileState {
+  const ProfileUpdatePassSuccess();
+
+  @override
+  List<Object> get props => [];
+}
+
+class ProfileUpdatePassFailure extends ProfileState {
+  final String message;
+
+  const ProfileUpdatePassFailure({required this.message});
+
+  @override
+  List<Object> get props => [message];
+}
