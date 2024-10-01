@@ -61,52 +61,56 @@ class _MapScreenState extends State<MapScreen> {
             onTap: () {
               // call custom window to display alert
               _customInfoWindowController.addInfoWindow!(
-                Container(
-                  padding:
-                      EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
-                  decoration: ShapeDecoration(
-                    color: Color(0xFFF8EBE1),
-                    shape: RoundedRectangleBorder(
-                      side: BorderSide(width: 1.w, color: AppColor.primary),
-                      borderRadius: BorderRadius.circular(10.r),
+                InkWell(
+                  onTap: () =>
+                      context.pushNamed(Paths.alertDetailScreen, extra: alert),
+                  child: Container(
+                    padding:
+                        EdgeInsets.symmetric(horizontal: 8.w, vertical: 12.h),
+                    decoration: ShapeDecoration(
+                      color: const Color(0xFFF8EBE1),
+                      shape: RoundedRectangleBorder(
+                        side: BorderSide(width: 1.w, color: AppColor.primary),
+                        borderRadius: BorderRadius.circular(10.r),
+                      ),
                     ),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        alert.floodScene ?? 'N/A',
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: TextStyle(
-                          color: AppColor.primary,
-                          fontSize: 12.sp,
-                          fontFamily: AppFonts.nunito,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      Text(
-                        'Inondation',
-                        style: TextStyle(
-                          color: AppColor.primary,
-                          fontSize: 12.sp,
-                          fontFamily: AppFonts.nunito,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ),
-                      SizedBox(
-                        height: 56.h,
-                        child: Text(
-                          alert.floodDescription ?? 'N/A',
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          alert.floodScene ?? 'N/A',
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
                           style: TextStyle(
-                            color: AppColor.primaryGray,
-                            fontSize: 10.sp,
+                            color: AppColor.primary,
+                            fontSize: 12.sp,
                             fontFamily: AppFonts.nunito,
-                            fontWeight: FontWeight.w400,
+                            fontWeight: FontWeight.w700,
                           ),
                         ),
-                      ),
-                    ],
+                        Text(
+                          'Inondation',
+                          style: TextStyle(
+                            color: AppColor.primary,
+                            fontSize: 12.sp,
+                            fontFamily: AppFonts.nunito,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 56.h,
+                          child: Text(
+                            alert.floodDescription ?? 'N/A',
+                            style: TextStyle(
+                              color: AppColor.primaryGray,
+                              fontSize: 10.sp,
+                              fontFamily: AppFonts.nunito,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
                 LatLng(
@@ -123,6 +127,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
+    _controller.isCompleted;
     _customInfoWindowController.dispose();
     super.dispose();
   }
@@ -181,7 +186,7 @@ class _MapScreenState extends State<MapScreen> {
                     _controller.complete(controller);
                   },
                   onTap: (argument) {
-                    // _customInfoWindowController.hideInfoWindow!();
+                    _customInfoWindowController.hideInfoWindow!();
                   },
                   onCameraMove: (position) {
                     _customInfoWindowController.onCameraMove!();
