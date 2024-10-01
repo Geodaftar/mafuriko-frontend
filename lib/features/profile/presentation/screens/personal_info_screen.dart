@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
+import 'package:mafuriko/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:mafuriko/shared/helpers/validators.dart';
 import 'package:mafuriko/shared/widgets/app_form_field.dart';
 import 'package:mafuriko/shared/widgets/buttons.dart';
@@ -76,6 +77,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           ),
                         if (state is AuthSuccess)
                           AppFormField(
+                            enabled: false,
                             focus: _emailFocus,
                             controller: _emailController
                               ..text = '${state.user.userEmail}'
@@ -116,12 +118,45 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  PrimaryExpandedButton(
-                    title: 'Sauvegarder',
-                    onTap: () {
-                      // if (_formKey.currentState?.validate() ?? false) {
-
-                      // }
+                  BlocConsumer<ProfileBloc, ProfileState>(
+                    listener: (context, state) {
+                      if (state is ProfileLoadFailure) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text(state.message)),
+                        );
+                      } else if (state is ProfileUpdateSuccess) {
+                        context
+                            .read<ProfileBloc>()
+                            .add(LoadUserProfile(state.user));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            behavior: SnackBarBehavior.floating,
+                            content: Text('Mise à jour réussie'),
+                          ),
+                        );
+                      }
+                    },
+                    builder: (context, state) {
+                      if (state is ProfileLoading) {
+                        return Center(
+                          child: SizedBox(
+                            width: 25.w,
+                            height: 30.h,
+                            child: const CircularProgressIndicator(),
+                          ),
+                        );
+                      }
+                      return PrimaryExpandedButton(
+                        title: 'Sauvegarder',
+                        onTap: () {
+                          if (_formKey.currentState?.validate() ?? false) {
+                            context.read<ProfileBloc>().add(UpdateProfileEvent(
+                                userName: _nameController.text.trim(),
+                                phoneNumber: _phoneController.text.trim(),
+                                userEmail: _emailController.text.trim()));
+                          }
+                        },
+                      );
                     },
                   ),
                 ],
