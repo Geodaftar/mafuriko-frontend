@@ -9,6 +9,7 @@ import 'package:mafuriko/features/home/presentation/components/home_sections.dar
 import 'package:mafuriko/features/home/presentation/widgets/home_widget.dart';
 import 'package:mafuriko/features/maps/presentation/bloc/map_bloc.dart';
 import 'package:mafuriko/features/send/presentation/bloc/alert_bloc.dart';
+import 'package:mafuriko/gen/colors.gen.dart';
 import 'package:mafuriko/shared/helpers/network_info.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -23,7 +24,7 @@ class _HomeScreenState extends State<HomeScreen> {
   late final NetworkInfoImpl net;
   StreamSubscription<InternetStatus>? _connectionSubscription;
 
-  InternetStatus? _previousStatus;
+  InternetStatus? _previousStatus = InternetStatus.connected;
 
   @override
   void initState() {
@@ -33,7 +34,7 @@ class _HomeScreenState extends State<HomeScreen> {
     net = NetworkInfoImpl(InternetConnection());
 
     _connectionSubscription = net.onStatusChange.listen((status) {
-      if (status != _previousStatus) {
+      if (_previousStatus != status && _previousStatus != null) {
         // Afficher le SnackBar seulement si l'état a changé
         if (status == InternetStatus.connected) {
           if (mounted) {
@@ -44,8 +45,13 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
                 behavior: SnackBarBehavior.floating,
                 margin: EdgeInsets.fromLTRB(8.w, 0, 8.w, 12.h),
-                backgroundColor: Colors.greenAccent,
-                content: const Text('Vous êtes de nouveau connecté'),
+                backgroundColor: Colors.green[300],
+                content: const Text(
+                  'Vous êtes de nouveau connecté',
+                  style: TextStyle(
+                    color: AppColor.white,
+                  ),
+                ),
               ),
             );
           }
