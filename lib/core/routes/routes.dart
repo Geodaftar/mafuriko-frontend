@@ -14,6 +14,7 @@ import 'package:mafuriko/features/home/presentation/screens/alerts_list_screen.d
 import 'package:mafuriko/features/home/presentation/screens/home_screen.dart';
 import 'package:mafuriko/features/maps/presentation/screens/map_screen.dart';
 import 'package:mafuriko/features/onboarding/screens/onboarding_view.dart';
+import 'package:mafuriko/features/profile/presentation/screens/modify_password_screen.dart';
 import 'package:mafuriko/features/profile/presentation/screens/notification_settings_screen.dart';
 import 'package:mafuriko/features/profile/presentation/screens/personal_info_screen.dart';
 import 'package:mafuriko/features/profile/presentation/screens/profile_screen.dart';
@@ -173,6 +174,14 @@ final GoRouter router = GoRouter(
               builder: (context, state) {
                 debugPrint('actual route path: ${state.uri}');
                 return const NotificationSettingsScreen();
+              },
+            ),
+            GoRoute(
+              path: Paths.modifyPassword,
+              name: Paths.modifyPassword,
+              builder: (context, state) {
+                debugPrint('actual route path: ${state.uri}');
+                return const ModifyPasswordScreen();
               },
             ),
           ],

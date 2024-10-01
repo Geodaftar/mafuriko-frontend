@@ -14,7 +14,7 @@ class ProfileScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         leading: InkWell(
-          onTap: () => context.pop(),
+          onTap: () => context.pushReplacementNamed(Paths.home),
           child: const Icon(Icons.arrow_back_ios),
         ),
         backgroundColor: const Color(0xFFFAF1E9),
@@ -72,6 +72,7 @@ class ProfileScreen extends StatelessWidget {
                   onTap: () => context.goNamed(Paths.notificationSettings),
                 ),
                 ListTile(
+                  onTap: () => context.goNamed(Paths.modifyPassword),
                   leading: AppImages.icons.pass.svg(),
                   title: Text(
                     'Changer le mot de passe',

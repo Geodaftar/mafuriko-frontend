@@ -10,6 +10,7 @@ class Paths {
   static String alertDetailScreen = "alert-detail";
   static String mapScreen = "map";
   static String profileScreen = "profile";
+  static String modifyPassword = "modify-password";
   static String persoInfos = "infos";
   static String notificationSettings = "notification-settings";
   static String send = "send-alert";
