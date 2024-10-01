@@ -47,7 +47,7 @@ class ProfileRepositoryImpl implements ProfileRepository {
         userEmail: userEmail,
         userPhoneNumber: userPhoneNumber,
       );
-      _localDataSource.clearCachedUser();
+      // _localDataSource.clearCachedUser();
       _localDataSource.cacheUser(data);
 
       return Right(data);
