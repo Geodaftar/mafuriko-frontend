@@ -9,6 +9,7 @@ abstract interface class AuthLocalDataSource {
   Future<UserModel?> getCachedUser();
   Future<String?> getCachedToken();
   Future<bool> clearCachedUser();
+  Future<bool> clearCachedToken();
 }
 
 const cachedUser = 'CACHED_USER';
@@ -63,5 +64,10 @@ class AuthLocalDataSourceImpl implements AuthLocalDataSource {
       // log('No cached token found');
       return Future.value(null);
     }
+  }
+
+  @override
+  Future<bool> clearCachedToken() async {
+    return await sharedPreferences.remove(token);
   }
 }
