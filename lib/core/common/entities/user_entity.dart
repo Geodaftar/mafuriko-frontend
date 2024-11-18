@@ -2,6 +2,7 @@ class UserEntity {
   final String? id;
   final String? userEmail;
   final String? userName;
+  final String? fullName;
 
   final String? userNumber;
   final String? userPassword;
@@ -12,6 +13,7 @@ class UserEntity {
   UserEntity({
     this.id,
     this.userEmail,
+    this.fullName,
     this.userName,
     this.userNumber,
     this.userPassword,
