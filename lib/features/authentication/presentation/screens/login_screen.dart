@@ -82,7 +82,8 @@ class _LoginScreenState extends State<LoginScreen> {
                       hint: 'Saisissez l’adresse email',
                       type: TextInputType.emailAddress,
                       onValidate: (value) {
-                        final isValid = Email.dirty(value!).validator(value);
+                        final isValid =
+                            Email.dirty(value!.trim()).validator(value.trim());
                         return isValid?.name;
                       },
                     ),
