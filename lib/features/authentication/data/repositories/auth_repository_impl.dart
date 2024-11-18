@@ -25,7 +25,7 @@ class AuthRepositoryImpl implements AuthRepository {
   @override
   Future<Either<Failure, UserEntity>> signUp({
     required String userEmail,
-    required String userName,
+    // required String userName,
     required String userNumber,
     required String userPassword,
     required String confirmPassword,
@@ -33,13 +33,14 @@ class AuthRepositoryImpl implements AuthRepository {
     try {
       final data = await dataSource.signUp(
         userEmail: userEmail,
-        userName: userName,
+        // userName: userName,
         userNumber: userNumber,
         userPassword: userPassword,
         confirmPassword: confirmPassword,
       );
 
       localDataSource.cacheUser(data);
+      localDataSource.cacheToken(data.token);
       return Right(data);
     } on ServerException catch (e) {
       log(e.message);
@@ -84,6 +85,7 @@ class AuthRepositoryImpl implements AuthRepository {
 
   @override
   Future<bool> logout() async {
+    await localDataSource.clearCachedToken();
     return await localDataSource.clearCachedUser();
   }
 
@@ -120,6 +122,7 @@ class AuthRepositoryImpl implements AuthRepository {
       log('from auth repo impl :: update pass request ::: data **** ${response.toJson()}');
 
       localDataSource.cacheUser(response);
+      localDataSource.cacheToken(response.token);
 
       return Right(response);
     } on ServerException catch (e) {
