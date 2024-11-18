@@ -55,13 +55,25 @@ class AlertsSection extends StatelessWidget {
                 },
                 itemCount: 4,
               );
+            } else if (state is SuccessAlert && state.alerts.isEmpty) {
+              return const Center(
+                child: Text('empty'),
+              );
             }
+
+            List<AlertEntity> floodAlerts = [];
+            for (var alert in state.alerts) {
+              if (alert.status == 'success') {
+                floodAlerts.add(alert);
+              }
+            }
+
             return HorizontalList(
               padding: EdgeInsets.symmetric(vertical: 8.h),
               itemBuilder: (BuildContext context, int index) {
-                List<AlertEntity> floodAlerts = state.alerts;
                 floodAlerts.sort((a, b) =>
                     b.postAt.toString().compareTo(a.postAt.toString()));
+
                 return InkWell(
                   onTap: () => context.pushNamed(
                     Paths.alertDetailScreen,
@@ -69,14 +81,16 @@ class AlertsSection extends StatelessWidget {
                   ),
                   child: AlertCard(
                     image: floodAlerts[index].image,
-                    floodScene: floodAlerts[index].floodScene,
+                    floodScene: floodAlerts[index].floodScene?.toUpperCase(),
                     floodDescription: floodAlerts[index].floodDescription,
                     postAt: floodAlerts[index].postAt,
+                    postedBy: floodAlerts[index].postBy,
+                    pos: state.alerts[index].floodLocation,
                     margin: EdgeInsets.only(right: 16.w),
                   ),
                 );
               },
-              itemCount: state.alerts.length <= 5 ? state.alerts.length : 5,
+              itemCount: floodAlerts.length <= 5 ? floodAlerts.length : 5,
             );
           },
         )
