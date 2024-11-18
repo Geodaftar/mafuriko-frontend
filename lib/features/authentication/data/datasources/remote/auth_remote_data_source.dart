@@ -14,7 +14,6 @@ import 'package:mafuriko/shared/helpers/endpoints.dart';
 abstract interface class AuthRemoteDataSource {
   Future<UserModel> signUp({
     required String userEmail,
-    required String userName,
     required String userNumber,
     required String userPassword,
     required String confirmPassword,
@@ -57,17 +56,12 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
   @override
   Future<UserModel> signUp(
       {required String userEmail,
-      required String userName,
       required String userNumber,
       required String userPassword,
       required String confirmPassword}) async {
     try {
-      final nameParts = userName.trim().split(RegExp(r'\s+'));
-
       Map<String, dynamic> body = {
-        "userEmail": userEmail.trim(),
-        "userFirstName": nameParts[0].trim(),
-        "userLastName": nameParts[1].trim(),
+        "userEmail": userEmail.toLowerCase().trim(),
         "userNumber": userNumber.trim(),
         "userPassword": userPassword.trim(),
         "userPasswordC": confirmPassword.trim(),
@@ -81,8 +75,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         options: Options(method: 'POST', headers: headers),
       );
       if (response.statusCode == 200 || response.statusCode == 201) {
-        debugPrint("::::::::::::::::::::${json.encode(response.data['data'])}");
-        final data = response.data['data'];
+        debugPrint("::::::::::::::::::::${json.encode(response.data)}");
+        final data = response.data;
         return UserModel.fromJson(data);
       } else {
         debugPrint(">>>>>>>>>>>>>>>>>>>>${response.statusMessage}");
@@ -92,7 +86,8 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       }
     } on DioException catch (e) {
       debugPrint('Exception: $e');
-      throw const ServerException(message: 'Cet utilisateur existe déjà!');
+      throw ServerException(
+          message: e.response?.data['message'] ?? e.type.name);
     }
   }
 
@@ -103,7 +98,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       final headers = {'Content-Type': 'application/json'};
 
       Map<String, dynamic> body = {
-        "userEmail": userEmail.trim(),
+        "userEmail": userEmail.toLowerCase().trim(),
         "userPassword": userPassword.trim(),
       };
 
