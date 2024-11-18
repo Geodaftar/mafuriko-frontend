@@ -14,7 +14,6 @@ class SignUpUseCase extends UseCase<UserEntity, SignUpParams> {
   Future<Either<Failure, UserEntity>> call(SignUpParams params) async {
     return await repository.signUp(
       userEmail: params.email,
-      userName: params.fullName,
       userNumber: params.phoneNumber,
       userPassword: params.password,
       confirmPassword: params.confirmPassword,
@@ -24,14 +23,12 @@ class SignUpUseCase extends UseCase<UserEntity, SignUpParams> {
 
 class SignUpParams {
   final String email;
-  final String fullName;
   final String phoneNumber;
   final String password;
   final String confirmPassword;
 
   SignUpParams({
     required this.email,
-    required this.fullName,
     required this.phoneNumber,
     required this.password,
     required this.confirmPassword,
