@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
+import 'package:mafuriko/features/home/presentation/screens/home_screen.dart';
 import 'package:mafuriko/features/profile/presentation/bloc/profile_bloc.dart';
 import 'package:mafuriko/shared/helpers/validators.dart';
 import 'package:mafuriko/shared/widgets/app_form_field.dart';
@@ -20,17 +21,21 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _nameController = TextEditingController();
+  final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
   final FocusNode _nameFocus = FocusNode();
+  final FocusNode _usernameFocus = FocusNode();
   final FocusNode _phoneFocus = FocusNode();
   final FocusNode _emailFocus = FocusNode();
 
   @override
   void dispose() {
     _nameController.dispose();
+    _usernameController.dispose();
     _emailController.dispose();
     _phoneController.dispose();
     _nameFocus.dispose();
+    _usernameFocus.dispose();
     _emailFocus.dispose();
     _phoneFocus.dispose();
     super.dispose();
@@ -52,64 +57,74 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
               Expanded(
                 child: BlocBuilder<AuthBloc, AuthState>(
                   builder: (context, state) {
+                    if (state is AuthSuccess) {
+                      // Vérifiez si les valeurs ne sont pas nulles avant de les affecter
+                      if (state.user.fullName != null) {
+                        _nameController.text = state.user.fullName!;
+                      }
+                      if (state.user.userName != null) {
+                        _usernameController.text = state.user.userName!;
+                      }
+                      if (state.user.userEmail != null) {
+                        _emailController.text = state.user.userEmail!;
+                      }
+                      if (state.user.userNumber != null) {
+                        _phoneController.text = state.user.userNumber!;
+                      }
+                    }
+
                     return Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 30.h),
-                        if (state is AuthSuccess)
-                          AppFormField(
-                            focus: _nameFocus,
-                            controller: _nameController
-                              ..text = '${state.user.userName}'
-                              ..selection = TextSelection.collapsed(
-                                offset: _nameController.text.length,
-                              ),
-                            isNameField: true,
-                            isEmailField: false,
-                            label: 'Nom et prénom',
-                            hint: 'Saisissez votre nom complet',
-                            type: TextInputType.name,
-                            onValidate: (value) {
-                              final isValid =
-                                  Name.dirty(value!).validator(value);
-                              return isValid?.name;
-                            },
-                          ),
-                        if (state is AuthSuccess)
-                          AppFormField(
-                            enabled: false,
-                            focus: _emailFocus,
-                            controller: _emailController
-                              ..text = '${state.user.userEmail}'
-                              ..selection = TextSelection.collapsed(
-                                offset: _emailController.text.length,
-                              ),
-                            label: 'Email',
-                            hint: 'Saisissez l’adresse email',
-                            type: TextInputType.emailAddress,
-                            onValidate: (value) {
-                              final isValid =
-                                  Email.dirty(value!).validator(value);
-                              return isValid?.name;
-                            },
-                          ),
-                        if (state is AuthSuccess)
-                          AppFormField(
-                            focus: _phoneFocus,
-                            controller: _phoneController
-                              ..text = '${state.user.userNumber}'
-                              ..selection = TextSelection.collapsed(
-                                offset: _phoneController.text.length,
-                              ),
-                            label: 'Téléphone',
-                            hint: 'Saisissez le numéro de téléphone',
-                            type: TextInputType.phone,
-                            onValidate: (value) {
-                              final isValid =
-                                  PhoneNumber.dirty(value!).validator(value);
-                              return isValid?.name;
-                            },
-                          ),
+                        AppFormField(
+                          focus: _nameFocus,
+                          controller: _nameController,
+                          isNameField: true,
+                          isEmailField: false,
+                          label: 'Nom et prénom',
+                          hint: 'Saisissez votre nom complet',
+                          type: TextInputType.name,
+                          onValidate: (value) {
+                            final isValid = Name.dirty(value!.trim())
+                                .validator(value.trim());
+                            return isValid?.name;
+                          },
+                        ),
+                        AppFormField(
+                          enabled: false,
+                          focus: _usernameFocus,
+                          controller: _usernameController,
+                          isNameField: true,
+                          isEmailField: false,
+                          label: 'Nom d\'utilisateur',
+                          hint: 'Nom d\'utilisateur',
+                          type: TextInputType.name,
+                        ),
+                        AppFormField(
+                          focus: _emailFocus,
+                          controller: _emailController,
+                          label: 'Email',
+                          hint: 'Saisissez l’adresse email',
+                          type: TextInputType.emailAddress,
+                          onValidate: (value) {
+                            final isValid = Email.dirty(value!.trim())
+                                .validator(value.trim());
+                            return isValid?.name;
+                          },
+                        ),
+                        AppFormField(
+                          focus: _phoneFocus,
+                          controller: _phoneController,
+                          label: 'Téléphone',
+                          hint: 'Saisissez le numéro de téléphone',
+                          type: TextInputType.phone,
+                          onValidate: (value) {
+                            final isValid = PhoneNumber.dirty(value!.trim())
+                                .validator(value.trim());
+                            return isValid?.name;
+                          },
+                        ),
                       ],
                     );
                   },
@@ -149,12 +164,18 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                       return PrimaryExpandedButton(
                         title: 'Sauvegarder',
                         onTap: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            context.read<ProfileBloc>().add(UpdateProfileEvent(
-                                userName: _nameController.text.trim(),
-                                phoneNumber: _phoneController.text.trim(),
-                                userEmail: _emailController.text.trim()));
-                          }
+                          needInternet(() {
+                            if (_formKey.currentState?.validate() ?? false) {
+                              context.read<ProfileBloc>().add(
+                                    UpdateProfileEvent(
+                                        fullName: _nameController.text.trim(),
+                                        phoneNumber:
+                                            _phoneController.text.trim(),
+                                        userEmail:
+                                            _emailController.text.trim()),
+                                  );
+                            }
+                          });
                         },
                       );
                     },

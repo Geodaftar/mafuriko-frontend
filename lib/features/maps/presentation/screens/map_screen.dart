@@ -46,7 +46,14 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _getFloodData(BuildContext context) {
-    final List<AlertEntity> alerts = context.watch<AlertBloc>().state.alerts;
+    final List<AlertEntity> alerts = [];
+    final blocAlert = context.watch<AlertBloc>().state.alerts;
+
+    for (var alert in blocAlert) {
+      if (alert.status == 'success') {
+        alerts.add(alert);
+      }
+    }
 
     setState(() {
       _markers = alerts.map(
@@ -175,15 +182,23 @@ class _MapScreenState extends State<MapScreen> {
                   key: ValueKey(isLoad),
                   mapType: MapType.normal,
                   initialCameraPosition: CameraPosition(
-                    target: LatLng(state.position?.latitude ?? 0,
-                        state.position?.longitude ?? 0),
-                    zoom: widget.enabledLocation ? 15.0 : 16.0,
+                    target: LatLng(
+                        !widget.enabledLocation
+                            ? 5.3365344
+                            : state.position?.latitude ?? 0,
+                        !widget.enabledLocation
+                            ? -4.0268205
+                            : state.position?.longitude ?? 0),
+                    zoom: widget.enabledLocation ? 10.45 : 8.6,
                   ),
                   // style: theme,
                   onMapCreated: (GoogleMapController controller) {
                     _customInfoWindowController.googleMapController =
                         controller;
-                    _controller.complete(controller);
+                    // _controller.complete(controller);
+                    if (!_controller.isCompleted) {
+                      _controller.complete(controller);
+                    }
                   },
                   onTap: (argument) {
                     _customInfoWindowController.hideInfoWindow!();
@@ -191,7 +206,7 @@ class _MapScreenState extends State<MapScreen> {
                   onCameraMove: (position) {
                     _customInfoWindowController.onCameraMove!();
                   },
-                  myLocationEnabled: true,
+                  myLocationEnabled: !widget.enabledLocation ? false : true,
                   myLocationButtonEnabled: false,
                   zoomControlsEnabled: false,
                   markers: widget.enabledLocation ? _markers.toSet() : {},

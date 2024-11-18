@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mafuriko/features/home/presentation/cubit/navigation_cubit.dart';
 // import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/home/presentation/widgets/home_widget.dart';
 import 'package:mafuriko/features/maps/presentation/bloc/map_bloc.dart';
@@ -30,10 +31,26 @@ class MapSection extends StatelessWidget {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(10.r),
                 child: SizedBox(
-                  // width: 335.w,
                   height: 112.h,
-                  child: const MapScreen(
-                    enabledLocation: false,
+                  child: InkWell(
+                    onTap: () {
+                      context.read<NavigationCubit>().updateIndex(1);
+                    },
+                    child: Stack(
+                      children: [
+                        // MapScreen, que tu veux afficher mais désactiver l'interaction
+                        const MapScreen(
+                          enabledLocation: false,
+                        ),
+                        // Container transparent pour capturer les clics et s'assurer que l'InkWell les détecte
+                        Positioned.fill(
+                          child: Container(
+                            color: Colors
+                                .transparent, // Transparence pour capturer le clic
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               ),

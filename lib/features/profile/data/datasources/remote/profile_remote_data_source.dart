@@ -1,15 +1,18 @@
 import 'dart:convert';
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:image_picker/image_picker.dart';
 
 import 'package:mafuriko/core/clients/http_client.dart';
 import 'package:mafuriko/core/common/models/user_model.dart';
 import 'package:mafuriko/shared/errors/exceptions.dart';
+import 'package:mafuriko/shared/helpers/upload_s3_image.dart';
 
 abstract interface class ProfileRemoteDataSource {
   Future<UserModel> updateUser({
-    String? userName,
+    String? fullName,
     String? userEmail,
     String? userPhoneNumber,
   });
@@ -18,6 +21,10 @@ abstract interface class ProfileRemoteDataSource {
       {required String currentPassword,
       required String newPassword,
       required String confirmPassword});
+
+  Future<UserModel> updateProfileImage(
+    XFile? image,
+  );
 }
 
 class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
@@ -67,17 +74,17 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
   @override
   Future<UserModel> updateUser({
-    String? userName,
+    String? fullName,
     String? userEmail,
     String? userPhoneNumber,
   }) async {
     try {
-      final nameParts = userName?.trim().split(RegExp(r'\s+'));
+      // final nameParts = userName?.trim().split(RegExp(r'\s+'));
 
       Map<String, dynamic> body = {
-        "userEmail": userEmail?.trim(),
-        "userFirstName": nameParts?[0].trim(),
-        "userLastName": nameParts?[1].trim(),
+        // "userEmail": userEmail?.trim(),
+        "userFullName": fullName,
+        // "userLastName": nameParts?[1].trim(),
         "userNumber": userPhoneNumber,
       };
 
@@ -100,6 +107,41 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
       log(">>>>>>>>>>>>>>>>>>>>${response.statusCode}");
 
       throw const ServerException(message: 'Error server');
+    } on DioException catch (e) {
+      log('Exception: $e');
+      throw ServerException(
+        message: e.response?.data['message'] ?? e.type.name,
+      );
+    }
+  }
+
+  @override
+  Future<UserModel> updateProfileImage(XFile? image) async {
+    try {
+      Uri? userImageUri;
+      if (image != null) {
+        userImageUri = await uploadFile(File(image.path), "user");
+        log('avatar image take by user  ${userImageUri?.toString()}');
+      }
+      var headers = {'Content-Type': 'application/json'};
+      Map<String, dynamic> body = {
+        "image": userImageUri.toString(),
+      };
+      if (userImageUri != null) {
+        final response = await client.put(
+          'https://mafu-back.vercel.app/users/update',
+          options: Options(
+            method: 'PUT',
+            headers: headers,
+          ),
+          data: body,
+        );
+        if (response.statusCode == 200) {
+          final data = response.data['data'];
+          return UserModel.fromJson(data);
+        }
+      }
+      throw const ServerException(message: 'Image not found');
     } on DioException catch (e) {
       log('Exception: $e');
       throw ServerException(

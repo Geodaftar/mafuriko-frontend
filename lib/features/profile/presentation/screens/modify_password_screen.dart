@@ -101,7 +101,7 @@ class _ModifyPasswordScreenState extends State<ModifyPasswordScreen> {
                           onObscured: () {
                             context.read<ToggleCubit>().toggler();
                           },
-                          label: 'Mot de passe',
+                          label: 'Nouveau Mot de passe',
                           hint: 'Saisissez votre nouveau mot de passe',
                         );
                       },

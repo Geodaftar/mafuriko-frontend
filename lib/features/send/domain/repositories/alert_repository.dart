@@ -7,11 +7,14 @@ import 'package:mafuriko/shared/errors/failures.dart';
 
 abstract interface class AlertRepository {
   Future<Either<Failure, AlertEntity?>> postAlert({
+    required String uid,
     required LatLng position,
     required String location,
     required String description,
     required String intensity,
     required String alertCategory,
+    required String temperature,
+    required String weather,
     XFile? image,
   });
   Future<Either<Failure, List<AlertEntity>>> fetchAlerts();

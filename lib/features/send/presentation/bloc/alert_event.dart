@@ -12,19 +12,25 @@ final class FetchAlerts extends AlertEvent {
 }
 
 final class PostAlert extends AlertEvent {
+  final String uid;
   final String sceneName;
   final LatLng floodLocation;
   final String floodDescription;
   final String floodIntensity;
   final String category;
+  final String temperature;
+  final String weather;
   final XFile? floodImage;
 
   const PostAlert({
+    required this.uid,
     required this.sceneName,
     required this.floodLocation,
     required this.floodDescription,
     required this.floodIntensity,
     required this.category,
+    required this.temperature,
+    required this.weather,
     this.floodImage,
   });
 }

@@ -44,7 +44,7 @@ class PhoneNumber extends FormzInput<String, PhoneNumberError> {
   const PhoneNumber.dirty([super.value = '']) : super.dirty();
 
   static final RegExp _phoneNumberRegExp = RegExp(
-    r'^(?:(\+225(07|05|01)[0-9]{8})|((07|05|01)[0-9]{7})|(\+[1-9][0-9]{0,2}[0-9]{4,}))$',
+    r'^(\+?[1-9][0-9]{0,2}[0-9]{4,15}|[0-9]{8,15})$',
     // r'^(07|05|01)[0-9]{10}|\(77|74|66)[0-9]{7}$'
   );
 
@@ -106,6 +106,7 @@ class Name extends FormzInput<String, NameError> {
 
   static final RegExp _nameRegExp = RegExp(
     r"^[a-zA-Z][a-zA-Z\é\è\ê\']*(\s+[A-Z][a-zA-Z\é\è\ê\']*)*$",
+    // r"^(?:[A-Z][a-zA-Z\é\è\ê\']*(?:\s+[A-Z][a-zA-Z\é\è\ê\']*)*){1,}$",
   );
 
   @override

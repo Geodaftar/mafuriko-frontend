@@ -13,11 +13,14 @@ import 'package:mafuriko/shared/helpers/upload_s3_image.dart';
 
 abstract interface class AlertRemoteDataSource {
   Future<AlertModel?> postAlert({
+    required String uid,
     String? description,
     required LatLng position,
     required String location,
     required String intensity,
     required String category,
+    required String temp,
+    required String weather,
     XFile? image,
   });
 
@@ -29,11 +32,14 @@ class AlertRemoteDataSourceImpl implements AlertRemoteDataSource {
   const AlertRemoteDataSourceImpl(this.client);
   @override
   Future<AlertModel?> postAlert({
+    required String uid,
     String? description,
     required LatLng position,
     required String location,
     required String intensity,
     required String category,
+    required String temp,
+    required String weather,
     XFile? image,
   }) async {
     try {
@@ -45,6 +51,7 @@ class AlertRemoteDataSourceImpl implements AlertRemoteDataSource {
 
       final headers = {'Content-Type': 'application/json'};
       Map<String, dynamic> body = {
+        'userId': uid,
         'floodScene': location,
         'longitude': '${position.longitude}',
         'latitude': '${position.latitude}',
@@ -52,8 +59,8 @@ class AlertRemoteDataSourceImpl implements AlertRemoteDataSource {
         'floodIntensity': intensity,
         'floodImage': '$floodImageUri',
         'floodCategory': category,
-        'temperaty': '',
-        'weather': ''
+        'temperature': temp,
+        'weather': weather,
       };
       final response = await client.post(
         'https://mafu-back.vercel.app/zones-inondees/add',

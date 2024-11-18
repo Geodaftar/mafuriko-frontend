@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:go_router/go_router.dart';
 import 'package:mafuriko/gen/gen.dart';
 
 class AppBackAppBar extends StatelessWidget implements PreferredSizeWidget {
   const AppBackAppBar({
     super.key,
     required this.title,
+    this.route,
     this.bottom,
   });
 
   final String title;
+  final String? route;
   final PreferredSizeWidget? bottom;
 
   @override
@@ -25,7 +28,7 @@ class AppBackAppBar extends StatelessWidget implements PreferredSizeWidget {
       leading: InkWell(
         overlayColor: const WidgetStatePropertyAll(Colors.transparent),
         onTap: () {
-          Navigator.of(context).pop();
+          Navigator.pop(context, 0);
         },
         child: Container(
           width: 10.w,

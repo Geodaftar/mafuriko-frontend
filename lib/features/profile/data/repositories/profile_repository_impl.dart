@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:dartz/dartz.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:mafuriko/core/common/data_local/auth_local_data_source.dart';
 import 'package:mafuriko/core/common/entities/user_entity.dart';
 import 'package:mafuriko/features/profile/data/datasources/remote/profile_remote_data_source.dart';
@@ -40,14 +41,31 @@ class ProfileRepositoryImpl implements ProfileRepository {
 
   @override
   Future<Either<Failure, UserEntity>> updateUser(
-      {String? userName, String? userEmail, String? userPhoneNumber}) async {
+      {String? userFullName,
+      String? userEmail,
+      String? userPhoneNumber}) async {
     try {
       final data = await _remoteDataSource.updateUser(
-        userName: userName,
+        fullName: userFullName,
         userEmail: userEmail,
         userPhoneNumber: userPhoneNumber,
       );
       // _localDataSource.clearCachedUser();
+      _localDataSource.cacheUser(data);
+
+      return Right(data);
+    } on ServerException catch (e) {
+      log('updatePassword exception error message::::::::: ${e.message}');
+      log('updatePassword exception error statusCode::::::::: ${e.statusCode}');
+      log('updatePassword exception error code::::::::: ${e.code}');
+      return Left(ServerFailure(message: e.message));
+    }
+  }
+
+  @override
+  Future<Either<Failure, UserEntity>> updateProfileImage(XFile? image) async {
+    try {
+      final data = await _remoteDataSource.updateProfileImage(image);
       _localDataSource.cacheUser(data);
 
       return Right(data);

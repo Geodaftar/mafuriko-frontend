@@ -3,7 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get_it/get_it.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:mafuriko/core/routes/routes.dart';
+import 'package:mafuriko/features/home/presentation/cubit/navigation_cubit.dart';
 import 'package:mafuriko/features/profile/domain/usecases/update_password_usecase.dart';
+import 'package:mafuriko/features/profile/domain/usecases/update_profile_image_usecase.dart';
 import 'package:nb_utils/nb_utils.dart';
 
 import 'package:mafuriko/core/clients/http_client.dart';
@@ -50,6 +53,7 @@ Future<void> init() async {
   sl.registerLazySingleton(() => Geolocator());
   sl.registerLazySingleton(() => sharedPreferences);
   sl.registerLazySingleton(() => authInit);
+  sl.registerSingleton(() => router);
 
   // Data sources
   sl.registerFactory<AuthRemoteDataSource>(
@@ -116,6 +120,9 @@ Future<void> init() async {
   sl.registerLazySingleton(() => UpdateUserUseCase(sl()));
   sl.registerLazySingleton(() => FetchAlertUseCase(sl()));
   sl.registerLazySingleton(() => PostAlertUseCase(sl()));
+  sl.registerLazySingleton(
+    () => UpdateProfileImageUseCase(sl()),
+  );
 
   // BloC
   sl.registerLazySingleton(
@@ -135,9 +142,12 @@ Future<void> init() async {
     () => MapBloc(sl()),
   );
   sl.registerLazySingleton(
-    () => ProfileBloc(sl(), sl(), sl()),
+    () => ProfileBloc(sl(), sl(), sl(), sl()),
   );
   sl.registerLazySingleton(
     () => AlertBloc(sl(), sl()),
+  );
+  sl.registerLazySingleton(
+    () => NavigationCubit(sl()),
   );
 }

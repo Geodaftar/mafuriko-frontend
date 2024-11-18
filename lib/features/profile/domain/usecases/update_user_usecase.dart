@@ -15,7 +15,7 @@ class UpdateUserUseCase extends UseCase<UserEntity, UserFieldsParams> {
   @override
   Future<Either<Failure, UserEntity>> call(UserFieldsParams params) async {
     return await _repository.updateUser(
-      userName: params.userName,
+      userFullName: params.fullName,
       userEmail: params.userEmail,
       userPhoneNumber: params.userPhoneNumber,
     );
@@ -23,12 +23,12 @@ class UpdateUserUseCase extends UseCase<UserEntity, UserFieldsParams> {
 }
 
 class UserFieldsParams {
-  final String? userName;
+  final String? fullName;
   final String? userEmail;
   final String? userPhoneNumber;
 
   UserFieldsParams({
-    this.userName,
+    this.fullName,
     this.userEmail,
     this.userPhoneNumber,
   });

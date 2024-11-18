@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
+import 'package:mafuriko/features/send/domain/entities/alert_entity.dart';
+// import 'package:mafuriko/core/routes/constant_path.dart';
 import 'package:mafuriko/features/send/presentation/bloc/alert_bloc.dart';
 
 import 'package:mafuriko/features/send/presentation/components/empty_history.dart';
@@ -16,8 +19,23 @@ class SendScreen extends StatefulWidget {
   State<SendScreen> createState() => _SendScreenState();
 }
 
-class _SendScreenState extends State<SendScreen> {
-  int historyCount = 0;
+class _SendScreenState extends State<SendScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(
+        length: 2,
+        vsync: this); // Ajustez la longueur selon le nombre d'onglets
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -26,6 +44,7 @@ class _SendScreenState extends State<SendScreen> {
       child: Scaffold(
         appBar: AppBackAppBar(
           title: 'Envoi',
+          // route: Paths.home,
           bottom: PreferredSize(
             preferredSize: Size.fromHeight(0.h),
             child: ClipRRect(
@@ -38,6 +57,7 @@ class _SendScreenState extends State<SendScreen> {
                   color: const Color(0x197A4419),
                 ),
                 child: TabBar(
+                  controller: _tabController,
                   indicatorSize: TabBarIndicatorSize.tab,
                   dividerColor: Colors.transparent,
                   indicator: BoxDecoration(
@@ -66,13 +86,33 @@ class _SendScreenState extends State<SendScreen> {
         ),
         body: BlocBuilder<AlertBloc, AlertState>(
           builder: (context, state) {
+            final user = (context.watch<AuthBloc>().state as AuthSuccess).user;
+            List<AlertEntity> ownAlerts = [];
+            for (var element in state.alerts) {
+              if (element.postBy == '${user.fullName}') {
+                ownAlerts.add(element);
+              }
+            }
             return TabBarView(
+              controller: _tabController,
               children: [
                 const SendView(),
-                if (state.alerts.isEmpty)
-                  const EmptyHistory()
+                if (ownAlerts.isEmpty)
+                  EmptyHistory(tabController: _tabController)
                 else
-                  const HistoryView(),
+                  RefreshIndicator(
+                    color: AppColor.primary,
+                    onRefresh: () async {
+                      await Future.delayed(
+                        const Duration(milliseconds: 2500),
+                        () {
+                          context.read<AlertBloc>().add(const FetchAlerts());
+                        },
+                      );
+                      return;
+                    },
+                    child: const HistoryView(),
+                  ),
               ],
             );
           },

@@ -17,21 +17,27 @@ class AlertRepositoryImpl implements AlertRepository {
 
   @override
   Future<Either<Failure, AlertEntity?>> postAlert({
+    required String uid,
     required LatLng position,
     required String location,
     required String description,
     required String intensity,
     required String alertCategory,
+    required String temperature,
+    required String weather,
     XFile? image,
   }) async {
     try {
       final data = await _remoteDataSource.postAlert(
+        uid: uid,
         description: description,
         position: position,
         location: location,
         intensity: intensity,
         category: alertCategory,
         image: image,
+        temp: temperature,
+        weather: weather,
       );
       return Right(data);
     } on ServerException catch (e) {

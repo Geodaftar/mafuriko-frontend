@@ -54,16 +54,21 @@ class AlertBloc extends Bloc<AlertEvent, AlertState> {
 
   FutureOr<void> _onPostAlertEvent(
       PostAlert event, Emitter<AlertState> emit) async {
-    log('alert data from state alert bloc::::::::::::::::::::::::\n ${state.alerts} \n:::::::::::::::::::::::::::::::');
+    // log('alert data from state alert bloc::::::::::::::::::::::::\n ${state.alerts} \n:::::::::::::::::::::::::::::::');
     final updatedAlerts = List<AlertEntity>.from(state.alerts);
     emit(AlertLoading());
+    log('event weather value::::::: ${event.weather}');
+    log('event temp value::::::: ${event.temperature}');
     final result = await postAlertUseCase(AlertParams(
+      uid: event.uid,
       sceneName: event.sceneName,
       floodLocation: event.floodLocation,
       floodDescription: event.floodDescription,
       floodIntensity: event.floodIntensity,
       floodImage: event.floodImage,
       alertCategory: event.category,
+      weather: event.weather,
+      temperature: event.temperature,
     ));
 
     result.fold(
@@ -71,9 +76,12 @@ class AlertBloc extends Bloc<AlertEvent, AlertState> {
       (data) {
         log('alert data from alert bloc::::::::::::::::::::::::\n $data \n:::::::::::::::::::::::::::::::');
 
+        // if (data?.status == 'success') {
         updatedAlerts.add(data as AlertEntity);
+        // }
 
-        emit(SuccessAlert(alertsFetched: updatedAlerts));
+        emit(SuccessAlert(
+            alertsFetched: updatedAlerts, reqType: AlertReq.sendAlert));
       },
     );
   }

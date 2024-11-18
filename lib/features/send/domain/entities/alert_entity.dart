@@ -10,6 +10,7 @@ class AlertEntity extends Equatable {
   final String? weather;
   final String? temperature;
   final String? postBy;
+  final String? status;
   final DateTime? postAt;
 
   const AlertEntity({
@@ -22,6 +23,7 @@ class AlertEntity extends Equatable {
     this.weather,
     this.temperature,
     this.postBy,
+    this.status,
     this.postAt,
   });
 
@@ -37,6 +39,7 @@ class AlertEntity extends Equatable {
       weather,
       temperature,
       postBy,
+      status,
       postAt,
     ];
   }

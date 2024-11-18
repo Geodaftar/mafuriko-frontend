@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import 'package:mafuriko/core/routes/routes.dart';
+import 'package:mafuriko/features/home/presentation/cubit/navigation_cubit.dart';
 import 'package:mafuriko/features/maps/presentation/bloc/map_bloc.dart';
 import 'package:mafuriko/features/onboarding/cubit/count_cubit.dart';
 import 'package:mafuriko/features/profile/presentation/bloc/profile_bloc.dart';
@@ -19,6 +21,7 @@ class MafurikoApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScreenUtilInit(
       designSize: const Size(390, 844),
+      ensureScreenSize: true,
       builder: (context, child) => MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -39,14 +42,19 @@ class MafurikoApp extends StatelessWidget {
           BlocProvider(
             create: (context) => sl<AlertBloc>(),
           ),
+          BlocProvider(
+            create: (context) => NavigationCubit(router),
+          ),
         ],
         child: MaterialApp.router(
           theme: AppTheme.theme,
           debugShowCheckedModeBanner: false,
           title: "Mafuriko",
-          routerDelegate: router.routerDelegate,
-          routeInformationParser: router.routeInformationParser,
-          routeInformationProvider: router.routeInformationProvider,
+          routerConfig: router,
+          builder: EasyLoading.init(),
+          // routerDelegate: router.routerDelegate,
+          // routeInformationParser: router.routeInformationParser,
+          // routeInformationProvider: router.routeInformationProvider,
         ),
       ),
     );

@@ -15,30 +15,39 @@ class PostAlertUseCase extends UseCase<AlertEntity?, AlertParams> {
   @override
   Future<Either<Failure, AlertEntity?>> call(AlertParams params) async {
     return await repository.postAlert(
+      uid: params.uid,
       position: params.floodLocation,
       location: params.sceneName,
       description: params.floodDescription,
       intensity: params.floodIntensity,
       alertCategory: params.alertCategory,
       image: params.floodImage,
+      temperature: params.temperature,
+      weather: params.weather,
     );
   }
 }
 
 class AlertParams {
+  final String uid;
   final String sceneName;
   final LatLng floodLocation;
   final String floodDescription;
   final String floodIntensity;
   final String alertCategory;
+  final String temperature;
+  final String weather;
   final XFile? floodImage;
 
   AlertParams({
+    required this.uid,
     required this.sceneName,
     required this.floodLocation,
     required this.floodDescription,
     required this.floodIntensity,
     required this.alertCategory,
+    required this.temperature,
+    required this.weather,
     this.floodImage,
   });
 }

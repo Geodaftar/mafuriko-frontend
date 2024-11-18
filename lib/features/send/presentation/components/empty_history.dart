@@ -4,7 +4,9 @@ import 'package:mafuriko/gen/gen.dart';
 import 'package:mafuriko/shared/widgets/buttons.dart';
 
 class EmptyHistory extends StatelessWidget {
-  const EmptyHistory({super.key});
+  final TabController tabController; // Ajoutez ce champ
+
+  const EmptyHistory({super.key, required this.tabController});
 
   @override
   Widget build(BuildContext context) {
@@ -40,10 +42,12 @@ class EmptyHistory extends StatelessWidget {
               ),
               // SizedBox(height: 42.h,),
               Padding(
-                padding: EdgeInsets.symmetric(horizontal: 70.w, vertical: 24.h),
+                padding: EdgeInsets.symmetric(horizontal: 40.w, vertical: 24.h),
                 child: PrimaryExpandedButton(
                   title: 'Signaler un incident',
-                  onTap: () {},
+                  onTap: () {
+                    tabController.index = 0;
+                  },
                 ),
               ),
             ],

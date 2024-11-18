@@ -12,11 +12,17 @@ class AlertModel extends AlertEntity {
     super.floodDescription,
     super.weather,
     super.temperature,
+    super.status,
     super.postBy,
     super.postAt,
   });
 
   factory AlertModel.fromJson(Map<String, dynamic> json) {
+    final String user = json['user'] != null
+        ? '${json["user"]["userFullName"] ?? ''}'
+        : 'Administrateur';
+
+    // print('user from alert: $user');
     return AlertModel(
       id: json["_id"],
       image: json['floodImage'],
@@ -24,10 +30,13 @@ class AlertModel extends AlertEntity {
       alertType: json['floodCategory'],
       floodScene: json['floodScene'],
       floodDescription: json['floodDescription'],
-      temperature: json['temperaty'] ?? 'N/A',
+      temperature: json['temperature'] ?? 'N/A',
       weather: json['weather'] ?? 'N/A',
-      postBy: json['postBy'] ?? 'user',
-      postAt: DateTime.parse(json['floodDate'] ?? DateTime.now()),
+      postBy: user,
+      status: json['status'],
+      postAt: json['floodDate'] != null
+          ? DateTime.parse(json['floodDate'])
+          : DateTime.now(),
     );
   }
   String toJson() => json.encode(<String, dynamic>{
@@ -40,6 +49,7 @@ class AlertModel extends AlertEntity {
         'weather': weather,
         'temperature': temperature,
         'postBy': postBy,
+        'status': status,
         'postAt': postAt,
       });
 }
