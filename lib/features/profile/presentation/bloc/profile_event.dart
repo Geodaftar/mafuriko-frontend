@@ -17,18 +17,24 @@ class LoadUserProfile extends ProfileEvent {
 }
 
 class UpdateProfileEvent extends ProfileEvent {
-  final String userName;
+  final String fullName;
   final String userEmail;
   final String phoneNumber;
 
   const UpdateProfileEvent({
-    required this.userName,
+    required this.fullName,
     required this.userEmail,
     required this.phoneNumber,
   });
 
   @override
-  List<Object> get props => [userName, userEmail, phoneNumber];
+  List<Object> get props => [fullName, userEmail, phoneNumber];
+}
+
+class UpdateProfileImageEvent extends ProfileEvent {
+  final String method;
+
+  const UpdateProfileImageEvent({required this.method});
 }
 
 class ModifyPasswordEvent extends ProfileEvent {
