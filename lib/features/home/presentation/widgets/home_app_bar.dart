@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
+// import 'package:flutter_svg/flutter_svg.dart';
 import 'package:go_router/go_router.dart';
 
 import 'package:mafuriko/core/routes/constant_path.dart';
@@ -27,8 +27,25 @@ class HomeAppBar extends StatelessWidget {
         child: Padding(
           padding:
               EdgeInsets.only(left: 16.w, top: 10.h, bottom: 10.h, right: 13.w),
-          child: CircleAvatar(
-            backgroundImage: AssetImage(AppImages.icons.avatar3.path),
+          child: BlocBuilder<AuthBloc, AuthState>(
+            builder: (context, state) {
+              if (state is AuthSuccess) {
+                return CircleAvatar(
+                  backgroundImage: state.user.image != ''
+                      ? NetworkImage(state.user.image!)
+                      : AssetImage(AppImages.icons.avatar3.path),
+                );
+              }
+              if (state is AuthFailure) {
+                return CircleAvatar(
+                  backgroundImage: AssetImage(AppImages.icons.avatar3.path),
+                );
+              }
+
+              return const CircleAvatar(
+                child: CircularProgressIndicator.adaptive(),
+              );
+            },
           ),
         ),
       ),
@@ -85,19 +102,19 @@ class HomeAppBar extends StatelessWidget {
           ),
         ),
       ),
-      actions: [
-        InkWell(
-          onTap: () {
-            // context.push(Paths.initialPath);
-            // context.read<AuthBloc>().add(LogOutEvent());
-          },
-          child: Container(
-            width: 26.w,
-            height: 30.h,
-            margin: EdgeInsets.only(right: 16.w),
-            child: SvgPicture.asset(AppImages.icons.bellNotification.path),
-          ),
-        ),
+      actions: const [
+        // InkWell(
+        //   onTap: () {
+        //     // context.push(Paths.initialPath);
+        //     // context.read<AuthBloc>().add(LogOutEvent());
+        //   },
+        //   child: Container(
+        //     width: 26.w,
+        //     height: 30.h,
+        //     margin: EdgeInsets.only(right: 16.w),
+        //     child: SvgPicture.asset(AppImages.icons.bellNotification.path),
+        //   ),
+        // ),
       ],
     );
   }

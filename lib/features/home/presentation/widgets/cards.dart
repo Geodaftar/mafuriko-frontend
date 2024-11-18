@@ -1,12 +1,32 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:geocoding/geocoding.dart';
+
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:mafuriko/features/home/presentation/cubit/navigation_cubit.dart';
 
 import 'package:mafuriko/features/home/presentation/widgets/skeleton.dart';
 import 'package:mafuriko/features/send/domain/entities/alert_entity.dart';
 import 'package:mafuriko/gen/gen.dart';
+
+String capitalizeFirstLetter(String? text) {
+  if (text == null || text.isEmpty) return '';
+  return text[0].toUpperCase() + text.substring(1);
+}
+
+// List<Placemark> placeMarks = await placemarkFromCoordinates(
+//             position.latitude, position.longitude);
+
+Future<String?> place(double latitude, double longitude) async {
+  List<Placemark> placeMarks =
+      await placemarkFromCoordinates(latitude, longitude);
+  final city =
+      '${placeMarks[1].subLocality}${placeMarks[1].subLocality == '' ? '' : ','} ${placeMarks[1].locality}';
+  return city;
+}
 
 class Section extends StatelessWidget {
   const Section({super.key, required this.title, this.route, this.routeTitle});
@@ -18,7 +38,7 @@ class Section extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.fromLTRB(0, 16.h, 16.w, 16.h),
+      margin: EdgeInsets.symmetric(vertical: 16.h),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -32,16 +52,23 @@ class Section extends StatelessWidget {
             ),
           ),
           InkWell(
+            borderRadius: BorderRadius.circular(8.r),
             onTap: route == null
-                ? null
+                ? () => context.read<NavigationCubit>().updateIndex(1)
                 : () => GoRouter.of(context).pushNamed('$route'),
-            child: Text(
-              routeTitle ?? 'Voir tout',
-              style: TextStyle(
-                color: AppColor.secondaryGray,
-                fontSize: 12.sp,
-                fontFamily: AppFonts.nunito,
-                fontWeight: FontWeight.w400,
+            child: Container(
+              alignment: Alignment.centerRight,
+              // width: 65.w,
+              margin: EdgeInsets.symmetric(horizontal: 16.w),
+              height: 25.h,
+              child: Text(
+                routeTitle ?? 'Voir tout',
+                style: TextStyle(
+                  color: AppColor.secondaryGray,
+                  fontSize: 12.sp,
+                  fontFamily: AppFonts.nunito,
+                  fontWeight: FontWeight.w400,
+                ),
               ),
             ),
           ),
@@ -59,13 +86,16 @@ class AlertCard extends StatelessWidget {
     this.image,
     this.postAt,
     this.margin,
+    this.postedBy,
+    this.pos,
   });
 
   final String? image;
   final String? floodScene;
   final String? floodDescription;
   final DateTime? postAt;
-
+  final String? postedBy;
+  final Map<String, dynamic>? pos;
   final EdgeInsetsGeometry? margin;
 
   @override
@@ -92,9 +122,11 @@ class AlertCard extends StatelessWidget {
                 ),
               ),
               image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  image.toString(),
-                ),
+                image: image == null || image == ''
+                    ? AssetImage(AppImages.images.onboarding.thumb.path)
+                    : CachedNetworkImageProvider(
+                        image!,
+                      ),
                 fit: BoxFit.cover,
               ),
             ),
@@ -154,7 +186,7 @@ class AlertCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '$floodScene',
+                      capitalizeFirstLetter(floodScene),
                       overflow: TextOverflow.ellipsis,
                       maxLines: 1,
                       style: TextStyle(
@@ -168,17 +200,22 @@ class AlertCard extends StatelessWidget {
                       margin: EdgeInsets.symmetric(vertical: 5.h),
                       child: Wrap(
                         children: [
+                          FutureBuilder<String?>(
+                              future: place(double.parse(pos?['latitude']),
+                                  double.parse(pos?['longitude'])),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  '${snapshot.data} || Envoyée par: ',
+                                  style: TextStyle(
+                                    color: AppColor.primaryGray,
+                                    fontSize: 8.sp,
+                                    fontFamily: AppFonts.nunito,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                );
+                              }),
                           Text(
-                            'Cocody, Abidjan  || Uploaded by: ',
-                            style: TextStyle(
-                              color: AppColor.primaryGray,
-                              fontSize: 8.sp,
-                              fontFamily: AppFonts.nunito,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            'Tolu Oluyole',
+                            postedBy.toString(),
                             style: TextStyle(
                               color: AppColor.primaryGray,
                               fontSize: 8.sp,
@@ -193,6 +230,8 @@ class AlertCard extends StatelessWidget {
                       height: 60.h,
                       child: Text(
                         floodDescription ?? 'N/A',
+                        maxLines: 3,
+                        overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: AppColor.primaryGray,
                           fontSize: 12.sp,
@@ -219,12 +258,33 @@ class AlertWithMoreDetailCard extends StatelessWidget {
     this.floodScene,
     this.image,
     this.postAt,
+    this.postedBy,
+    this.pos,
+    this.isHistoryView = false,
+    this.status,
   });
 
   final String? image;
   final String? floodScene;
   final String? floodDescription;
   final DateTime? postAt;
+  final String? postedBy;
+  final Map<String, dynamic>? pos;
+  final bool isHistoryView;
+  final String? status;
+
+  Color alertStatusColor(String status) {
+    switch (status) {
+      case 'Validé':
+        return Colors.green;
+      case 'En attente':
+        return Colors.grey;
+      case 'Rejeté':
+        return AppColor.red;
+      default:
+        return Colors.grey;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -240,33 +300,67 @@ class AlertWithMoreDetailCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Container(
-            height: 135.h,
-            decoration: ShapeDecoration(
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(10.r),
-              ),
-              image: DecorationImage(
-                image: CachedNetworkImageProvider(
-                  cacheManager: CachedNetworkImageProvider.defaultCacheManager,
-                  image.toString(),
+          Stack(
+            children: [
+              Container(
+                height: 135.h,
+                decoration: ShapeDecoration(
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.r),
+                  ),
+                  image: DecorationImage(
+                    image: image == null || image == ''
+                        ? AssetImage(AppImages.images.onboarding.thumb.path)
+                        : CachedNetworkImageProvider(
+                            // cacheManager:
+                            //     CachedNetworkImageProvider.defaultCacheManager,
+                            image.toString(),
+                          ),
+                    fit: BoxFit.cover,
+                  ),
                 ),
-                fit: BoxFit.cover,
+                // child: ClipRRect(
+                //   borderRadius: BorderRadius.circular(10.r),
+                //   child: CachedNetworkImage(
+                //     imageUrl: image.toString(),
+                //     fit: BoxFit.cover,
+                //     progressIndicatorBuilder: (context, url, p) => Center(
+                //       child: CircularProgressIndicator(
+                //         value: p.progress,
+                //       ),
+                //     ),
+                //     errorWidget: (context, url, error) => const Icon(Icons.error),
+                //   ),
+                // ),
               ),
-            ),
-            // child: ClipRRect(
-            //   borderRadius: BorderRadius.circular(10.r),
-            //   child: CachedNetworkImage(
-            //     imageUrl: image.toString(),
-            //     fit: BoxFit.cover,
-            //     progressIndicatorBuilder: (context, url, p) => Center(
-            //       child: CircularProgressIndicator(
-            //         value: p.progress,
-            //       ),
-            //     ),
-            //     errorWidget: (context, url, error) => const Icon(Icons.error),
-            //   ),
-            // ),
+              if (isHistoryView)
+                Container(
+                  // width: 79.w,
+                  height: 30.h,
+                  padding:
+                      EdgeInsets.symmetric(horizontal: 10.w, vertical: 3.h),
+                  // alignment: Alignment.center,
+                  clipBehavior: Clip.antiAlias,
+                  decoration: ShapeDecoration(
+                    color: alertStatusColor(status.toString()),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(10.r),
+                        bottomRight: Radius.circular(10.r),
+                      ),
+                    ),
+                  ),
+                  child: Text(
+                    '$status',
+                    style: TextStyle(
+                      color: Colors.white,
+                      fontSize: 14.sp,
+                      fontFamily: AppFonts.nunito,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+            ],
           ),
           SizedBox(height: 12.h),
           Padding(
@@ -324,7 +418,7 @@ class AlertWithMoreDetailCard extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      '$floodScene',
+                      capitalizeFirstLetter(floodScene),
                       style: TextStyle(
                         color: AppColor.primaryGray,
                         fontSize: 16.sp,
@@ -336,17 +430,22 @@ class AlertWithMoreDetailCard extends StatelessWidget {
                       margin: EdgeInsets.symmetric(vertical: 5.h),
                       child: Wrap(
                         children: [
+                          FutureBuilder<String?>(
+                              future: place(double.parse(pos?['latitude']),
+                                  double.parse(pos?['longitude'])),
+                              builder: (context, snapshot) {
+                                return Text(
+                                  '${snapshot.data} || Envoyée par: ',
+                                  style: TextStyle(
+                                    color: AppColor.primaryGray,
+                                    fontSize: 8.sp,
+                                    fontFamily: AppFonts.nunito,
+                                    fontWeight: FontWeight.w400,
+                                  ),
+                                );
+                              }),
                           Text(
-                            'Cocody, Abidjan  || Uploaded by: ',
-                            style: TextStyle(
-                              color: AppColor.primaryGray,
-                              fontSize: 8.sp,
-                              fontFamily: AppFonts.nunito,
-                              fontWeight: FontWeight.w400,
-                            ),
-                          ),
-                          Text(
-                            'Tolu Oluyole',
+                            postedBy.toString(),
                             style: TextStyle(
                               color: AppColor.primaryGray,
                               fontSize: 8.sp,
@@ -361,7 +460,7 @@ class AlertWithMoreDetailCard extends StatelessWidget {
                       height: 40.h,
                       child: Text(
                         floodDescription ?? 'N/A',
-                        maxLines: 3,
+                        maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
                           color: AppColor.primaryGray,
@@ -375,38 +474,38 @@ class AlertWithMoreDetailCard extends StatelessWidget {
                 ),
                 Padding(
                   padding: EdgeInsets.only(top: 12.h),
-                  child: Row(
-                    // mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        Icons.thumb_up_off_alt_outlined,
-                        color: AppColor.primary,
-                      ),
-                      Text(
-                        '1,964',
-                        style: TextStyle(
-                          color: AppColor.primary,
-                          fontSize: 10.37.sp,
-                          fontFamily: AppFonts.nunito,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                      SizedBox(width: 10.h),
-                      const Icon(
-                        Icons.chat_bubble_rounded,
-                        color: AppColor.primary,
-                      ),
-                      Text(
-                        '135',
-                        style: TextStyle(
-                          color: AppColor.primary,
-                          fontSize: 10.37.sp,
-                          fontFamily: AppFonts.nunito,
-                          fontWeight: FontWeight.w700,
-                        ),
-                      ),
-                    ],
-                  ),
+                  // child: Row(
+                  //   // mainAxisAlignment: MainAxisAlignment.center,
+                  //   children: [
+                  //     const Icon(
+                  //       Icons.thumb_up_off_alt_outlined,
+                  //       color: AppColor.primary,
+                  //     ),
+                  //     Text(
+                  //       '1,964',
+                  //       style: TextStyle(
+                  //         color: AppColor.primary,
+                  //         fontSize: 10.37.sp,
+                  //         fontFamily: AppFonts.nunito,
+                  //         fontWeight: FontWeight.w700,
+                  //       ),
+                  //     ),
+                  //     SizedBox(width: 10.h),
+                  //     const Icon(
+                  //       Icons.chat_bubble_rounded,
+                  //       color: AppColor.primary,
+                  //     ),
+                  //     Text(
+                  //       '135',
+                  //       style: TextStyle(
+                  //         color: AppColor.primary,
+                  //         fontSize: 10.37.sp,
+                  //         fontFamily: AppFonts.nunito,
+                  //         fontWeight: FontWeight.w700,
+                  //       ),
+                  //     ),
+                  //   ],
+                  // ),
                 ),
               ],
             ),
@@ -557,10 +656,14 @@ class TechnicalInfosComponentCard extends StatelessWidget {
     super.key,
     this.lat = '0.0',
     this.lng = '0.0',
+    required this.weather,
+    required this.temperature,
   });
 
   final String? lat;
   final String? lng;
+  final String? weather;
+  final String? temperature;
 
   // final LatLng coordinate;
 
@@ -609,7 +712,7 @@ class TechnicalInfosComponentCard extends StatelessWidget {
               ),
               contentPadding: EdgeInsets.zero,
               title: Text(
-                '12.4 °C',
+                '${temperature != '' ? temperature : 'N/A'} ${temperature == '' ? '' : '°C'}',
                 style: TextStyle(
                   color: AppColor.primaryGray,
                   fontSize: 14.sp,
@@ -638,7 +741,7 @@ class TechnicalInfosComponentCard extends StatelessWidget {
               ),
               contentPadding: EdgeInsets.zero,
               title: Text(
-                'Ensoleillé',
+                '${weather != '' ? weather : 'N/A'}',
                 style: TextStyle(
                   color: AppColor.primaryGray,
                   fontSize: 14.sp,
@@ -734,7 +837,7 @@ class FLoodInformationCard extends StatelessWidget {
               ],
             ),
             Text(
-              '11h28  || 25/04/2024',
+              '${DateFormat("HH'h'MM").format(alert?.postAt ?? DateTime.now())} || ${DateFormat('dd/MM/yyyy').format(alert?.postAt ?? DateTime.now())}',
               style: TextStyle(
                 color: AppColor.primaryGray,
                 fontSize: 10.sp,
@@ -749,7 +852,7 @@ class FLoodInformationCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
-              '${alert?.floodScene}',
+              capitalizeFirstLetter(alert?.floodScene),
               style: TextStyle(
                 color: AppColor.primaryGray,
                 fontSize: 18.sp,
@@ -761,17 +864,23 @@ class FLoodInformationCard extends StatelessWidget {
               margin: EdgeInsets.symmetric(vertical: 5.h),
               child: Wrap(
                 children: [
+                  FutureBuilder<String?>(
+                      future: place(
+                          double.parse(alert?.floodLocation?['latitude']),
+                          double.parse(alert?.floodLocation?['longitude'])),
+                      builder: (context, snapshot) {
+                        return Text(
+                          '${snapshot.data} || Envoyée par: ',
+                          style: TextStyle(
+                            color: AppColor.primaryGray,
+                            fontSize: 12.sp,
+                            fontFamily: AppFonts.nunito,
+                            fontWeight: FontWeight.w400,
+                          ),
+                        );
+                      }),
                   Text(
-                    'Cocody, Abidjan  || Uploaded by: ',
-                    style: TextStyle(
-                      color: AppColor.primaryGray,
-                      fontSize: 12.sp,
-                      fontFamily: AppFonts.nunito,
-                      fontWeight: FontWeight.w400,
-                    ),
-                  ),
-                  Text(
-                    'Tolu Oluyole',
+                    '${alert?.postBy}',
                     style: TextStyle(
                       color: AppColor.primaryGray,
                       fontSize: 12.sp,
@@ -811,7 +920,7 @@ class AlertSkeletonCard extends StatelessWidget {
         color: Colors.white,
         borderRadius: BorderRadius.circular(10.r),
         boxShadow: [
-          BoxShadow(
+          const BoxShadow(
             color: Color(0xff969292),
             offset: Offset(5, 3),
             blurRadius: 8,
