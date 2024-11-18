@@ -13,7 +13,7 @@ class AlertDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: const AppBackAppBar(title: 'Marché cocovico'),
+      appBar: AppBackAppBar(title: '${alert?.floodScene}'),
       body: SingleChildScrollView(
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 30.w),
@@ -42,6 +42,8 @@ class AlertDetailScreen extends StatelessWidget {
               TechnicalInfosComponentCard(
                 lat: alert?.floodLocation?['latitude'],
                 lng: alert?.floodLocation?['longitude'],
+                weather: alert?.weather,
+                temperature: alert?.temperature,
               ),
               SizedBox(height: 25.h),
             ],
