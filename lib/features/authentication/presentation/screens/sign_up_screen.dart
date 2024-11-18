@@ -56,189 +56,206 @@ class _SignUpScreenState extends State<SignUpScreen> {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.fromLTRB(18.w, 0, 18.w, 20.h),
+          padding: EdgeInsets.fromLTRB(18.w, 0, 18.w, 0),
           child: Form(
               key: _formKey,
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  SizedBox(height: 10.h),
-                  Text(
-                    'Créez votre compte',
-                    style: TextStyle(
-                      color: AppColor.primaryGray,
-                      fontSize: 18.sp,
-                      fontFamily: AppFonts.inter,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                  SizedBox(height: 10.h),
-                  Text(
-                    'Remplissez le formulaire ci-dessous pour créer un compte',
-                    style: TextStyle(
-                      color: AppColor.secondaryGray,
-                      fontSize: 16.sp,
-                      fontFamily: AppFonts.nunito,
-                      fontWeight: FontWeight.w400,
-                      height: 1.5.sp,
-                    ),
-                  ),
-                  SizedBox(height: 30.h),
-                  AppFormField(
-                    focus: _nameFocus,
-                    controller: _nameController,
-                    isNameField: true,
-                    isEmailField: false,
-                    label: 'Nom et prénom',
-                    hint: 'Saisissez votre nom complet',
-                    type: TextInputType.name,
-                    onValidate: (value) {
-                      final isValid = Name.dirty(value!).validator(value);
-                      return isValid?.name;
-                    },
-                  ),
-                  AppFormField(
-                    focus: _emailFocus,
-                    controller: _emailController,
-                    label: 'Email',
-                    hint: 'Saisissez l’adresse email',
-                    type: TextInputType.emailAddress,
-                    onValidate: (value) {
-                      final isValid = Email.dirty(value!).validator(value);
-                      return isValid?.name;
-                    },
-                  ),
-                  AppFormField(
-                    focus: _phoneFocus,
-                    controller: _phoneController,
-                    label: 'Téléphone',
-                    hint: 'Saisissez le numéro de téléphone',
-                    type: TextInputType.phone,
-                    // onValidate: (value) {
-                    //   final isValid =
-                    //       PhoneNumber.dirty(value!).validator(value);
-                    //   return isValid?.name;
-                    // },
-                  ),
-                  BlocBuilder<ToggleCubit, bool>(
-                    builder: (context, state) {
-                      return AppFormField(
-                        focus: _passwordFocus,
-                        controller: _passwordController,
-                        isEmailField: false,
-                        isObscure: state,
-                        onObscured: () {
-                          context.read<ToggleCubit>().toggler();
-                        },
-                        label: 'Mot de passe',
-                        hint: 'Saisissez mot de passe',
-                        onValidate: (value) {
-                          final isValid =
-                              PasswordValidator.dirty(value!).validator(value);
-                          return isValid?.name;
-                        },
-                      );
-                    },
-                  ),
-                  BlocBuilder<ToggleCubit, bool>(
-                    builder: (context, state) {
-                      return AppFormField(
-                        focus: _confirmPassFocus,
-                        controller: _confirmPassController,
-                        isEmailField: false,
-                        isObscure: state,
-                        onObscured: () {
-                          context.read<ToggleCubit>().toggler();
-                        },
-                        label: 'Confirmer le mot de passe',
-                        hint: 'Saisissez à nouveau le mot de passe',
-                        onValidate: (value) {
-                          final isValid =
-                              PasswordValidator.dirty(value!).validator(value);
-
-                          if (isValid?.name == null &&
-                              _passwordController.text !=
-                                  _confirmPassController.text) {
-                            return ' *les deux mot de passe doivent être identique!';
-                          }
-                          return isValid?.name;
-                        },
-                      );
-                    },
-                  ),
-                  SizedBox(height: 12.h),
-                  BlocConsumer<AuthBloc, AuthState>(
-                    listener: (context, state) {
-                      if (state is AuthFailure) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(state.message)),
-                        );
-                      } else if (state is AuthSuccess &&
-                          state.request == Request.signup) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Inscription réussie')),
-                        );
-                        context.pushNamed(Paths.home);
-                        // Navigate to the next screen or perform any other action on success
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state is AuthLoading) {
-                        return Center(
-                          child: SizedBox(
-                            width: 25.w,
-                            height: 30.h,
-                            child: const CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-
-                      return PrimaryExpandedButton(
-                        title: 'Continuer',
-                        onTap: () {
-                          if (_formKey.currentState?.validate() ?? false) {
-                            context.read<AuthBloc>().add(SignUpRequested(
-                                  userEmail: _emailController.text,
-                                  userName: _nameController.text,
-                                  userNumber: _phoneController.text,
-                                  userPassword: _passwordController.text,
-                                  confirmPassword: _confirmPassController.text,
-                                ));
-                          }
-                        },
-                      );
-                    },
-                  ),
-                  OptionAuth(
-                    message: "Vous avez déjà un compte?",
-                    option: "Connectez-vous",
-                    path: Paths.login,
-                  ),
-                  SizedBox(
-                    height: 22.h,
-                    child: TextButton(
-                      style: TextButton.styleFrom(padding: EdgeInsets.zero),
-                      onPressed: () {},
-                      child: Container(
-                        decoration: const BoxDecoration(
-                          border: Border(
-                            bottom: BorderSide(
-                              color: Color(0xFF6F6F6F),
-                            ),
-                          ),
-                        ),
-                        child: Text(
-                          'Ajouter un profil visiteur',
+              child: SizedBox(
+                height: .94.sh - kToolbarHeight,
+                child: Column(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  // mainAxisSize: MainAxisSize.max,
+                  children: [
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        SizedBox(height: 10.h),
+                        Text(
+                          'Créez votre compte',
                           style: TextStyle(
-                            color: const Color(0xFF6F6F6F),
-                            fontSize: 14.sp,
-                            fontFamily: AppFonts.lato,
+                            color: AppColor.primaryGray,
+                            fontSize: 18.sp,
+                            fontFamily: AppFonts.inter,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
-                      ),
+                        SizedBox(height: 10.h),
+                        Text(
+                          'Remplissez le formulaire ci-dessous pour créer un compte',
+                          style: TextStyle(
+                            color: AppColor.secondaryGray,
+                            fontSize: 16.sp,
+                            fontFamily: AppFonts.nunito,
+                            fontWeight: FontWeight.w400,
+                            height: 1.5.sp,
+                          ),
+                        ),
+                        SizedBox(height: 30.h),
+                        // AppFormField(
+                        //   focus: _nameFocus,
+                        //   controller: _nameController,
+                        //   isNameField: true,
+                        //   isEmailField: false,
+                        //   label: 'Nom et prénom',
+                        //   hint: 'Saisissez votre nom complet',
+                        //   type: TextInputType.name,
+                        //   onValidate: (value) {
+                        //     final isValid = Name.dirty(value!.trim()).validator(value.trim());
+                        //     return isValid?.name;
+                        //   },
+                        // ),
+                        AppFormField(
+                          focus: _emailFocus,
+                          controller: _emailController,
+                          label: 'Email',
+                          hint: 'Saisissez l’adresse email',
+                          type: TextInputType.emailAddress,
+                          onValidate: (value) {
+                            final isValid = Email.dirty(value!.trim())
+                                .validator(value.trim());
+                            return isValid?.name;
+                          },
+                        ),
+                        AppFormField(
+                          focus: _phoneFocus,
+                          controller: _phoneController,
+                          label: 'Téléphone',
+                          hint: 'Saisissez le numéro de téléphone',
+                          type: TextInputType.phone,
+                          // onValidate: (value) {
+                          //   final isValid =
+                          //       PhoneNumber.dirty(value!).validator(value);
+                          //   return isValid?.name;
+                          // },
+                        ),
+                        BlocBuilder<ToggleCubit, bool>(
+                          builder: (context, state) {
+                            return AppFormField(
+                              focus: _passwordFocus,
+                              controller: _passwordController,
+                              isEmailField: false,
+                              isObscure: state,
+                              onObscured: () {
+                                context.read<ToggleCubit>().toggler();
+                              },
+                              label: 'Mot de passe',
+                              hint: 'Saisissez mot de passe',
+                              onValidate: (value) {
+                                final isValid = PasswordValidator.dirty(value!)
+                                    .validator(value);
+                                return isValid?.name;
+                              },
+                            );
+                          },
+                        ),
+                        BlocBuilder<ToggleCubit, bool>(
+                          builder: (context, state) {
+                            return AppFormField(
+                              focus: _confirmPassFocus,
+                              controller: _confirmPassController,
+                              isEmailField: false,
+                              isObscure: state,
+                              onObscured: () {
+                                context.read<ToggleCubit>().toggler();
+                              },
+                              label: 'Confirmer le mot de passe',
+                              hint: 'Saisissez à nouveau le mot de passe',
+                              onValidate: (value) {
+                                final isValid = PasswordValidator.dirty(value!)
+                                    .validator(value);
+
+                                if (isValid?.name == null &&
+                                    _passwordController.text !=
+                                        _confirmPassController.text) {
+                                  return ' *les deux mot de passe doivent être identique!';
+                                }
+                                return isValid?.name;
+                              },
+                            );
+                          },
+                        ),
+                      ],
                     ),
-                  ),
-                ],
+                    Spacer(),
+                    Column(
+                      children: [
+                        BlocConsumer<AuthBloc, AuthState>(
+                          listener: (context, state) {
+                            if (state is AuthFailure) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text(state.message)),
+                              );
+                            } else if (state is AuthSuccess &&
+                                state.request == Request.signup) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text('Inscription réussie')),
+                              );
+                              context.pushNamed(Paths.home);
+                              // Navigate to the next screen or perform any other action on success
+                            }
+                          },
+                          builder: (context, state) {
+                            if (state is AuthLoading) {
+                              return Center(
+                                child: SizedBox(
+                                  width: 25.w,
+                                  height: 30.h,
+                                  child: const CircularProgressIndicator(),
+                                ),
+                              );
+                            }
+
+                            return PrimaryExpandedButton(
+                              title: 'Continuer',
+                              onTap: () {
+                                if (_formKey.currentState?.validate() ??
+                                    false) {
+                                  context.read<AuthBloc>().add(SignUpRequested(
+                                        userEmail: _emailController.text,
+                                        userName: _nameController.text,
+                                        userNumber: _phoneController.text,
+                                        userPassword: _passwordController.text,
+                                        confirmPassword:
+                                            _confirmPassController.text,
+                                      ));
+                                }
+                              },
+                            );
+                          },
+                        ),
+                        OptionAuth(
+                          message: "Vous avez déjà un compte?",
+                          option: "Connectez-vous",
+                          path: Paths.login,
+                        ),
+                        // SizedBox(
+                        //   height: 22.h,
+                        //   // child: TextButton(
+                        //   //   style: TextButton.styleFrom(padding: EdgeInsets.zero),
+                        //   //   onPressed: () {},
+                        //   //   child: Container(
+                        //   //     decoration: const BoxDecoration(
+                        //   //       border: Border(
+                        //   //         bottom: BorderSide(
+                        //   //           color: Color(0xFF6F6F6F),
+                        //   //         ),
+                        //   //       ),
+                        //   //     ),
+                        //   //     child: Text(
+                        //   //       'Ajouter un profil visiteur',
+                        //   //       style: TextStyle(
+                        //   //         color: const Color(0xFF6F6F6F),
+                        //   //         fontSize: 14.sp,
+                        //   //         fontFamily: AppFonts.lato,
+                        //   //       ),
+                        //   //     ),
+                        //   //   ),
+                        //   // ),
+                        // ),
+                      ],
+                    ),
+                  ],
+                ),
               )),
         ),
       ),
