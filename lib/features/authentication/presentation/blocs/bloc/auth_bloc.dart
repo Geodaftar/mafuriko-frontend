@@ -57,7 +57,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     final Either<Failure, UserEntity> result = await signUpUseCase(
       SignUpParams(
         email: event.userEmail,
-        fullName: event.userName,
+        // fullName: event.userName,
         phoneNumber: event.userNumber,
         password: event.userPassword,
         confirmPassword: event.confirmPassword,
@@ -93,8 +93,14 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     log('failureOrUser : $failureOrUser');
 
     failureOrUser.fold(
-      (failure) => emit(AuthUnauthenticated()),
-      (user) => emit(AuthSuccess(user: user, request: Request.checkUser)),
+      (failure) {
+        // add(const AuthStatusChanged(Status.unauthenticated));
+        emit(AuthUnauthenticated());
+      },
+      (user) {
+        // add(const AuthStatusChanged(Status.authenticated));
+        emit(AuthSuccess(user: user, request: Request.checkUser));
+      },
     );
   }
 
@@ -187,7 +193,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
 
     failureOrUser.fold(
       (failure) => emit(AuthUnauthenticated()),
-      (user) => emit(AuthSuccess(user: user, request: Request.updateUser)),
+      (user) {
+        log('update in authBloc:::::::::::${user.userName}');
+        emit(AuthSuccess(user: user, request: Request.updateUser));
+      },
     );
   }
 }
