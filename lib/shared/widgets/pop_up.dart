@@ -233,7 +233,7 @@ class PopUp {
               title: 'Oui',
               onTap: () {
                 Navigator.of(context).pop(); // Ferme d'abord le dialogue
-                context.goNamed(Paths.onboarding);
+                context.goNamed(Paths.login); // redirigé vers la page de login
                 context.read<AuthBloc>().add(LogOutEvent());
                 // context.push(Paths.initialPath);
                 // context.read<AuthBloc>().add(LogOutEvent());

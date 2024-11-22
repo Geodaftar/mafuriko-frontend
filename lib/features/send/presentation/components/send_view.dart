@@ -48,7 +48,6 @@ class _SendViewState extends State<SendView> {
   ];
 
   String? selectedCategory;
-
   final FocusNode _localizationFocus = FocusNode();
   final TextEditingController _localizationController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
@@ -211,12 +210,12 @@ class _SendViewState extends State<SendView> {
             description:
                 'Données chargées avec succès. Revenir à la page de données',
             action: () {
-              _descriptionController.clear();
-              selectedCategory = null;
-              image = null;
-              setState(() {});
-              // context.pop();
-              context.read<NavigationCubit>().updateIndex(0);
+              // _descriptionController.clear();
+              // selectedCategory = null;
+              // image = null;
+              // setState(() {});
+              // Navigator.pop(context);
+              //context.read<NavigationCubit>().updateIndex(0);
             },
           );
         }
@@ -237,22 +236,39 @@ class _SendViewState extends State<SendView> {
                       focus: _localizationFocus..unfocus(),
                       controller: _localizationController
                         ..text = 'localisation loading...',
+                      onValidate: (val) {
+                        if (val != null && val.isEmpty) {
+                          return "Veuillez remplir ce champ";
+                        }
+                        return null;
+                      },
                     );
                   } else if (state is MapError) {
                     return AppFormField(
+                        label: 'Localisation',
+                        hint: 'Cocodie, Abidjan',
+                        focus: _localizationFocus..unfocus(),
+                        controller: _localizationController
+                          ..text = state.message,
+                        onValidate: (val) {
+                          if (val != null && val.isEmpty) {
+                            return "Veuillez remplir ce champ";
+                          }
+                          return null;
+                        });
+                  }
+                  return AppFormField(
                       label: 'Localisation',
                       hint: 'Cocodie, Abidjan',
                       focus: _localizationFocus..unfocus(),
-                      controller: _localizationController..text = state.message,
-                    );
-                  }
-                  return AppFormField(
-                    label: 'Localisation',
-                    hint: 'Cocodie, Abidjan',
-                    focus: _localizationFocus..unfocus(),
-                    controller: _localizationController
-                      ..text = '${state.place?[2].name}',
-                  );
+                      controller: _localizationController
+                        ..text = '${state.place?[2].name}',
+                      onValidate: (val) {
+                        if (val != null && val.isEmpty) {
+                          return "Veuillez remplir ce champ";
+                        }
+                        return null;
+                      });
                 },
               ),
               AppFormFieldDescription(
@@ -338,29 +354,39 @@ class _SendViewState extends State<SendView> {
                       return PrimaryExpandedButton(
                         title: 'Envoyer',
                         onTap: () {
-                          print({
-                            'weather': weather,
-                            'temperature': temp,
-                          });
-                          needInternet(() {
-                            context.read<AlertBloc>().add(
-                                  PostAlert(
-                                    uid: uid.toString(),
-                                    sceneName:
-                                        _localizationController.text.trim(),
-                                    floodLocation: LatLng(
-                                        mapState.position!.latitude,
-                                        mapState.position!.longitude),
-                                    floodDescription:
-                                        _descriptionController.text.trim(),
-                                    floodIntensity: 'forte',
-                                    category: selectedCategory ?? 'Inondation',
-                                    floodImage: image,
-                                    weather: weather,
-                                    temperature: temp,
-                                  ),
-                                );
-                          });
+                          if (_localizationController.text.isNotEmpty &&
+                              selectedCategory != null) {
+                            print({
+                              'weather': weather,
+                              'temperature': temp,
+                            });
+                            needInternet(() {
+                              context.read<AlertBloc>().add(
+                                    PostAlert(
+                                      uid: uid.toString(),
+                                      sceneName:
+                                          _localizationController.text.trim(),
+                                      floodLocation: LatLng(
+                                          mapState.position!.latitude,
+                                          mapState.position!.longitude),
+                                      floodDescription:
+                                          _descriptionController.text.trim(),
+                                      floodIntensity: 'forte',
+                                      category:
+                                          selectedCategory ?? 'Inondation',
+                                      floodImage: image,
+                                      weather: weather,
+                                      temperature: temp,
+                                    ),
+                                  );
+                            });
+                          } else {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                  content: Text(
+                                      'Formulaire invalide. Veuillez saisir la localisation et la catégorie')),
+                            );
+                          }
                         },
                       );
                     },

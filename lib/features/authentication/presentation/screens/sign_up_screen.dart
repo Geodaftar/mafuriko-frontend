@@ -121,11 +121,13 @@ class _SignUpScreenState extends State<SignUpScreen> {
                           label: 'Téléphone',
                           hint: 'Saisissez le numéro de téléphone',
                           type: TextInputType.phone,
-                          // onValidate: (value) {
-                          //   final isValid =
-                          //       PhoneNumber.dirty(value!).validator(value);
-                          //   return isValid?.name;
-                          // },
+                          onValidate: (value) {
+                            if (value != null &&
+                                (value.isEmpty || value.length < 9)) {
+                              return "Numéro de téléphone invalide";
+                            }
+                            return null;
+                          },
                         ),
                         BlocBuilder<ToggleCubit, bool>(
                           builder: (context, state) {

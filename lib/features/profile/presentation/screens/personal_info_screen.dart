@@ -77,20 +77,20 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         SizedBox(height: 30.h),
-                        AppFormField(
-                          focus: _nameFocus,
-                          controller: _nameController,
-                          isNameField: true,
-                          isEmailField: false,
-                          label: 'Nom et prénom',
-                          hint: 'Saisissez votre nom complet',
-                          type: TextInputType.name,
-                          onValidate: (value) {
-                            final isValid = Name.dirty(value!.trim())
-                                .validator(value.trim());
-                            return isValid?.name;
-                          },
-                        ),
+                        // AppFormField(
+                        //   focus: _nameFocus,
+                        //   controller: _nameController,
+                        //   isNameField: true,
+                        //   isEmailField: false,
+                        //   label: 'Nom et prénom',
+                        //   hint: 'Saisissez votre nom complet',
+                        //   type: TextInputType.name,
+                        //   onValidate: (value) {
+                        //     final isValid = Name.dirty(value!.trim())
+                        //         .validator(value.trim());
+                        //     return isValid?.name;
+                        //   },
+                        // ),
                         AppFormField(
                           enabled: false,
                           focus: _usernameFocus,

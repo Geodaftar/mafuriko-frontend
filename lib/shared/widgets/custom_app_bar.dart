@@ -9,11 +9,13 @@ class AppBackAppBar extends StatelessWidget implements PreferredSizeWidget {
     required this.title,
     this.route,
     this.bottom,
+    this.hideBackIcon,
   });
 
   final String title;
   final String? route;
   final PreferredSizeWidget? bottom;
+  final bool? hideBackIcon;
 
   @override
   Size get preferredSize =>
@@ -25,21 +27,23 @@ class AppBackAppBar extends StatelessWidget implements PreferredSizeWidget {
       centerTitle: true,
       titleSpacing: 2,
       leadingWidth: 70.w,
-      leading: InkWell(
-        overlayColor: const WidgetStatePropertyAll(Colors.transparent),
-        onTap: () {
-          Navigator.pop(context, 0);
-        },
-        child: Container(
-          width: 10.w,
-          height: 20.h,
-          padding: EdgeInsets.symmetric(horizontal: 13.w),
-          child: Padding(
-            padding: EdgeInsets.only(left: 1.w),
-            child: Icon(Icons.arrow_back_ios, size: 20.h),
-          ),
-        ),
-      ),
+      leading: hideBackIcon == true
+          ? SizedBox()
+          : InkWell(
+              overlayColor: const WidgetStatePropertyAll(Colors.transparent),
+              onTap: () {
+                Navigator.pop(context, 0);
+              },
+              child: Container(
+                width: 10.w,
+                height: 20.h,
+                padding: EdgeInsets.symmetric(horizontal: 13.w),
+                child: Padding(
+                  padding: EdgeInsets.only(left: 1.w),
+                  child: Icon(Icons.arrow_back_ios, size: 20.h),
+                ),
+              ),
+            ),
       title: InkWell(
         overlayColor: const WidgetStatePropertyAll(Colors.transparent),
         onTap: () {

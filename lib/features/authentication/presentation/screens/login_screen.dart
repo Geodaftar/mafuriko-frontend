@@ -26,6 +26,7 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final FocusNode _emailFocus = FocusNode();
   final FocusNode _passwordFocus = FocusNode();
+  bool authFailed = false;
 
   @override
   void dispose() {
@@ -40,8 +41,8 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      appBar: const BackAppBar(
-        title: 'Revenir',
+      appBar: AppBar(
+        leading: const SizedBox(),
       ),
       body: Padding(
         padding: EdgeInsets.fromLTRB(18.w, 0, 18.w, 20.h),
@@ -152,9 +153,13 @@ class _LoginScreenState extends State<LoginScreen> {
                     BlocConsumer<AuthBloc, AuthState>(
                       listener: (context, state) {
                         if (state is AuthFailure) {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text(state.message)),
-                          );
+                          if (!authFailed) {
+                            authFailed = true;
+
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(state.message)),
+                            );
+                          }
                         } else if (state is AuthSuccess &&
                             state.request == Request.login) {
                           ScaffoldMessenger.of(context).showSnackBar(

@@ -6,9 +6,11 @@ import 'package:dio/dio.dart';
 import 'package:image_picker/image_picker.dart';
 
 import 'package:mafuriko/core/clients/http_client.dart';
+import 'package:mafuriko/core/common/data_local/auth_local_data_source.dart';
 import 'package:mafuriko/core/common/models/user_model.dart';
 import 'package:mafuriko/shared/errors/exceptions.dart';
 import 'package:mafuriko/shared/helpers/upload_s3_image.dart';
+import 'package:nb_utils/nb_utils.dart';
 
 abstract interface class ProfileRemoteDataSource {
   Future<UserModel> updateUser({
@@ -39,8 +41,13 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
     required String newPassword,
     required String confirmPassword,
   }) async {
+    //get user token
+    SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     try {
-      var headers = {'Content-Type': 'application/json'};
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ${sharedPreferences.get(token)}"
+      };
       var data = json.encode({
         "userPassword": currentPassword,
         "userNewPassword": newPassword,
@@ -55,6 +62,7 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         ),
         data: data,
       );
+
       if (response.statusCode == 200) {
         return true;
       } else {
@@ -80,7 +88,9 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
   }) async {
     try {
       // final nameParts = userName?.trim().split(RegExp(r'\s+'));
-
+      //get user token
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
       Map<String, dynamic> body = {
         // "userEmail": userEmail?.trim(),
         "userFullName": fullName,
@@ -88,7 +98,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
         "userNumber": userPhoneNumber,
       };
 
-      var headers = {'Content-Type': 'application/json'};
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ${sharedPreferences.get(token)}"
+      };
 
       final response = await client.put(
         'https://mafu-back.vercel.app/users/update',
@@ -117,16 +130,24 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
 
   @override
   Future<UserModel> updateProfileImage(XFile? image) async {
+    log("imageUri: ${image?.path ?? "empty"}");
     try {
       Uri? userImageUri;
       if (image != null) {
         userImageUri = await uploadFile(File(image.path), "user");
         log('avatar image take by user  ${userImageUri?.toString()}');
       }
-      var headers = {'Content-Type': 'application/json'};
+      //get user token
+      SharedPreferences sharedPreferences =
+          await SharedPreferences.getInstance();
+      var headers = {
+        'Content-Type': 'application/json',
+        'Authorization': "Bearer ${sharedPreferences.get(token)}"
+      };
       Map<String, dynamic> body = {
         "image": userImageUri.toString(),
       };
+
       if (userImageUri != null) {
         final response = await client.put(
           'https://mafu-back.vercel.app/users/update',
@@ -136,6 +157,10 @@ class ProfileRemoteDataSourceImpl implements ProfileRemoteDataSource {
           ),
           data: body,
         );
+
+        log("status: ${response.statusCode}");
+        log("statusMessage: ${response.statusMessage}");
+        log("data: ${response.data}");
         if (response.statusCode == 200) {
           final data = response.data['data'];
           return UserModel.fromJson(data);

@@ -65,14 +65,15 @@ class ProfileRepositoryImpl implements ProfileRepository {
   @override
   Future<Either<Failure, UserEntity>> updateProfileImage(XFile? image) async {
     try {
+      log('updateProfileImage exception error img path::::::::: ${image?.path ?? "empty"}');
       final data = await _remoteDataSource.updateProfileImage(image);
       _localDataSource.cacheUser(data);
 
       return Right(data);
     } on ServerException catch (e) {
-      log('updatePassword exception error message::::::::: ${e.message}');
-      log('updatePassword exception error statusCode::::::::: ${e.statusCode}');
-      log('updatePassword exception error code::::::::: ${e.code}');
+      log('updateProfileImage exception error message::::::::: ${e.message}');
+      log('updateProfileImage exception error statusCode::::::::: ${e.statusCode}');
+      log('updateProfileImage exception error code::::::::: ${e.code}');
       return Left(ServerFailure(message: e.message));
     }
   }

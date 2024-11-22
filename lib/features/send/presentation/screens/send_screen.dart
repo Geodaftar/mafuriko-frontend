@@ -41,81 +41,91 @@ class _SendScreenState extends State<SendScreen>
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 2,
-      child: Scaffold(
-        appBar: AppBackAppBar(
-          title: 'Envoi',
-          // route: Paths.home,
-          bottom: PreferredSize(
-            preferredSize: Size.fromHeight(0.h),
-            child: ClipRRect(
-              borderRadius: BorderRadius.all(Radius.circular(10.r)),
-              child: Container(
-                height: 40.h,
-                margin: EdgeInsets.symmetric(horizontal: 30.w),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.all(Radius.circular(10.r)),
-                  color: const Color(0x197A4419),
-                ),
-                child: TabBar(
-                  controller: _tabController,
-                  indicatorSize: TabBarIndicatorSize.tab,
-                  dividerColor: Colors.transparent,
-                  indicator: BoxDecoration(
-                    color: AppColor.primary,
+      child: BlocListener<AlertBloc, AlertState>(
+        listener: (context, state) {
+          if (state is SuccessAlert && state.reqType == AlertReq.sendAlert) {
+            _tabController.animateTo(1);
+          }
+          // TODO: implement listener
+        },
+        child: Scaffold(
+          appBar: AppBackAppBar(
+            title: 'Envoi',
+            hideBackIcon: true,
+            // route: Paths.home,
+            bottom: PreferredSize(
+              preferredSize: Size.fromHeight(0.h),
+              child: ClipRRect(
+                borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                child: Container(
+                  height: 40.h,
+                  margin: EdgeInsets.symmetric(horizontal: 30.w),
+                  decoration: BoxDecoration(
                     borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                    color: const Color(0x197A4419),
                   ),
-                  labelColor: Colors.white,
-                  labelStyle: TextStyle(
-                    fontSize: 14.sp,
-                    fontFamily: AppFonts.nunito,
-                    fontWeight: FontWeight.w400,
+                  child: TabBar(
+                    controller: _tabController,
+                    indicatorSize: TabBarIndicatorSize.tab,
+                    dividerColor: Colors.transparent,
+                    indicator: BoxDecoration(
+                      color: AppColor.primary,
+                      borderRadius: BorderRadius.all(Radius.circular(10.r)),
+                    ),
+                    labelColor: Colors.white,
+                    labelStyle: TextStyle(
+                      fontSize: 14.sp,
+                      fontFamily: AppFonts.nunito,
+                      fontWeight: FontWeight.w400,
+                    ),
+                    unselectedLabelColor: AppColor.primary,
+                    tabs: const [
+                      Tab(
+                        text: 'Créer nouveau',
+                      ),
+                      Tab(
+                        text: 'Historique',
+                      ),
+                    ],
                   ),
-                  unselectedLabelColor: AppColor.primary,
-                  tabs: const [
-                    Tab(
-                      text: 'Créer nouveau',
-                    ),
-                    Tab(
-                      text: 'Historique',
-                    ),
-                  ],
                 ),
               ),
             ),
           ),
-        ),
-        body: BlocBuilder<AlertBloc, AlertState>(
-          builder: (context, state) {
-            final user = (context.watch<AuthBloc>().state as AuthSuccess).user;
-            List<AlertEntity> ownAlerts = [];
-            for (var element in state.alerts) {
-              if (element.postBy == '${user.fullName}') {
-                ownAlerts.add(element);
+          body: BlocBuilder<AlertBloc, AlertState>(
+            builder: (context, state) {
+              final user =
+                  (context.watch<AuthBloc>().state as AuthSuccess).user;
+              List<AlertEntity> ownAlerts = [];
+              for (var element in state.alerts) {
+                if (element.postBy == '${user.fullName}') {
+                  ownAlerts.add(element);
+                }
               }
-            }
-            return TabBarView(
-              controller: _tabController,
-              children: [
-                const SendView(),
-                if (ownAlerts.isEmpty)
-                  EmptyHistory(tabController: _tabController)
-                else
-                  RefreshIndicator(
-                    color: AppColor.primary,
-                    onRefresh: () async {
-                      await Future.delayed(
-                        const Duration(milliseconds: 2500),
-                        () {
-                          context.read<AlertBloc>().add(const FetchAlerts());
-                        },
-                      );
-                      return;
-                    },
-                    child: const HistoryView(),
-                  ),
-              ],
-            );
-          },
+              return TabBarView(
+                controller: _tabController,
+                children: [
+                  const SendView(),
+                  if (ownAlerts.isEmpty)
+                    EmptyHistory(tabController: _tabController)
+                  else
+                    RefreshIndicator(
+                      color: AppColor.primary,
+                      onRefresh: () async {
+                        await Future.delayed(
+                          const Duration(milliseconds: 2500),
+                          () {
+                            context.read<AlertBloc>().add(const FetchAlerts());
+                          },
+                        );
+                        return;
+                      },
+                      child: const HistoryView(),
+                    ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
