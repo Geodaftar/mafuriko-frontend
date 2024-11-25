@@ -354,8 +354,7 @@ class _SendViewState extends State<SendView> {
                       return PrimaryExpandedButton(
                         title: 'Envoyer',
                         onTap: () {
-                          if (_localizationController.text.isNotEmpty &&
-                              selectedCategory != null) {
+                          if (_localizationController.text.isNotEmpty) {
                             print({
                               'weather': weather,
                               'temperature': temp,
