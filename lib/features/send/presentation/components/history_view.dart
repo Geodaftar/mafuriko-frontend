@@ -36,7 +36,7 @@ class HistoryView extends StatelessWidget {
             // print(element.postBy);
             // print(user.userEmail);
             if (user.fullName == '') {
-              if (element.postBy == '${user.userEmail}') {
+              if (element.postBy == '${user.userEmail?.split("@").first}') {
                 ownAlerts.add(element);
               }
             } else {

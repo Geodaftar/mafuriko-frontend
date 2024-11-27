@@ -104,7 +104,7 @@ class _SendScreenState extends State<SendScreen>
               List<AlertEntity> ownAlerts = [];
               for (var element in state.alerts) {
                 if (user.fullName == '') {
-                  if (element.postBy == '${user.userEmail}') {
+                  if (element.postBy == '${user.userEmail?.split("@").first}') {
                     ownAlerts.add(element);
                   }
                 } else {
