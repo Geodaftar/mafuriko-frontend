@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:mafuriko/core/common/entities/user_entity.dart';
 import 'package:mafuriko/features/authentication/presentation/blocs/bloc/auth_bloc.dart';
 import 'package:mafuriko/features/send/domain/entities/alert_entity.dart';
 // import 'package:mafuriko/core/routes/constant_path.dart';
@@ -94,12 +95,22 @@ class _SendScreenState extends State<SendScreen>
           ),
           body: BlocBuilder<AlertBloc, AlertState>(
             builder: (context, state) {
-              final user =
-                  (context.watch<AuthBloc>().state as AuthSuccess).user;
+              AuthState authState = context.watch<AuthBloc>().state;
+              late UserEntity user;
+              if (authState is AuthSuccess) {
+                user = authState.user;
+              }
+
               List<AlertEntity> ownAlerts = [];
               for (var element in state.alerts) {
-                if (element.postBy == '${user.fullName}') {
-                  ownAlerts.add(element);
+                if (user.fullName == '') {
+                  if (element.postBy == '${user.userEmail}') {
+                    ownAlerts.add(element);
+                  }
+                } else {
+                  if (element.postBy == '${user.fullName}') {
+                    ownAlerts.add(element);
+                  }
                 }
               }
               return TabBarView(

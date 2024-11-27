@@ -47,7 +47,7 @@ class _SendViewState extends State<SendView> {
     // 'Montée d\'eau',
   ];
 
-  String? selectedCategory;
+  String? selectedCategory = 'Inondation';
   final FocusNode _localizationFocus = FocusNode();
   final TextEditingController _localizationController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();

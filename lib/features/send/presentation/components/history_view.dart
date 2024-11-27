@@ -33,8 +33,16 @@ class HistoryView extends StatelessWidget {
           final user = (context.watch<AuthBloc>().state as AuthSuccess).user;
           List<AlertEntity> ownAlerts = [];
           for (var element in state.alerts) {
-            if (element.postBy == '${user.fullName}') {
-              ownAlerts.add(element);
+            // print(element.postBy);
+            // print(user.userEmail);
+            if (user.fullName == '') {
+              if (element.postBy == '${user.userEmail}') {
+                ownAlerts.add(element);
+              }
+            } else {
+              if (element.postBy == '${user.fullName}') {
+                ownAlerts.add(element);
+              }
             }
           }
           return ListView.builder(

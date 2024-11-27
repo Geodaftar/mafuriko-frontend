@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:mafuriko/features/send/domain/entities/alert_entity.dart';
 
@@ -18,9 +19,23 @@ class AlertModel extends AlertEntity {
   });
 
   factory AlertModel.fromJson(Map<String, dynamic> json) {
-    final String user = json['user'] != null
-        ? '${json["user"]["userFullName"] ?? ''}'
-        : 'Administrateur';
+    String usr = "";
+    if (json['user'] != null) {
+      if (json["user"]["userFullName"] != null &&
+          json["user"]["userFullName"] != '') {
+        usr = json["user"]["userFullName"];
+      } else if (json["user"]["userEmail"] != null &&
+          json["user"]["userEmail"] != '') {
+        usr = json["user"]["userEmail"];
+      } else {
+        usr = '';
+      }
+    }
+    log("User- alert :  $usr");
+    final String user = usr;
+    // json['user'] != null
+    //     ? '${json["user"]["userFullName"] ?? ''}' //utilisation de l'email de l'utilisateur dans le cas où le fullname est vide
+    //     : 'Administrateur';
 
     // print('user from alert: $user');
     return AlertModel(
