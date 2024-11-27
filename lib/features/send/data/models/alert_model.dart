@@ -27,6 +27,7 @@ class AlertModel extends AlertEntity {
       } else if (json["user"]["userEmail"] != null &&
           json["user"]["userEmail"] != '') {
         usr = json["user"]["userEmail"];
+        usr = usr.split("@").first;
       } else {
         usr = '';
       }
