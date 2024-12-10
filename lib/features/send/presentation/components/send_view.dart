@@ -33,6 +33,7 @@ class SendView extends StatefulWidget {
 class _SendViewState extends State<SendView> {
   DateTime? _selectedDay;
   DateTime? _selectedHour;
+  final _formKey = GlobalKey<FormState>();
 
   String weather = "";
   String temp = "";
@@ -59,9 +60,13 @@ class _SendViewState extends State<SendView> {
   @override
   void initState() {
     super.initState();
-    final position = context.read<MapBloc>().state.position;
-    if (position != null) {
-      _wf.currentWeatherByLocation(position.latitude, position.longitude).then(
+    final mapState = context.read<MapBloc>().state;
+    if (mapState.position != null) {
+      _localizationController..text = '${mapState.place?[2].name}';
+      _wf
+          .currentWeatherByLocation(
+              mapState.position!.latitude, mapState.position!.longitude)
+          .then(
         (value) {
           setState(() {
             temp = '${value.temperature?.celsius?.roundToDouble()}';
@@ -220,180 +225,194 @@ class _SendViewState extends State<SendView> {
           );
         }
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30.w),
-        child: SingleChildScrollView(
-          clipBehavior: Clip.none,
-          child: Column(
-            children: [
-              SizedBox(height: 32.h),
-              BlocBuilder<MapBloc, MapState>(
-                builder: (context, state) {
-                  if (state is MapLoading) {
-                    return AppFormField(
-                      label: 'Localisation',
-                      hint: 'Cocodie, Abidjan',
-                      focus: _localizationFocus..unfocus(),
-                      controller: _localizationController
-                        ..text = 'localisation loading...',
-                      onValidate: (val) {
-                        if (val != null && val.isEmpty) {
-                          return "Veuillez remplir ce champ";
-                        }
-                        return null;
-                      },
-                    );
-                  } else if (state is MapError) {
-                    return AppFormField(
+      child: Form(
+        key: _formKey,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
+          child: SingleChildScrollView(
+            clipBehavior: Clip.none,
+            child: Column(
+              children: [
+                SizedBox(height: 32.h),
+                BlocBuilder<MapBloc, MapState>(
+                  builder: (context, state) {
+                    if (state is MapLoading) {
+                      return AppFormField(
                         label: 'Localisation',
                         hint: 'Cocodie, Abidjan',
                         focus: _localizationFocus..unfocus(),
                         controller: _localizationController
-                          ..text = state.message,
+                          ..text = 'localisation loading...',
+                        onValidate: (val) {
+                          if (val != null && val.isEmpty) {
+                            return "Veuillez remplir ce champ";
+                          }
+                          return null;
+                        },
+                      );
+                    } else if (state is MapError) {
+                      return AppFormField(
+                          label: 'Localisation',
+                          hint: 'Cocodie, Abidjan',
+                          focus: _localizationFocus..unfocus(),
+                          controller: _localizationController
+                            ..text = state.message,
+                          onValidate: (val) {
+                            if (val != null && val.isEmpty) {
+                              return "Veuillez remplir ce champ";
+                            }
+                            return null;
+                          });
+                    }
+                    return AppFormField(
+                        label: 'Localisation',
+                        hint: 'Cocodie, Abidjan',
+                        focus: _localizationFocus..unfocus(),
+                        controller: _localizationController,
                         onValidate: (val) {
                           if (val != null && val.isEmpty) {
                             return "Veuillez remplir ce champ";
                           }
                           return null;
                         });
-                  }
-                  return AppFormField(
-                      label: 'Localisation',
-                      hint: 'Cocodie, Abidjan',
-                      focus: _localizationFocus..unfocus(),
-                      controller: _localizationController
-                        ..text = '${state.place?[2].name}',
-                      onValidate: (val) {
-                        if (val != null && val.isEmpty) {
-                          return "Veuillez remplir ce champ";
-                        }
-                        return null;
-                      });
-                },
-              ),
-              AppFormFieldDescription(
-                controller: _descriptionController,
-                focus: _descriptionFocus,
-                label: 'Description de l’inondation',
-                hint: 'Décrire l’inondation et le contexte approprié',
-              ),
-              CustomDropdownButtonField(
-                title: 'Choisir une catégorie',
-                hint: 'Choisir une catégorie',
-                val: selectedCategory,
-                items: categories
-                    .map((item) => DropdownMenuItem<String>(
-                          value: item,
-                          child: Text(
-                            item,
-                            style: TextStyle(
-                              fontSize: 14.sp,
+                  },
+                ),
+                AppFormFieldDescription(
+                  controller: _descriptionController,
+                  focus: _descriptionFocus,
+                  label: 'Description de l’inondation',
+                  hint: 'Décrire l’inondation et le contexte approprié',
+                  type: TextInputType.multiline,
+                  onValidate: (val) {
+                    if (val == null || val == '') {
+                      return "Veuillez remplir ce champ";
+                    }
+                    return null;
+                  },
+                ),
+                CustomDropdownButtonField(
+                  title: 'Choisir une catégorie',
+                  hint: 'Choisir une catégorie',
+                  val: selectedCategory,
+                  items: categories
+                      .map((item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(
+                              item,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                              ),
                             ),
-                          ),
-                        ))
-                    .toList(),
-                validator: (value) {
-                  if (value == null) {
-                    return 'veuillez s\'il vous plaît choisir une catégorie';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  setState(() {
-                    selectedCategory = value.toString();
-                  });
-                },
-              ),
-              SizedBox(height: 24.h),
-              PopActionButtonField(
-                title: 'Date',
-                value: _selectedDay == null
-                    ? ''
-                    : DateFormat('dd MMMM yyyy', 'fr').format(_selectedDay!),
-                hint: 'sélectionner la date',
-                onTap: () => _showDatePicker(context),
-              ),
-              SizedBox(height: 24.h),
-              PopActionButtonField(
-                title: "L'heure",
-                value: _selectedHour == null
-                    ? ''
-                    : DateFormat("HH'H'mm", 'fr').format(_selectedHour!),
-                hint: 'sélectionner la date',
-                onTap: () => _showHourPicker(context),
-              ),
-              SizedBox(height: 24.h),
-              UploaderImageCard(
-                image: image,
-                onTap: () async {
-                  final data = await picker.fromCamera();
+                          ))
+                      .toList(),
+                  validator: (value) {
+                    if (value == null) {
+                      return 'veuillez s\'il vous plaît choisir une catégorie';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    setState(() {
+                      selectedCategory = value.toString();
+                    });
+                  },
+                ),
+                SizedBox(height: 24.h),
+                PopActionButtonField(
+                  title: 'Date',
+                  value: _selectedDay == null
+                      ? ''
+                      : DateFormat('dd MMMM yyyy', 'fr').format(_selectedDay!),
+                  hint: 'sélectionner la date',
+                  onTap: () => _showDatePicker(context),
+                ),
+                SizedBox(height: 24.h),
+                PopActionButtonField(
+                  title: "L'heure",
+                  value: _selectedHour == null
+                      ? ''
+                      : DateFormat("HH'H'mm", 'fr').format(_selectedHour!),
+                  hint: 'sélectionner la date',
+                  onTap: () => _showHourPicker(context),
+                ),
+                SizedBox(height: 24.h),
+                UploaderImageCard(
+                  image: image,
+                  onTap: () async {
+                    final data = await picker.fromCamera();
 
-                  setState(() {
-                    image = data;
-                  });
-                },
-              ),
-              SizedBox(height: 45.h),
-              BlocBuilder<MapBloc, MapState>(
-                builder: (context, mapState) {
-                  return BlocBuilder<AlertBloc, AlertState>(
-                    builder: (context, state) {
-                      if (state is AlertLoading) {
-                        return Center(
-                          child: SizedBox(
-                            width: 30.w,
-                            height: 30.h,
-                            child: const CircularProgressIndicator(),
-                          ),
+                    setState(() {
+                      image = data;
+                    });
+                  },
+                ),
+                SizedBox(height: 45.h),
+                BlocBuilder<MapBloc, MapState>(
+                  builder: (context, mapState) {
+                    return BlocBuilder<AlertBloc, AlertState>(
+                      builder: (context, state) {
+                        if (state is AlertLoading) {
+                          return Center(
+                            child: SizedBox(
+                              width: 30.w,
+                              height: 30.h,
+                              child: const CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        final uid =
+                            (context.watch<AuthBloc>().state as AuthSuccess)
+                                .user
+                                .id;
+                        return PrimaryExpandedButton(
+                          title: 'Envoyer',
+                          onTap: () {
+                            if (_localizationController.text.isNotEmpty) {
+                              print({
+                                'weather': weather,
+                                'temperature': temp,
+                              });
+                              needInternet(() {
+                                if (_formKey.currentState?.validate() ??
+                                    false) {
+                                  context.read<AlertBloc>().add(
+                                        PostAlert(
+                                          uid: uid.toString(),
+                                          sceneName: _localizationController
+                                              .text
+                                              .trim(),
+                                          floodLocation: LatLng(
+                                              mapState.position!.latitude,
+                                              mapState.position!.longitude),
+                                          floodDescription:
+                                              _descriptionController.text
+                                                  .trim(),
+                                          floodIntensity: 'forte',
+                                          category:
+                                              selectedCategory ?? 'Inondation',
+                                          floodImage: image,
+                                          weather: weather,
+                                          temperature: temp,
+                                        ),
+                                      );
+                                }
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Formulaire invalide. Veuillez saisir la localisation et la catégorie')),
+                              );
+                            }
+                          },
                         );
-                      }
-                      final uid =
-                          (context.watch<AuthBloc>().state as AuthSuccess)
-                              .user
-                              .id;
-                      return PrimaryExpandedButton(
-                        title: 'Envoyer',
-                        onTap: () {
-                          if (_localizationController.text.isNotEmpty) {
-                            print({
-                              'weather': weather,
-                              'temperature': temp,
-                            });
-                            needInternet(() {
-                              context.read<AlertBloc>().add(
-                                    PostAlert(
-                                      uid: uid.toString(),
-                                      sceneName:
-                                          _localizationController.text.trim(),
-                                      floodLocation: LatLng(
-                                          mapState.position!.latitude,
-                                          mapState.position!.longitude),
-                                      floodDescription:
-                                          _descriptionController.text.trim(),
-                                      floodIntensity: 'forte',
-                                      category:
-                                          selectedCategory ?? 'Inondation',
-                                      floodImage: image,
-                                      weather: weather,
-                                      temperature: temp,
-                                    ),
-                                  );
-                            });
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      'Formulaire invalide. Veuillez saisir la localisation et la catégorie')),
-                            );
-                          }
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-              SizedBox(height: 47.h),
-            ],
+                      },
+                    );
+                  },
+                ),
+                SizedBox(height: 47.h),
+              ],
+            ),
           ),
         ),
       ),
