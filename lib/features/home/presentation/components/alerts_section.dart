@@ -77,7 +77,7 @@ class AlertsSection extends StatelessWidget {
                 return InkWell(
                   onTap: () => context.pushNamed(
                     Paths.alertDetailScreen,
-                    extra: state.alerts[index],
+                    extra: floodAlerts[index],
                   ),
                   child: AlertCard(
                     image: floodAlerts[index].image,
@@ -85,7 +85,7 @@ class AlertsSection extends StatelessWidget {
                     floodDescription: floodAlerts[index].floodDescription,
                     postAt: floodAlerts[index].postAt,
                     postedBy: floodAlerts[index].postBy,
-                    pos: state.alerts[index].floodLocation,
+                    pos: floodAlerts[index].floodLocation,
                     margin: EdgeInsets.only(right: 16.w),
                   ),
                 );

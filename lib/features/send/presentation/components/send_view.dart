@@ -55,6 +55,7 @@ class _SendViewState extends State<SendView> {
 
   final FilesPicker picker = FilesPicker();
   XFile? image;
+  final _formKey = GlobalKey<FormState>();
 
   @override
   void initState() {

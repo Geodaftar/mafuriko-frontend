@@ -230,15 +230,11 @@ class AppFormFieldDescription extends StatelessWidget {
                     controller: _controller,
                     focusNode: _focus,
                     onChanged: onChanged,
-                    textCapitalization: isEmailField
-                        ? TextCapitalization.none
-                        : isNameField
-                            ? TextCapitalization.words
-                            : TextCapitalization.sentences,
+                    textCapitalization: TextCapitalization.sentences,
                     onTapOutside: (_) => FocusScope.of(context).unfocus(),
                     cursorHeight: 20.h,
                     textAlignVertical: TextAlignVertical.bottom,
-                    textInputAction: TextInputAction.done,
+                    textInputAction: TextInputAction.newline,
                     obscuringCharacter: '❋',
                     cursorColor: AppColor.tertiaryGray,
                     obscureText: isObscure,
