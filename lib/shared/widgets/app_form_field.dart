@@ -244,14 +244,14 @@ class AppFormFieldDescription extends StatelessWidget {
                     obscureText: isObscure,
                     style: TextStyle(
                       color: AppColor.secondaryGray,
-                      fontSize: 16.sp,
+                      fontSize: 14.sp,
                       fontFamily: AppFonts.nunito,
                       fontWeight: FontWeight.w600,
                     ),
                     keyboardType: type,
                     validator: onValidate,
                     keyboardAppearance: Brightness.light,
-                    maxLines: 7,
+                    maxLines: 5,
                     decoration: InputDecoration(
                       contentPadding: EdgeInsets.only(
                           left: 12.w, top: 30.h, right: 12.w, bottom: 8.h),

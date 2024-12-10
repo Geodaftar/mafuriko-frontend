@@ -62,6 +62,7 @@ class AlertsListScreen extends StatelessWidget {
             List<AlertEntity> floodAlerts = [];
             for (var alert in state.alerts) {
               if (alert.status == 'success') {
+                print(alert);
                 floodAlerts.add(alert);
               }
             }
@@ -70,7 +71,7 @@ class AlertsListScreen extends StatelessWidget {
               itemBuilder: (BuildContext context, int index) {
                 floodAlerts.sort((a, b) =>
                     b.postAt.toString().compareTo(a.postAt.toString()));
-
+                //print(floodAlerts.first.postBy);
                 return Padding(
                   padding: EdgeInsets.only(bottom: 20.w),
                   child: InkWell(

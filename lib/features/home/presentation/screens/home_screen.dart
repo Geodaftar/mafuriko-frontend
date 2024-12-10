@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_easyloading/flutter_easyloading.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 import 'package:internet_connection_checker_plus/internet_connection_checker_plus.dart';
+import 'package:mafuriko/core/routes/constant_path.dart';
 
 import 'package:mafuriko/features/home/presentation/components/home_sections.dart';
 import 'package:mafuriko/features/home/presentation/widgets/home_widget.dart';
@@ -208,7 +210,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 sliver: SliverToBoxAdapter(
                   child: Column(
                     children: [
-                      const ReportCount(),
+                      InkWell(
+                          onTap: () => GoRouter.of(context)
+                              .pushNamed(Paths.alertsScreen),
+                          child: const ReportCount()),
                       const MapSection(),
                       const AlertsSection(),
                       // const ActuSection(),

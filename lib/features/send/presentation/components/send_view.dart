@@ -73,6 +73,9 @@ class _SendViewState extends State<SendView> {
         },
       );
     }
+
+    _selectedDay = DateTime.now();
+    _selectedHour = DateTime.now();
   }
 
   @override

@@ -459,7 +459,7 @@ class AlertWithMoreDetailCard extends StatelessWidget {
                     SizedBox(
                       height: 40.h,
                       child: Text(
-                        floodDescription ?? 'N/A',
+                        capitalizeFirstLetter(floodDescription ?? 'N/A'),
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: TextStyle(
@@ -893,7 +893,7 @@ class FLoodInformationCard extends StatelessWidget {
             ),
             Divider(height: 22.h),
             Text(
-              alert?.floodDescription ?? 'N/A',
+              capitalizeFirstLetter(alert?.floodDescription ?? 'N/A'),
               style: TextStyle(
                 color: AppColor.primaryGray,
                 fontSize: 14.sp,

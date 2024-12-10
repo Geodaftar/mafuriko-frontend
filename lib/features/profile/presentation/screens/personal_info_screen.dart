@@ -102,6 +102,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           type: TextInputType.name,
                         ),
                         AppFormField(
+                          enabled: false,
                           focus: _emailFocus,
                           controller: _emailController,
                           label: 'Email',
@@ -114,6 +115,7 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                           },
                         ),
                         AppFormField(
+                          enabled: false,
                           focus: _phoneFocus,
                           controller: _phoneController,
                           label: 'Téléphone',
@@ -130,57 +132,60 @@ class _PersonalInfoScreenState extends State<PersonalInfoScreen> {
                   },
                 ),
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  BlocConsumer<ProfileBloc, ProfileState>(
-                    listener: (context, state) {
-                      if (state is ProfileLoadFailure) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text(state.message)),
+              Visibility(
+                visible: false,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    BlocConsumer<ProfileBloc, ProfileState>(
+                      listener: (context, state) {
+                        if (state is ProfileLoadFailure) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text(state.message)),
+                          );
+                        } else if (state is ProfileUpdateSuccess) {
+                          context
+                              .read<ProfileBloc>()
+                              .add(LoadUserProfile(state.user));
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              behavior: SnackBarBehavior.floating,
+                              content: Text('Mise à jour réussie'),
+                            ),
+                          );
+                        }
+                      },
+                      builder: (context, state) {
+                        if (state is ProfileLoading) {
+                          return Center(
+                            child: SizedBox(
+                              width: 25.w,
+                              height: 30.h,
+                              child: const CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        return PrimaryExpandedButton(
+                          title: 'Sauvegarder',
+                          onTap: () {
+                            needInternet(() {
+                              if (_formKey.currentState?.validate() ?? false) {
+                                context.read<ProfileBloc>().add(
+                                      UpdateProfileEvent(
+                                          fullName: _nameController.text.trim(),
+                                          phoneNumber:
+                                              _phoneController.text.trim(),
+                                          userEmail:
+                                              _emailController.text.trim()),
+                                    );
+                              }
+                            });
+                          },
                         );
-                      } else if (state is ProfileUpdateSuccess) {
-                        context
-                            .read<ProfileBloc>()
-                            .add(LoadUserProfile(state.user));
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(
-                            behavior: SnackBarBehavior.floating,
-                            content: Text('Mise à jour réussie'),
-                          ),
-                        );
-                      }
-                    },
-                    builder: (context, state) {
-                      if (state is ProfileLoading) {
-                        return Center(
-                          child: SizedBox(
-                            width: 25.w,
-                            height: 30.h,
-                            child: const CircularProgressIndicator(),
-                          ),
-                        );
-                      }
-                      return PrimaryExpandedButton(
-                        title: 'Sauvegarder',
-                        onTap: () {
-                          needInternet(() {
-                            if (_formKey.currentState?.validate() ?? false) {
-                              context.read<ProfileBloc>().add(
-                                    UpdateProfileEvent(
-                                        fullName: _nameController.text.trim(),
-                                        phoneNumber:
-                                            _phoneController.text.trim(),
-                                        userEmail:
-                                            _emailController.text.trim()),
-                                  );
-                            }
-                          });
-                        },
-                      );
-                    },
-                  ),
-                ],
+                      },
+                    ),
+                  ],
+                ),
               ),
             ],
           ),

@@ -93,7 +93,7 @@ extension ExplanationPassword on PasswordError {
       case PasswordError.empty:
         return "* le mot de passe est requis";
       case PasswordError.invalid:
-        return "* This is not a valid password";
+        return "* Mot de passe invalide";
       default:
         return '';
     }
