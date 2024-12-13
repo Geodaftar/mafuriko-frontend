@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:go_router/go_router.dart';
 // import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mafuriko/core/constant_secret.dart';
-import 'package:mafuriko/features/home/presentation/cubit/navigation_cubit.dart';
+// import 'package:mafuriko/features/home/presentation/cubit/navigation_cubit.dart';
 import 'package:mafuriko/features/home/presentation/screens/home_screen.dart';
 import 'package:table_calendar/table_calendar.dart';
 
@@ -60,9 +61,13 @@ class _SendViewState extends State<SendView> {
   @override
   void initState() {
     super.initState();
-    final position = context.read<MapBloc>().state.position;
-    if (position != null) {
-      _wf.currentWeatherByLocation(position.latitude, position.longitude).then(
+    final mapState = context.read<MapBloc>().state;
+    if (mapState.position != null) {
+      _localizationController..text = '${mapState.place?[2].name}';
+      _wf
+          .currentWeatherByLocation(
+              mapState.position!.latitude, mapState.position!.longitude)
+          .then(
         (value) {
           setState(() {
             temp = '${value.temperature?.celsius?.roundToDouble()}';
@@ -87,6 +92,92 @@ class _SendViewState extends State<SendView> {
     _descriptionFocus.dispose();
 
     super.dispose();
+  }
+
+  void showCustomBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      builder: (BuildContext context) {
+        return Container(
+          height: 280.h,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              border: const Border(top: BorderSide(width: .3)),
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(15.r),
+                topRight: Radius.circular(15.r),
+              )),
+          child: Column(
+// mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              SizedBox(height: 28.h),
+              Text(
+                "Télécharger une image",
+                style: TextStyle(
+                    fontFamily: AppFonts.montserrat,
+                    fontSize: 16.sp,
+                    fontWeight: FontWeight.w600),
+              ),
+              Container(
+                decoration: ShapeDecoration(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
+                  shadows: const [
+                    BoxShadow(
+                      color: Color(0x3F000000),
+                      blurRadius: 4,
+                      offset: Offset(0, 1),
+                      spreadRadius: 0,
+                    )
+                  ],
+                ),
+                margin: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.h),
+                child: Column(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.photo),
+                      title: Text(
+                        'Galerie',
+                        style: TextStyle(
+                            fontFamily: AppFonts.montserrat, fontSize: 15.sp),
+                      ),
+                      onTap: () async {
+                        final data = await picker.fromGallery();
+
+                        setState(() {
+                          image = data;
+                        });
+                        context.pop();
+                      },
+                    ),
+                    Divider(indent: 15.w, endIndent: 15.w),
+                    ListTile(
+                      leading: const Icon(Icons.camera),
+                      title: Text(
+                        'Caméra',
+                        style: TextStyle(
+                          fontFamily: AppFonts.montserrat,
+                          fontSize: 15.sp,
+                        ),
+                      ),
+                      onTap: () async {
+                        final data = await picker.fromCamera();
+
+                        setState(() {
+                          image = data;
+                        });
+                        context.pop();
+                      },
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   DateTime? hour;
@@ -224,180 +315,190 @@ class _SendViewState extends State<SendView> {
           );
         }
       },
-      child: Padding(
-        padding: EdgeInsets.symmetric(horizontal: 30.w),
-        child: SingleChildScrollView(
-          clipBehavior: Clip.none,
-          child: Column(
-            children: [
-              SizedBox(height: 32.h),
-              BlocBuilder<MapBloc, MapState>(
-                builder: (context, state) {
-                  if (state is MapLoading) {
-                    return AppFormField(
-                      label: 'Localisation',
-                      hint: 'Cocodie, Abidjan',
-                      focus: _localizationFocus..unfocus(),
-                      controller: _localizationController
-                        ..text = 'localisation loading...',
-                      onValidate: (val) {
-                        if (val != null && val.isEmpty) {
-                          return "Veuillez remplir ce champ";
-                        }
-                        return null;
-                      },
-                    );
-                  } else if (state is MapError) {
-                    return AppFormField(
+      child: Form(
+        key: _formKey,
+        child: Padding(
+          padding: EdgeInsets.symmetric(horizontal: 30.w),
+          child: SingleChildScrollView(
+            clipBehavior: Clip.none,
+            child: Column(
+              children: [
+                SizedBox(height: 32.h),
+                BlocBuilder<MapBloc, MapState>(
+                  builder: (context, state) {
+                    if (state is MapLoading) {
+                      return AppFormField(
                         label: 'Localisation',
                         hint: 'Cocodie, Abidjan',
                         focus: _localizationFocus..unfocus(),
                         controller: _localizationController
-                          ..text = state.message,
+                          ..text = 'localisation loading...',
+                        onValidate: (val) {
+                          if (val != null && val.isEmpty) {
+                            return "Veuillez remplir ce champ";
+                          }
+                          return null;
+                        },
+                      );
+                    } else if (state is MapError) {
+                      return AppFormField(
+                          label: 'Localisation',
+                          hint: 'Cocodie, Abidjan',
+                          focus: _localizationFocus..unfocus(),
+                          controller: _localizationController
+                            ..text = state.message,
+                          onValidate: (val) {
+                            if (val != null && val.isEmpty) {
+                              return "Veuillez remplir ce champ";
+                            }
+                            return null;
+                          });
+                    }
+                    return AppFormField(
+                        label: 'Localisation',
+                        hint: 'Cocodie, Abidjan',
+                        focus: _localizationFocus..unfocus(),
+                        controller: _localizationController,
                         onValidate: (val) {
                           if (val != null && val.isEmpty) {
                             return "Veuillez remplir ce champ";
                           }
                           return null;
                         });
-                  }
-                  return AppFormField(
-                      label: 'Localisation',
-                      hint: 'Cocodie, Abidjan',
-                      focus: _localizationFocus..unfocus(),
-                      controller: _localizationController
-                        ..text = '${state.place?[2].name}',
-                      onValidate: (val) {
-                        if (val != null && val.isEmpty) {
-                          return "Veuillez remplir ce champ";
-                        }
-                        return null;
-                      });
-                },
-              ),
-              AppFormFieldDescription(
-                controller: _descriptionController,
-                focus: _descriptionFocus,
-                label: 'Description de l’inondation',
-                hint: 'Décrire l’inondation et le contexte approprié',
-              ),
-              CustomDropdownButtonField(
-                title: 'Choisir une catégorie',
-                hint: 'Choisir une catégorie',
-                val: selectedCategory,
-                items: categories
-                    .map((item) => DropdownMenuItem<String>(
-                          value: item,
-                          child: Text(
-                            item,
-                            style: TextStyle(
-                              fontSize: 14.sp,
+                  },
+                ),
+                AppFormFieldDescription(
+                  controller: _descriptionController,
+                  focus: _descriptionFocus,
+                  label: 'Description de l’inondation',
+                  hint: 'Décrire l’inondation et le contexte approprié',
+                  type: TextInputType.multiline,
+                  onValidate: (val) {
+                    if (val == null || val == '') {
+                      return "Veuillez remplir ce champ";
+                    }
+                    return null;
+                  },
+                ),
+                CustomDropdownButtonField(
+                  title: 'Choisir une catégorie',
+                  hint: 'Choisir une catégorie',
+                  val: selectedCategory,
+                  items: categories
+                      .map((item) => DropdownMenuItem<String>(
+                            value: item,
+                            child: Text(
+                              item,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                              ),
                             ),
-                          ),
-                        ))
-                    .toList(),
-                validator: (value) {
-                  if (value == null) {
-                    return 'veuillez s\'il vous plaît choisir une catégorie';
-                  }
-                  return null;
-                },
-                onSaved: (value) {
-                  setState(() {
-                    selectedCategory = value.toString();
-                  });
-                },
-              ),
-              SizedBox(height: 24.h),
-              PopActionButtonField(
-                title: 'Date',
-                value: _selectedDay == null
-                    ? ''
-                    : DateFormat('dd MMMM yyyy', 'fr').format(_selectedDay!),
-                hint: 'sélectionner la date',
-                onTap: () => _showDatePicker(context),
-              ),
-              SizedBox(height: 24.h),
-              PopActionButtonField(
-                title: "L'heure",
-                value: _selectedHour == null
-                    ? ''
-                    : DateFormat("HH'H'mm", 'fr').format(_selectedHour!),
-                hint: 'sélectionner la date',
-                onTap: () => _showHourPicker(context),
-              ),
-              SizedBox(height: 24.h),
-              UploaderImageCard(
-                image: image,
-                onTap: () async {
-                  final data = await picker.fromCamera();
-
-                  setState(() {
-                    image = data;
-                  });
-                },
-              ),
-              SizedBox(height: 45.h),
-              BlocBuilder<MapBloc, MapState>(
-                builder: (context, mapState) {
-                  return BlocBuilder<AlertBloc, AlertState>(
-                    builder: (context, state) {
-                      if (state is AlertLoading) {
-                        return Center(
-                          child: SizedBox(
-                            width: 30.w,
-                            height: 30.h,
-                            child: const CircularProgressIndicator(),
-                          ),
+                          ))
+                      .toList(),
+                  validator: (value) {
+                    if (value == null) {
+                      return 'veuillez s\'il vous plaît choisir une catégorie';
+                    }
+                    return null;
+                  },
+                  onSaved: (value) {
+                    setState(() {
+                      selectedCategory = value.toString();
+                    });
+                  },
+                ),
+                SizedBox(height: 24.h),
+                PopActionButtonField(
+                  title: 'Date',
+                  value: _selectedDay == null
+                      ? ''
+                      : DateFormat('dd MMMM yyyy', 'fr').format(_selectedDay!),
+                  hint: 'sélectionner la date',
+                  onTap: () => _showDatePicker(context),
+                ),
+                SizedBox(height: 24.h),
+                PopActionButtonField(
+                  title: "L'heure",
+                  value: _selectedHour == null
+                      ? ''
+                      : DateFormat("HH'H'mm", 'fr').format(_selectedHour!),
+                  hint: 'sélectionner la date',
+                  onTap: () => _showHourPicker(context),
+                ),
+                SizedBox(height: 24.h),
+                UploaderImageCard(
+                  image: image,
+                  onTap: () async {
+                    showCustomBottomSheet(context);
+                  },
+                ),
+                SizedBox(height: 45.h),
+                BlocBuilder<MapBloc, MapState>(
+                  builder: (context, mapState) {
+                    return BlocBuilder<AlertBloc, AlertState>(
+                      builder: (context, state) {
+                        if (state is AlertLoading) {
+                          return Center(
+                            child: SizedBox(
+                              width: 30.w,
+                              height: 30.h,
+                              child: const CircularProgressIndicator(),
+                            ),
+                          );
+                        }
+                        final uid =
+                            (context.watch<AuthBloc>().state as AuthSuccess)
+                                .user
+                                .id;
+                        return PrimaryExpandedButton(
+                          title: 'Envoyer',
+                          onTap: () {
+                            if (_localizationController.text.isNotEmpty) {
+                              print({
+                                'weather': weather,
+                                'temperature': temp,
+                              });
+                              needInternet(() {
+                                if (_formKey.currentState?.validate() ??
+                                    false) {
+                                  context.read<AlertBloc>().add(
+                                        PostAlert(
+                                          uid: uid.toString(),
+                                          sceneName: _localizationController
+                                              .text
+                                              .trim(),
+                                          floodLocation: LatLng(
+                                              mapState.position!.latitude,
+                                              mapState.position!.longitude),
+                                          floodDescription:
+                                              _descriptionController.text
+                                                  .trim(),
+                                          floodIntensity: 'forte',
+                                          category:
+                                              selectedCategory ?? 'Inondation',
+                                          floodImage: image,
+                                          weather: weather,
+                                          temperature: temp,
+                                        ),
+                                      );
+                                }
+                              });
+                            } else {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text(
+                                        'Formulaire invalide. Veuillez saisir la localisation et la catégorie')),
+                              );
+                            }
+                          },
                         );
-                      }
-                      final uid =
-                          (context.watch<AuthBloc>().state as AuthSuccess)
-                              .user
-                              .id;
-                      return PrimaryExpandedButton(
-                        title: 'Envoyer',
-                        onTap: () {
-                          if (_localizationController.text.isNotEmpty) {
-                            print({
-                              'weather': weather,
-                              'temperature': temp,
-                            });
-                            needInternet(() {
-                              context.read<AlertBloc>().add(
-                                    PostAlert(
-                                      uid: uid.toString(),
-                                      sceneName:
-                                          _localizationController.text.trim(),
-                                      floodLocation: LatLng(
-                                          mapState.position!.latitude,
-                                          mapState.position!.longitude),
-                                      floodDescription:
-                                          _descriptionController.text.trim(),
-                                      floodIntensity: 'forte',
-                                      category:
-                                          selectedCategory ?? 'Inondation',
-                                      floodImage: image,
-                                      weather: weather,
-                                      temperature: temp,
-                                    ),
-                                  );
-                            });
-                          } else {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                  content: Text(
-                                      'Formulaire invalide. Veuillez saisir la localisation et la catégorie')),
-                            );
-                          }
-                        },
-                      );
-                    },
-                  );
-                },
-              ),
-              SizedBox(height: 47.h),
-            ],
+                      },
+                    );
+                  },
+                ),
+                SizedBox(height: 47.h),
+              ],
+            ),
           ),
         ),
       ),
