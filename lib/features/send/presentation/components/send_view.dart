@@ -302,16 +302,7 @@ class _SendViewState extends State<SendView> {
           PopUp.successAlertSend(
             context,
             title: 'Réussi',
-            description:
-                'Données chargées avec succès. Revenir à la page de données',
-            action: () {
-              // _descriptionController.clear();
-              // selectedCategory = null;
-              // image = null;
-              // setState(() {});
-              // Navigator.pop(context);
-              //context.read<NavigationCubit>().updateIndex(0);
-            },
+            description: 'Alertes envoyées avec succès.',
           );
         }
       },
