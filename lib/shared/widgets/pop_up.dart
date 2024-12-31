@@ -63,19 +63,21 @@ class PopUp {
   }
 
   static Future<void> successAlertSend(BuildContext context,
-      {required String title,
-      required String description,
-      required VoidCallback action}) async {
+      {required String title, required String description}) async {
     await showDialog(
       context: context,
       builder: (context) {
+        Future.delayed(const Duration(milliseconds: 2500), () {
+          Navigator.of(context).pop(true);
+        });
         return AlertDialog(
           backgroundColor: AppColor.white,
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.r)),
           insetPadding: EdgeInsets.symmetric(horizontal: 30.w),
-          actionsPadding: EdgeInsets.fromLTRB(25.w, 33.h, 25.w, 43.h),
-          contentPadding: EdgeInsets.fromLTRB(50.w, 18.h, 50.w, 0),
+          // actionsPadding: EdgeInsets.fromLTRB(25.w, 33.h, 25.w, 43.h),
+          contentPadding:
+              EdgeInsets.symmetric(horizontal: 50.w, vertical: 18.h),
           alignment: Alignment.center,
           title: Text(
             title,
@@ -87,8 +89,8 @@ class PopUp {
             ),
           ),
           icon: Container(
-            width: 98.w,
-            height: 98.h,
+            width: 58.w,
+            height: 58.h,
             decoration: ShapeDecoration(
               shape: const CircleBorder(),
               image: DecorationImage(
@@ -96,34 +98,6 @@ class PopUp {
               ),
             ),
           ),
-          actions: [
-            MaterialButton(
-              // padding: EdgeInsets.zero,
-              // height: 37.h,
-              // minWidth: 252,
-              height: 58.h,
-              color: AppColor.primary,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(6.23.r),
-              ),
-              elevation: 0,
-              highlightElevation: 0,
-              onPressed: () {
-                action();
-                Navigator.pop(context);
-              },
-              child: Text(
-                'Aller à la page d\'accueil',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 20.sp,
-                  fontFamily: AppFonts.inter,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ],
           content: SizedBox(
             width: 195.w,
             child: Text(
