@@ -63,7 +63,7 @@ extension ExplanationNumber on PhoneNumberError {
       case PhoneNumberError.empty:
         return "* Le numéro est requis";
       case PhoneNumberError.invalid:
-        return "This is not a valid number. try with code. eg: (+225)";
+        return "Ce numéro n'est pas valide. Essayez avec le code : ex. (+225).";
       default:
         return '';
     }
@@ -124,11 +124,12 @@ extension ExplanationName on NameError {
   String get name {
     switch (this) {
       case NameError.invalid:
-        return "This is not a valid name";
+        // translate this message to french
+        return "Ce nom n'est pas valide";
       case NameError.empty:
-        return "Name cannot be empty";
+        return "Le nom ne peut être vide";
       case NameError.short:
-        return "Name is too short";
+        return "Le nom est trop court";
       default:
         return '';
     }
