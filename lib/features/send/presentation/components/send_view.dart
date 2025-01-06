@@ -294,6 +294,93 @@ class _SendViewState extends State<SendView> {
         _descriptionController.text.isNotEmpty;
   }
 
+//    void showCustomBottomSheet(BuildContext context) {
+//       showModalBottomSheet(
+//       context: context,
+//       builder: (BuildContext context) {
+//         return Container(
+//           height: 280.h,
+//           decoration: BoxDecoration(
+//               color: Colors.white,
+//               border: const Border(top: BorderSide(width: .3)),
+//               borderRadius: BorderRadius.only(
+//                 topLeft: Radius.circular(15.r),
+//                 topRight: Radius.circular(15.r),
+//               )),
+//           child: Column(
+// // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+//             children: [
+//               SizedBox(height: 28.h),
+//               Text(
+//                 "Télécharger une image",
+//                 style: TextStyle(
+//                     fontFamily: AppFonts.montserrat,
+//                     fontSize: 16.sp,
+//                     fontWeight: FontWeight.w600),
+//               ),
+//               Container(
+//                 decoration: ShapeDecoration(
+//                   color: Colors.white,
+//                   shape: RoundedRectangleBorder(
+//                       borderRadius: BorderRadius.circular(8)),
+//                   shadows: const [
+//                     BoxShadow(
+//                       color: Color(0x3F000000),
+//                       blurRadius: 4,
+//                       offset: Offset(0, 1),
+//                       spreadRadius: 0,
+//                     )
+//                   ],
+//                 ),
+//                 margin: EdgeInsets.symmetric(horizontal: 18.w, vertical: 18.h),
+//                 child: Column(
+//                   children: [
+//                     ListTile(
+//                       leading: const Icon(Icons.photo),
+//                       title: Text(
+//                         'Galerie',
+//                         style: TextStyle(
+//                             fontFamily: AppFonts.montserrat, fontSize: 15.sp),
+//                       ),
+//                       onTap: () async {
+//                         final data = await picker.fromGallery();
+
+//                   setState(() {
+//                     image = data;
+//                   });
+//                         context.pop();
+//                       },
+//                     ),
+//                     Divider(indent: 15.w, endIndent: 15.w),
+//                     ListTile(
+//                       leading: const Icon(Icons.camera),
+//                       title: Text(
+//                         'Caméra',
+//                         style: TextStyle(
+//                           fontFamily: AppFonts.montserrat,
+//                           fontSize: 15.sp,
+//                         ),
+//                       ),
+//                       onTap: () async {
+//                         final data = await picker.fromCamera();
+
+//                           setState(() {
+//                             image = data;
+//                           });
+//                         context.pop();
+//                       },
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ],
+//           ),
+//         );
+//       },
+//     );
+ 
+//    }
+
   @override
   Widget build(BuildContext context) {
     return BlocListener<AlertBloc, AlertState>(
