@@ -10,7 +10,7 @@ enum Request {
   checkUser,
 }
 
-sealed class AuthState extends Equatable {
+class AuthState extends Equatable {
   const AuthState();
 
   @override

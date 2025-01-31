@@ -1,6 +1,6 @@
 part of 'count_cubit.dart';
 
-sealed class CountState extends Equatable {
+class CountState extends Equatable {
   const CountState({this.pagePos = 0});
 
   final int pagePos;

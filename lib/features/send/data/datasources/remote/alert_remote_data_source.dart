@@ -75,7 +75,11 @@ class AlertRemoteDataSourceImpl implements AlertRemoteDataSource {
 
         return AlertModel.fromJson(data['data']);
       }
-      return null;
+      throw ServerException(
+        message: 'Unexpected error occurred',
+        statusCode: "${response.statusCode}",
+      );
+      // return null;
     } on ServerException catch (e) {
       log('alert posting response failure message :::::::::::${e.message}');
       log('alert posting response failure status code :::::::::::${e.statusCode}');

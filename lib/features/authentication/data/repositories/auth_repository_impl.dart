@@ -55,7 +55,7 @@ class AuthRepositoryImpl implements AuthRepository {
       final data = await dataSource.login(
           userEmail: userEmail, userPassword: userPassword);
 
-      log('from auth repo impl :: login request ::: data **** ${data.toJson()}');
+      // log('from auth repo impl :: login request ::: data **** ${data.toJson()}');
 
       localDataSource.cacheUser(data);
       localDataSource.cacheToken(data.token);
